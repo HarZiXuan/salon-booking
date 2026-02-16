@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button/button";
 import { VenueNav } from "@/components/venue/venue-nav";
 import { TeamList } from "@/components/venue/team-list";
 import { ReviewList } from "@/components/venue/review-list";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { BookingWizard } from "@/components/venue/booking/wizard";
 import { venuesData, serviceCategories, servicesData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,47 @@ export default function StorePage() {
     const [isBookingOpen, setIsBookingOpen] = useState(false);
     const [initialServiceId, setInitialServiceId] = useState<string | undefined>(undefined);
     const [activeCategory, setActiveCategory] = useState("all");
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeft, setScrollLeft] = useState(0);
+
+    // Update active index on scroll
+    const handleScroll = () => {
+        if (scrollContainerRef.current) {
+            const { scrollLeft, clientWidth } = scrollContainerRef.current;
+            const newIndex = Math.round(scrollLeft / clientWidth);
+            setCurrentImageIndex(newIndex);
+        }
+    };
+
+    // Mouse Drag Handlers
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true);
+        if (scrollContainerRef.current) {
+            setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+            setScrollLeft(scrollContainerRef.current.scrollLeft);
+        }
+    };
+
+    const handleMouseLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        if (scrollContainerRef.current) {
+            const x = e.pageX - scrollContainerRef.current.offsetLeft;
+            const walk = (x - startX) * 2; // Scroll-fast multiplier
+            scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+        }
+    };
 
     // Fetch venue based on ID
     const venueId = params?.id as string;
@@ -63,8 +104,26 @@ export default function StorePage() {
 
                 {/* Mobile Image Hero */}
                 <div className="relative w-full aspect-[4/3] bg-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={venue.images[0]} alt={venue.name} className="w-full h-full object-cover" />
+                    <div
+                        ref={scrollContainerRef}
+                        onScroll={handleScroll}
+                        onMouseDown={handleMouseDown}
+                        onMouseLeave={handleMouseLeave}
+                        onMouseUp={handleMouseUp}
+                        onMouseMove={handleMouseMove}
+                        className={cn(
+                            "flex w-full h-full overflow-x-auto no-scrollbar",
+                            isDragging ? "cursor-grabbing snap-none" : "cursor-grab snap-x snap-mandatory"
+                        )}
+                        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                    >
+                        {venue.images.map((img, index) => (
+                            <div key={index} className="flex-shrink-0 w-full h-full snap-center">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={img} alt={`${venue.name} - ${index + 1}`} className="w-full h-full object-cover" />
+                            </div>
+                        ))}
+                    </div>
 
                     {/* Overlay Buttons */}
                     <div className="absolute top-4 left-4 z-10">
@@ -88,7 +147,7 @@ export default function StorePage() {
 
                     {/* Image Counter */}
                     <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">
-                        1/5
+                        {currentImageIndex + 1}/{venue.images.length}
                     </div>
                 </div>
 
@@ -172,7 +231,7 @@ export default function StorePage() {
                     <section id="services">
                         <div className="space-y-8">
                             {/* Category Pills */}
-                            <div className="sticky top-14 z-30 bg-background py-4 -mx-4 px-4 overflow-x-auto no-scrollbar md:mx-0 md:px-0">
+                            <div className="sticky top-[8.5rem] z-30 bg-background py-4 -mx-4 px-4 overflow-x-auto no-scrollbar md:mx-0 md:px-0">
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => setActiveCategory("all")}
@@ -244,15 +303,27 @@ export default function StorePage() {
                     </section>
                     <section id="about" className="scroll-mt-32 pb-20">
                         <h2 className="text-xl font-bold mb-4">About</h2>
-                        <p className="text-gray-600 leading-relaxed">
-                            {venue.description || "Experienced professionals providing top-tier services in a relaxing atmosphere."}
+                        <p className="text-gray-600 leading-relaxed mb-8">
+                            {venue.description}
                         </p>
+
+                        <h3 className="text-lg font-bold mb-4">Opening Hours</h3>
+                        <div className="bg-gray-50 rounded-xl p-6 border">
+                            <ul className="space-y-3">
+                                {venue.openingHours?.map((schedule: any, index: number) => (
+                                    <li key={index} className="flex justify-between text-sm">
+                                        <span className="font-medium text-gray-900">{schedule.day}</span>
+                                        <span className="text-gray-500">{schedule.hours}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </section>
                 </div>
 
                 {/* Desktop Sticky Sidebar */}
                 <div className="hidden lg:block relative">
-                    <div className="sticky top-24 border rounded-xl p-6 shadow-sm space-y-6">
+                    <div className="sticky top-40 border rounded-xl p-6 shadow-sm space-y-6">
                         <div className="text-center">
                             <h3 className="font-bold text-lg">{venue.name}</h3>
                             <p className="text-sm text-gray-500">{venue.address}</p>

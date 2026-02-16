@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import * as Popover from "@radix-ui/react-popover";
 
 // Utility for simple calendar logic
 const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
@@ -14,12 +15,48 @@ const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function CompactSearchBar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [isTimeOpen, setIsTimeOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isLocationOpen, setIsLocationOpen] = useState(false);
+
+    // Search States
+    const [searchQuery, setSearchQuery] = useState("");
+    const [locationQuery, setLocationQuery] = useState("Current location");
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("Any time");
+
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("Any time");
     const containerRef = useRef<HTMLDivElement>(null);
+
+    const malaysiaLocations = [
+        "Kuala Lumpur",
+        "Johor Bahru",
+        "Penang",
+        "Selangor",
+        "Malacca",
+        "Sabah",
+        "Sarawak",
+        "Perak",
+        "Kedah"
+    ];
+
+    const uiCategories = [
+        { id: "all", label: "All treatments", icon: "ri-apps-2-line" },
+        { id: "hair", label: "Hair", icon: "ri-scissors-fill" },
+        { id: "nails", label: "Nails", icon: "ri-hand-coin-fill" },
+        { id: "massage", label: "Massage", icon: "ri-user-heart-fill" },
+        { id: "face", label: "Facial", icon: "ri-emotion-happy-fill" },
+    ];
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (searchQuery && searchQuery !== "All treatments") params.set("q", searchQuery);
+        if (locationQuery && locationQuery !== "Current location") params.set("location", locationQuery);
+        // We could add date/time params here too if the search page supported them
+        router.push(`/search?${params.toString()}`);
+    };
 
 
 
@@ -98,16 +135,90 @@ export function CompactSearchBar() {
         <div className="hidden lg:flex flex-1 max-w-2xl mx-auto items-center justify-center" ref={containerRef}>
             <div className="flex items-center bg-gray-100/50 border hover:bg-white hover:shadow-md transition-all rounded-full p-1 divide-x divide-gray-200 w-full relative group">
                 {/* Treatment Input */}
-                <div className="flex-1 px-4 py-1.5 cursor-pointer hover:bg-gray-100 rounded-l-full transition-colors flex flex-col justify-center">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 leading-none mb-0.5">Treatment or venue</label>
-                    <input type="text" placeholder="All treatments" className="bg-transparent border-none outline-none text-sm font-semibold text-gray-900 p-0 placeholder:text-gray-400 w-full truncate" />
-                </div>
+                <Popover.Root open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                    <Popover.Trigger asChild>
+                        <div className="flex-1 px-4 py-1.5 cursor-pointer hover:bg-gray-100 rounded-l-full transition-colors flex flex-col justify-center border-r border-gray-200">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 leading-none mb-0.5">Treatment or venue</label>
+                            <input
+                                type="text"
+                                placeholder="All treatments"
+                                className="bg-transparent border-none outline-none text-sm font-semibold text-gray-900 p-0 placeholder:text-gray-400 w-full truncate"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsSearchOpen(true);
+                                }}
+                            />
+                        </div>
+                    </Popover.Trigger>
+                    <Popover.Portal>
+                        <Popover.Content className="z-50 bg-white p-2 rounded-xl shadow-xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200 w-[280px]" align="start" sideOffset={10}>
+                            <div className="p-2">
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2">Top Categories</h3>
+                                <div className="space-y-1">
+                                    {uiCategories.map(cat => (
+                                        <button
+                                            key={cat.id}
+                                            onClick={() => {
+                                                setSearchQuery(cat.label === "All treatments" ? "" : cat.label);
+                                                setIsSearchOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-lg text-left transition-colors"
+                                        >
+                                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-xs">
+                                                <i className={cat.icon}></i>
+                                            </div>
+                                            <span className="font-medium text-gray-900 text-sm">{cat.label}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </Popover.Content>
+                    </Popover.Portal>
+                </Popover.Root>
 
                 {/* Location Input */}
-                <div className="flex-1 px-4 py-1.5 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col justify-center border-l border-r border-gray-200">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 leading-none mb-0.5">Location</label>
-                    <div className="text-sm font-semibold text-gray-900 truncate">Current location</div>
-                </div>
+                <Popover.Root open={isLocationOpen} onOpenChange={setIsLocationOpen}>
+                    <Popover.Trigger asChild>
+                        <div className="flex-1 px-4 py-1.5 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col justify-center border-r border-gray-200">
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 leading-none mb-0.5">Location</label>
+                            <div className="text-sm font-semibold text-gray-900 truncate">{locationQuery}</div>
+                        </div>
+                    </Popover.Trigger>
+                    <Popover.Portal>
+                        <Popover.Content className="z-50 bg-white p-2 rounded-xl shadow-xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200 w-[280px]" align="start" sideOffset={10}>
+                            <div className="p-2">
+                                <button
+                                    onClick={() => {
+                                        setLocationQuery("Current location");
+                                        setIsLocationOpen(false);
+                                    }}
+                                    className="w-full flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-lg text-left mb-2 text-blue-600 font-medium text-sm"
+                                >
+                                    <i className="ri-map-pin-user-line text-lg"></i>
+                                    Use current location
+                                </button>
+
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 border-t pt-3">Malaysia</h3>
+                                <div className="max-h-[250px] overflow-y-auto no-scrollbar space-y-1">
+                                    {malaysiaLocations.map(loc => (
+                                        <button
+                                            key={loc}
+                                            onClick={() => {
+                                                setLocationQuery(loc);
+                                                setIsLocationOpen(false);
+                                            }}
+                                            className="w-full flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-lg text-left"
+                                        >
+                                            <span className="text-gray-900 text-sm">{loc}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </Popover.Content>
+                    </Popover.Portal>
+                </Popover.Root>
 
                 {/* Time Input Trigger */}
                 <div
@@ -120,7 +231,11 @@ export function CompactSearchBar() {
 
                 {/* Search Button */}
                 <div className="pl-2 pr-1">
-                    <Button size="icon" className="rounded-full w-9 h-9 bg-black text-white hover:bg-gray-800 shadow-sm">
+                    <Button
+                        size="icon"
+                        className="rounded-full w-9 h-9 bg-black text-white hover:bg-gray-800 shadow-sm"
+                        onClick={handleSearch}
+                    >
                         <i className="ri-search-line"></i>
                     </Button>
                 </div>

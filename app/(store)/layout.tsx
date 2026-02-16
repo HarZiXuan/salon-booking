@@ -6,6 +6,7 @@ import { useUserStore } from "@/global-store/user";
 import { useCartStore } from "@/global-store/cart";
 import { Button } from "@/components/ui/button/button";
 import { CompactSearchBar } from "@/components/layout/compact-search-bar";
+import { MainMenu } from "@/components/layout/main-menu";
 
 export default function StoreLayout({
     children,
@@ -59,13 +60,11 @@ export default function StoreLayout({
                             </Button>
                         </Link>
 
-                        <Button variant="outline" className="rounded-full border-gray-300 font-semibold px-5 h-10 gap-3 hover:bg-gray-100 hover:text-black hover:border-gray-400 transition-all ml-1">
-                            Menu <i className="ri-menu-line text-lg font-normal"></i>
-                        </Button>
+                        <MainMenu />
                     </div>
                 </div>
             </header>
-            <main className="flex-1 container py-6">{children}</main>
+            <main className="flex-1 select-none">{children}</main>
             <footer className="border-t py-6 md:py-0">
                 <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
                     <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">

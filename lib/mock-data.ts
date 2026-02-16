@@ -17,11 +17,20 @@ export const venuesData = [
         image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=600",
         images: [
             "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1503951914875-452162b7f304?auto=format&fit=crop&q=80&w=400",
-            "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&q=80&w=1200",
         ],
         categoryId: "hair",
-        description: "Premium barber shop specializing in classic cuts and fades."
+        description: "Downsouth Barbershop requires no introduction. A staple in the Johor Bahru grooming scene, we pride ourselves on delivering precision cuts, classic shaves, and a community atmosphere that keeps our clients coming back. Our team of master barbers specializes in both modern fades and traditional scissors-over-comb techniques.",
+        openingHours: [
+            { day: "Monday", hours: "10:00 AM - 10:00 PM" },
+            { day: "Tuesday", hours: "10:00 AM - 10:00 PM" },
+            { day: "Wednesday", hours: "10:00 AM - 10:00 PM" },
+            { day: "Thursday", hours: "10:00 AM - 10:00 PM" },
+            { day: "Friday", hours: "10:00 AM - 10:00 PM" },
+            { day: "Saturday", hours: "09:00 AM - 11:00 PM" },
+            { day: "Sunday", hours: "09:00 AM - 09:00 PM" },
+        ]
     },
     {
         id: "2",
@@ -30,13 +39,22 @@ export const venuesData = [
         rating: 4.8,
         reviews: 85,
         status: "Open until 8:00pm",
-        image: "https://images.unsplash.com/photo-1632345031435-8727f68979a6?auto=format&fit=crop&q=80&w=600",
+        image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=1200",
         images: [
-            "https://images.unsplash.com/photo-1632345031435-8727f68979a6?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=1200",
         ],
         categoryId: "nails",
-        description: "Luxury nail care and spa services in a relaxing environment."
+        description: "Escape the city bustle at Luxe Nail & Spa, your sanctuary for hand and foot care. We use only premium, non-toxic polishes and organic spa products. Our interior is designed to induce a state of complete relaxation, with private pods available for VIP treatments.",
+        openingHours: [
+            { day: "Monday", hours: "11:00 AM - 08:00 PM" },
+            { day: "Tuesday", hours: "11:00 AM - 08:00 PM" },
+            { day: "Wednesday", hours: "11:00 AM - 08:00 PM" },
+            { day: "Thursday", hours: "11:00 AM - 08:00 PM" },
+            { day: "Friday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Saturday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Sunday", hours: "11:00 AM - 07:00 PM" },
+        ]
     },
     {
         id: "3",
@@ -48,10 +66,22 @@ export const venuesData = [
         image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=600",
         images: [
             "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=1200",
         ],
         categoryId: "massage",
-        description: "Holistic massage therapies for body and mind."
+        description: "Zen Massage Therapy blends traditional Eastern healing arts with modern therapeutic techniques. Our certified therapists customize every session to address your specific tension points. Experience our signature hot stone massage in a tranquil, aromatic setting.",
+        openingHours: [
+            { day: "Monday", hours: "12:00 PM - 11:00 PM" },
+            { day: "Tuesday", hours: "12:00 PM - 11:00 PM" },
+            { day: "Wednesday", hours: "12:00 PM - 11:00 PM" },
+            { day: "Thursday", hours: "12:00 PM - 11:00 PM" },
+            { day: "Friday", hours: "12:00 PM - 12:00 AM" },
+            { day: "Saturday", hours: "10:00 AM - 12:00 AM" },
+            { day: "Sunday", hours: "10:00 AM - 10:00 PM" },
+        ]
     },
     {
         id: "4",
@@ -63,10 +93,22 @@ export const venuesData = [
         image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=600",
         images: [
             "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=1200",
-            "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=400",
+            "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1505944270255-72b8c68c6a70?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1620331313174-87a8f9032242?auto=format&fit=crop&q=80&w=1200",
         ],
         categoryId: "face",
-        description: "Rejuvenating facial treatments for all skin types."
+        description: "Glow Facial Studio is dedicated to skin health and radiance. We combine clinical-grade technology with luxurious pampering to deliver results you can see and feel. From acne treatments to anti-aging facials, our experts guide you to your best skin.",
+        openingHours: [
+            { day: "Monday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Tuesday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Wednesday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Thursday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Friday", hours: "10:00 AM - 09:00 PM" },
+            { day: "Saturday", hours: "10:00 AM - 07:00 PM" },
+            { day: "Sunday", hours: "Closed" },
+        ]
     }
 ];
 

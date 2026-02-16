@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useMemo } from "react";
 import { venuesData, serviceCategories } from "@/lib/mock-data";
@@ -19,10 +20,27 @@ const uiCategories = [
 ];
 
 export default function HomePage() {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+
     const [isDateOpen, setIsDateOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isLocationOpen, setIsLocationOpen] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState("Current location");
+
+    const malaysiaLocations = [
+        "Kuala Lumpur",
+        "Johor Bahru",
+        "Penang",
+        "Selangor",
+        "Malacca",
+        "Sabah",
+        "Sarawak",
+        "Perak",
+        "Kedah"
+    ];
 
     // Filter logic
     const filteredVenues = useMemo(() => {
@@ -44,12 +62,24 @@ export default function HomePage() {
     return (
         <div className="flex flex-col min-h-screen">
             {/* Hero Section */}
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-gradient-to-b from-violet-50/50 via-white to-white text-center">
-                <div className="container px-4 md:px-6">
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-gray-900 mb-6">
+            {/* Hero Section */}
+            <section className="relative h-[650px] flex items-center justify-center text-center overflow-hidden">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src="/images/hero-bg.jpg"
+                        alt="Salon Background"
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/60" />
+                </div>
+
+                <div className="container relative z-10 px-4 md:px-6">
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white mb-6 drop-shadow-sm">
                         Book local selfcare services
                     </h1>
-                    <p className="text-lg md:text-2xl text-gray-500 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-lg md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed drop-shadow-sm font-medium">
                         Discover top-rated salons, barbers, medspas, wellness studios and beauty experts near you.
                     </p>
 
@@ -58,29 +88,109 @@ export default function HomePage() {
                         <div className="flex flex-col md:flex-row md:items-center">
 
                             {/* Search Input */}
-                            <div className="flex-1 px-6 py-4 md:py-3 flex items-center gap-4 group cursor-text border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50/50 rounded-xl transition-colors">
-                                <i className="ri-search-line text-2xl text-gray-400 group-hover:text-primary transition-colors"></i>
-                                <div className="flex-1 text-left">
-                                    <label htmlFor="search" className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-0.5">Search</label>
-                                    <input
-                                        id="search"
-                                        type="text"
-                                        placeholder="Treatment or venue"
-                                        className="w-full text-base font-semibold text-gray-900 placeholder:text-gray-300 bg-transparent border-none outline-none p-0 focus:ring-0"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                </div>
-                            </div>
+                            <Popover.Root open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                                <Popover.Trigger asChild>
+                                    <div
+                                        className="flex-1 px-6 py-4 md:py-3 flex items-center gap-4 group cursor-text border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50/50 rounded-xl transition-colors"
+                                        onClick={() => setIsSearchOpen(true)}
+                                    >
+                                        <i className="ri-search-line text-2xl text-gray-400 group-hover:text-primary transition-colors"></i>
+                                        <div className="flex-1 text-left">
+                                            <label htmlFor="search" className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-0.5">Search</label>
+                                            <input
+                                                id="search"
+                                                type="text"
+                                                placeholder="Treatment or venue"
+                                                className="w-full text-base font-semibold text-gray-900 placeholder:text-gray-300 bg-transparent border-none outline-none p-0 focus:ring-0"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                    </div>
+                                </Popover.Trigger>
+                                <Popover.Portal>
+                                    <Popover.Content
+                                        className="z-50 bg-white p-2 rounded-xl shadow-xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200 w-[300px] md:w-[350px]"
+                                        align="start"
+                                        sideOffset={10}
+                                        onOpenAutoFocus={(e) => e.preventDefault()}
+                                    >
+                                        <div className="p-2">
+                                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Top Categories</h3>
+                                            <div className="space-y-1">
+                                                {uiCategories.map(cat => (
+                                                    cat.id !== 'all' && (
+                                                        <button
+                                                            key={cat.id}
+                                                            onClick={() => {
+                                                                setSearchQuery(cat.label);
+                                                                setSelectedCategory(cat.id);
+                                                                setIsSearchOpen(false);
+                                                            }}
+                                                            className="w-full flex items-center gap-3 px-2 py-2.5 hover:bg-gray-50 rounded-lg text-left transition-colors"
+                                                        >
+                                                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                                                <i className={cat.icon}></i>
+                                                            </div>
+                                                            <span className="font-medium text-gray-900">{cat.label}</span>
+                                                        </button>
+                                                    )
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </Popover.Content>
+                                </Popover.Portal>
+                            </Popover.Root>
 
                             {/* Location Input */}
-                            <div className="flex-1 px-6 py-4 md:py-3 flex items-center gap-4 group cursor-pointer border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50/50 rounded-xl transition-colors">
-                                <i className="ri-map-pin-line text-2xl text-gray-400 group-hover:text-primary transition-colors"></i>
-                                <div className="flex-1 text-left">
-                                    <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-0.5">Location</label>
-                                    <span className="block text-base font-semibold text-gray-900 truncate">Current location</span>
-                                </div>
-                            </div>
+                            <Popover.Root open={isLocationOpen} onOpenChange={setIsLocationOpen}>
+                                <Popover.Trigger asChild>
+                                    <div className="flex-1 px-6 py-4 md:py-3 flex items-center gap-4 group cursor-pointer border-b md:border-b-0 md:border-r border-gray-100 hover:bg-gray-50/50 rounded-xl transition-colors">
+                                        <i className="ri-map-pin-line text-2xl text-gray-400 group-hover:text-primary transition-colors"></i>
+                                        <div className="flex-1 text-left">
+                                            <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-0.5">Location</label>
+                                            <span className="block text-base font-semibold text-gray-900 truncate">{selectedLocation}</span>
+                                        </div>
+                                    </div>
+                                </Popover.Trigger>
+                                <Popover.Portal>
+                                    <Popover.Content
+                                        className="z-50 bg-white p-2 rounded-xl shadow-xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200 w-[300px]"
+                                        align="start"
+                                        sideOffset={10}
+                                    >
+                                        <div className="p-2">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedLocation("Current location");
+                                                    setIsLocationOpen(false);
+                                                }}
+                                                className="w-full flex items-center gap-3 px-2 py-2.5 hover:bg-gray-50 rounded-lg text-left mb-2 text-blue-600 font-medium"
+                                            >
+                                                <i className="ri-map-pin-user-line text-lg"></i>
+                                                Use current location
+                                            </button>
+
+                                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-2 border-t pt-3">Malaysia</h3>
+                                            <div className="max-h-[250px] overflow-y-auto no-scrollbar space-y-1">
+                                                {malaysiaLocations.map(loc => (
+                                                    <button
+                                                        key={loc}
+                                                        onClick={() => {
+                                                            setSelectedLocation(loc);
+                                                            setIsLocationOpen(false);
+                                                        }}
+                                                        className="w-full flex items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded-lg text-left"
+                                                    >
+                                                        <span className="text-gray-900">{loc}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </Popover.Content>
+                                </Popover.Portal>
+                            </Popover.Root>
 
                             {/* Date Picker Input */}
                             <Popover.Root open={isDateOpen} onOpenChange={setIsDateOpen}>
@@ -114,7 +224,10 @@ export default function HomePage() {
 
                             {/* Search Button */}
                             <div className="p-2">
-                                <Button className="w-full md:w-auto h-14 md:h-12 px-8 rounded-full text-lg font-bold bg-gray-900 hover:bg-black text-white shadow-lg shadow-gray-900/10 transition-all hover:scale-[1.02]">
+                                <Button
+                                    className="w-full md:w-auto h-14 md:h-12 px-8 rounded-full text-lg font-bold bg-gray-900 hover:bg-black text-white shadow-lg shadow-gray-900/10 transition-all hover:scale-[1.02]"
+                                    onClick={() => router.push(`/search?q=${encodeURIComponent(searchQuery)}`)}
+                                >
                                     Search
                                 </Button>
                             </div>
