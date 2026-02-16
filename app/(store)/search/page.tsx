@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button/button";
 import { venuesData, servicesData } from "@/lib/mock-data";
 import Link from "next/link";
@@ -17,7 +17,7 @@ const getTotalServicesCount = (venueId: string) => {
     return servicesData.filter(service => service.venueId === venueId).length;
 };
 
-export default function SearchPage() {
+function SearchResults() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const query = searchParams.get("q") || "";
@@ -100,6 +100,32 @@ export default function SearchPage() {
                         </div>
                     </div>
                 )}
+            </div>
+        </div>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<SearchLoadingFallback />}>
+            <SearchResults />
+        </Suspense>
+    );
+}
+
+function SearchLoadingFallback() {
+    return (
+        <div className="flex flex-col h-[calc(100vh-80px)]">
+            <div className="sticky top-0 z-30 bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm">
+                <div className="text-sm text-gray-500 font-medium">Loading...</div>
+            </div>
+            <div className="flex-1 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                        <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                    </div>
+                    <p className="mt-4 text-gray-500">Searching venues...</p>
+                </div>
             </div>
         </div>
     );
