@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { fetchServiceSpecialists, fetchAvailability, createBooking } from "@/app/actions/shop";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { serviceCategories, staffData } from "@/lib/mock-data";
+import { Button } from "@/components/ui/button";
 
 // Steps
 const steps = ["Services", "Professional", "Time", "Confirm"];
@@ -11,24 +11,90 @@ const steps = ["Services", "Professional", "Time", "Confirm"];
 interface BookingWizardProps {
     onClose: () => void;
     initialServiceId?: string;
-    venue: any; // Type this properly if possible, but any is fine for mock
-    services: any[];
+    venue: Record<string, unknown>; // Type this properly if possible, but any is fine for mock
+    services: Record<string, unknown>[];
+    categories: { id: string, label: string }[];
 }
 
-export function BookingWizard({ onClose, initialServiceId, venue: venueData, services: servicesData }: BookingWizardProps) {
+export function BookingWizard({ onClose, initialServiceId, venue: venueData, services: servicesData, categories }: BookingWizardProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<string[]>(initialServiceId ? [initialServiceId] : []);
-    const [activeCategory, setActiveCategory] = useState("featured");
+    const [activeCategory, setActiveCategory] = useState(categories[0]?.id || "uncategorized");
 
     // State for Step 2 & 3
     const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+    const [selectedDate, setSelectedDate] = useState<string | null>(new Date().toISOString().split('T')[0]);
+
+    const [availableStaff, setAvailableStaff] = useState<Record<string, unknown>[]>([]);
+    const [isLoadingStaff, setIsLoadingStaff] = useState(false);
+
+    const [availableTimeslots, setAvailableTimeslots] = useState<string[]>([]);
+    const [isLoadingTimeslots, setIsLoadingTimeslots] = useState(false);
+
+    // State for Step 4 (Checkout form)
+    const [customerName, setCustomerName] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("");
+    const [customerEmail, setCustomerEmail] = useState("");
+    const [customerGender, setCustomerGender] = useState("Female");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [bookingError, setBookingError] = useState("");
+
+    // Fetch staff when moving to step 1
+    useEffect(() => {
+        if (currentStep === 1 && selectedServices.length > 0) {
+            const loadStaff = async () => {
+                setIsLoadingStaff(true);
+                try {
+                    const res = await fetchServiceSpecialists(selectedServices[0]);
+                    if (res.success && res.data) {
+                        setAvailableStaff(res.data as Record<string, unknown>[]);
+                    } else {
+                        setAvailableStaff([]);
+                    }
+                } catch (error) {
+                    console.error("Failed to load staff", error);
+                } finally {
+                    setIsLoadingStaff(false);
+                }
+            };
+            loadStaff();
+        }
+    }, [currentStep, selectedServices]);
+
+    // Fetch timeslots when moving to step 2 and a date is selected
+    useEffect(() => {
+        if (currentStep === 2 && selectedServices.length > 0 && selectedStaff && selectedDate) {
+            const loadTimeslots = async () => {
+                setIsLoadingTimeslots(true);
+                try {
+                    const specialistId = selectedStaff === "any" ? "" : selectedStaff;
+                    const res = await fetchAvailability(selectedServices[0], specialistId, selectedDate);
+                    if (res.success && res.data) {
+                        const dataObj = res.data as Record<string, unknown>;
+                        if (Array.isArray(dataObj.timeslots)) {
+                            setAvailableTimeslots(dataObj.timeslots as string[]);
+                        } else {
+                            setAvailableTimeslots([]);
+                        }
+                    } else {
+                        setAvailableTimeslots([]);
+                    }
+                } catch (error) {
+                    console.error("Failed to load timeslots", error);
+                    setAvailableTimeslots([]);
+                } finally {
+                    setIsLoadingTimeslots(false);
+                }
+            };
+            loadTimeslots();
+        }
+    }, [currentStep, selectedServices, selectedStaff, selectedDate]);
 
     // Scroll to active category logic could be added here
 
-    const selectedServiceObjects = servicesData.filter(s => selectedServices.includes(s.id));
-    const totalAmount = selectedServiceObjects.reduce((acc, s) => acc + s.price, 0);
+    const selectedServiceObjects = servicesData.filter(s => selectedServices.includes(String(s.id)));
+    const totalAmount = selectedServiceObjects.reduce((acc, s) => acc + Number(s.price || 0), 0);
 
     const toggleService = (id: string) => {
         setSelectedServices(prev =>
@@ -36,12 +102,37 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
         );
     };
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1);
         } else {
-            alert("Booking Confirmed!");
-            onClose();
+            // Submit booking
+            setBookingError("");
+            setIsSubmitting(true);
+            try {
+                const res = await createBooking({
+                    service_id: selectedServices[0],
+                    staff_id: selectedStaff === "any" ? "" : (selectedStaff || ""),
+                    date: selectedDate || "",
+                    start_time: selectedTime || "",
+                    name: customerName,
+                    number: customerPhone,
+                    gender: customerGender,
+                    email: customerEmail
+                });
+
+                if (res.success) {
+                    alert("Booking Confirmed!");
+                    onClose();
+                } else {
+                    setBookingError(res.error || "Failed to create booking.");
+                }
+            } catch (err) {
+                console.error(err);
+                setBookingError("An unexpected error occurred.");
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -57,6 +148,7 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
         if (currentStep === 0) return selectedServices.length > 0;
         if (currentStep === 1) return !!selectedStaff;
         if (currentStep === 2) return !!selectedTime; // Date typically selected
+        if (currentStep === 3) return customerName.trim() !== "" && customerPhone.trim() !== "";
         return true;
     }
 
@@ -104,7 +196,7 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                         <div className="space-y-6 pb-20 md:pb-0">
                             {/* Category Pills */}
                             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar border-b md:border-none sticky top-0 bg-white z-10 py-2">
-                                {serviceCategories.map(cat => (
+                                {categories.map(cat => (
                                     <button
                                         key={cat.id}
                                         onClick={() => setActiveCategory(cat.id)}
@@ -122,8 +214,8 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
 
                             {/* Service List */}
                             <div className="space-y-8">
-                                {serviceCategories.map(cat => {
-                                    const categoryServices = servicesData.filter(s => s.categoryId === cat.id);
+                                {categories.map(cat => {
+                                    const categoryServices = servicesData.filter(s => String(s.categoryId) === String(cat.id));
                                     if (categoryServices.length === 0) return null;
 
                                     // Simple scroll spy logic would go here, for now just render all
@@ -132,21 +224,21 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                                             <h3 className="text-xl font-bold mb-4">{cat.label}</h3>
                                             <div className="space-y-4">
                                                 {categoryServices.map(service => {
-                                                    const isSelected = selectedServices.includes(service.id);
+                                                    const isSelected = selectedServices.includes(String(service.id));
                                                     return (
                                                         <div
-                                                            key={service.id}
+                                                            key={String(service.id)}
                                                             className={cn(
                                                                 "border rounded-xl p-4 flex items-start justify-between hover:border-black transition-colors cursor-pointer group",
                                                                 isSelected ? "border-black ring-1 ring-black" : "border-gray-200"
                                                             )}
-                                                            onClick={() => toggleService(service.id)}
+                                                            onClick={() => toggleService(String(service.id))}
                                                         >
                                                             <div>
-                                                                <h4 className="font-bold text-gray-900">{service.name}</h4>
-                                                                <p className="text-sm text-gray-500 mt-1">{service.duration}</p>
-                                                                <p className="text-sm text-gray-400">{service.description}</p>
-                                                                <p className="font-semibold text-gray-900 mt-2">RM {service.price}</p>
+                                                                <h4 className="font-bold text-gray-900">{String(service.name)}</h4>
+                                                                <p className="text-sm text-gray-500 mt-1">{String(service.duration)}</p>
+                                                                <p className="text-sm text-gray-400">{String(service.description || "")}</p>
+                                                                <p className="font-semibold text-gray-900 mt-2">RM {String(service.price)}</p>
                                                             </div>
                                                             <button
                                                                 className={cn(
@@ -171,33 +263,62 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
 
                     {/* STEP 2: PROFESSIONAL */}
                     {currentStep === 1 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {staffData.map(staff => (
-                                <button
-                                    key={staff.id}
-                                    onClick={() => setSelectedStaff(staff.id)}
-                                    className={cn(
-                                        "p-4 border rounded-xl text-left hover:border-black transition-all flex items-center gap-4",
-                                        selectedStaff === staff.id ? "border-black ring-1 ring-black bg-gray-50" : ""
-                                    )}
-                                >
-                                    <div className={cn("w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0", !staff.image && "flex items-center justify-center")}>
-                                        {staff.image ? (
-                                            // eslint-disable-next-line @next/next/no-img-element
-                                            <img src={staff.image} alt={staff.name} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <i className="ri-team-line text-gray-500"></i>
+                        <div className="space-y-4">
+                            {isLoadingStaff ? (
+                                <div className="text-center py-10">
+                                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em]"></div>
+                                    <p className="mt-4 text-gray-500 font-medium">Finding available professionals...</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <button
+                                        key="any"
+                                        onClick={() => setSelectedStaff("any")}
+                                        className={cn(
+                                            "p-4 border rounded-xl text-left hover:border-black transition-all flex items-center gap-4",
+                                            selectedStaff === "any" ? "border-black ring-1 ring-black bg-gray-50" : ""
                                         )}
-                                    </div>
-                                    <div>
-                                        <div className="font-bold">{staff.name}</div>
-                                        <div className="text-sm text-gray-500">{staff.role}</div>
-                                    </div>
-                                    <div className={cn("ml-auto w-5 h-5 rounded-full border flex items-center justify-center", selectedStaff === staff.id ? "bg-black border-black" : "border-gray-300")}>
-                                        {selectedStaff === staff.id && <div className="w-2 h-2 rounded-full bg-white" />}
-                                    </div>
-                                </button>
-                            ))}
+                                    >
+                                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                            <i className="ri-team-line text-gray-500"></i>
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-gray-900">Any Professional</div>
+                                            <div className="text-sm text-gray-500">Maximum availability</div>
+                                        </div>
+                                        <div className={cn("ml-auto w-5 h-5 rounded-full border flex items-center justify-center", selectedStaff === "any" ? "bg-black border-black" : "border-gray-300")}>
+                                            {selectedStaff === "any" && <div className="w-2 h-2 rounded-full bg-white" />}
+                                        </div>
+                                    </button>
+
+                                    {availableStaff.map(staff => (
+                                        <button
+                                            key={String(staff.id)}
+                                            onClick={() => setSelectedStaff(String(staff.id))}
+                                            className={cn(
+                                                "p-4 border rounded-xl text-left hover:border-black transition-all flex items-center gap-4",
+                                                selectedStaff === String(staff.id) ? "border-black ring-1 ring-black bg-gray-50" : ""
+                                            )}
+                                        >
+                                            <div className={cn("w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0", (!staff.image && !staff.avatar) && "flex items-center justify-center")}>
+                                                {(staff.image || staff.avatar) ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element
+                                                    <img src={String(staff.avatar || staff.image)} alt={String(staff.name)} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <i className="ri-user-line text-gray-500"></i>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-gray-900">{String(staff.name)}</div>
+                                                <div className="text-sm text-gray-500">{String(staff.role || "Specialist")}</div>
+                                            </div>
+                                            <div className={cn("ml-auto w-5 h-5 rounded-full border flex items-center justify-center", selectedStaff === String(staff.id) ? "bg-black border-black" : "border-gray-300")}>
+                                                {selectedStaff === String(staff.id) && <div className="w-2 h-2 rounded-full bg-white" />}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -226,19 +347,35 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                                 })}
                             </div>
 
-                            <h3 className="font-bold text-lg">Morning</h3>
-                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                                {["10:00", "10:30", "11:00", "11:30"].map(t => (
-                                    <button key={t} onClick={() => setSelectedTime(t)} className={cn("py-2 px-4 rounded-lg border text-sm font-semibold hover:border-black", selectedTime === t ? "bg-black text-white border-black" : "bg-white")}>{t}</button>
-                                ))}
-                            </div>
+                            <h3 className="font-bold text-lg">Available Timeslots</h3>
 
-                            <h3 className="font-bold text-lg">Afternoon</h3>
-                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                                {["12:00", "12:30", "13:00", "13:30", "14:00", "15:00"].map(t => (
-                                    <button key={t} onClick={() => setSelectedTime(t)} className={cn("py-2 px-4 rounded-lg border text-sm font-semibold hover:border-black", selectedTime === t ? "bg-black text-white border-black" : "bg-white")}>{t}</button>
-                                ))}
-                            </div>
+                            {isLoadingTimeslots ? (
+                                <div className="text-center py-10">
+                                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em]"></div>
+                                    <p className="mt-4 text-gray-500 font-medium">Finding available times...</p>
+                                </div>
+                            ) : availableTimeslots.length === 0 ? (
+                                <div className="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                                    <i className="ri-calendar-close-line text-4xl text-gray-300 mb-2 block"></i>
+                                    <p className="text-gray-500 font-medium tracking-tight">No availability found</p>
+                                    <p className="text-xs text-gray-400 mt-1">Please select another date or professional.</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                                    {availableTimeslots.map(t => (
+                                        <button
+                                            key={t}
+                                            onClick={() => setSelectedTime(t)}
+                                            className={cn(
+                                                "py-2 px-4 rounded-lg border text-sm font-semibold hover:border-black transition-colors",
+                                                selectedTime === t ? "bg-black text-white border-black" : "bg-white text-gray-900 border-gray-200"
+                                            )}
+                                        >
+                                            {t}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -248,10 +385,10 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                             <div className="bg-gray-50 p-6 rounded-xl space-y-4">
                                 <div className="flex items-center gap-4 border-b pb-4">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={venueData.image} className="w-16 h-16 rounded-lg object-cover" alt="Venue" />
+                                    <img src={String(venueData.image || "")} className="w-16 h-16 rounded-lg object-cover" alt="Venue" />
                                     <div>
-                                        <h3 className="font-bold">{venueData.name}</h3>
-                                        <p className="text-sm text-gray-500">{venueData.address}</p>
+                                        <h3 className="font-bold">{String(venueData.name)}</h3>
+                                        <p className="text-sm text-gray-500">{String(venueData.address)}</p>
                                     </div>
                                 </div>
 
@@ -262,19 +399,76 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-500">Professional</span>
-                                        <span className="font-semibold">{staffData.find(s => s.id === selectedStaff)?.name}</span>
+                                        <span className="font-semibold text-gray-900">
+                                            {selectedStaff === "any" ? "Any Professional" : String(availableStaff.find(s => String(s.id) === selectedStaff)?.name || "Selected Professional")}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-lg">Your Details</h3>
+
+                                {bookingError && (
+                                    <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200">
+                                        {bookingError}
+                                    </div>
+                                )}
+
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                        <input
+                                            type="text"
+                                            value={customerName}
+                                            onChange={(e) => setCustomerName(e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-black focus:border-black outline-none"
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                                        <input
+                                            type="tel"
+                                            value={customerPhone}
+                                            onChange={(e) => setCustomerPhone(e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-black focus:border-black outline-none"
+                                            placeholder="+60123456789"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address (Optional)</label>
+                                        <input
+                                            type="email"
+                                            value={customerEmail}
+                                            onChange={(e) => setCustomerEmail(e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-black focus:border-black outline-none"
+                                            placeholder="john@example.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                                        <select
+                                            value={customerGender}
+                                            onChange={(e) => setCustomerGender(e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-black focus:border-black outline-none bg-white"
+                                        >
+                                            <option value="Female">Female</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Other">Other</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-4">
                                 <h3 className="font-bold text-lg">Payment Method</h3>
-                                <div className="p-4 border rounded-xl flex items-center justify-between cursor-pointer hover:border-black">
+                                <div className="p-4 border border-black ring-1 ring-black bg-gray-50 rounded-xl flex items-center justify-between cursor-pointer">
                                     <div className="flex items-center gap-3">
                                         <i className="ri-bank-card-line text-xl"></i>
                                         <span className="font-medium">Pay at venue</span>
                                     </div>
-                                    <i className="ri-check-line text-xl"></i>
+                                    <i className="ri-check-line text-xl font-bold"></i>
                                 </div>
                             </div>
                         </div>
@@ -289,8 +483,8 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                             <span className="font-bold">RM {totalAmount}</span>
                         </div>
                     )}
-                    <Button className="w-full h-12 text-lg" disabled={!isStepValid()} onClick={handleNext}>
-                        {currentStep === steps.length - 1 ? "Confirm Booking" : "Continue"}
+                    <Button className="w-full h-14 text-lg font-bold" disabled={!isStepValid() || isSubmitting} onClick={handleNext}>
+                        {isSubmitting ? "Processing..." : (currentStep === steps.length - 1 ? "Confirm Booking" : "Continue")}
                     </Button>
                 </div>
             </div>
@@ -303,15 +497,15 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     </button>
                     <div className="flex items-start gap-3 mt-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={venueData.image} alt="Venue" className="w-16 h-16 rounded-md object-cover" />
+                        <img src={String(venueData.image || "")} alt="Venue" className="w-16 h-16 rounded-md object-cover" />
                         <div>
-                            <h3 className="font-bold text-sm leading-tight">{venueData.name}</h3>
+                            <h3 className="font-bold text-sm leading-tight">{String(venueData.name)}</h3>
                             <div className="flex items-center gap-1 text-xs font-semibold mt-1">
-                                <span>{venueData.rating}</span>
+                                <span>{String(venueData.rating || "5.0")}</span>
                                 <i className="ri-star-fill text-yellow-500"></i>
-                                <span className="text-gray-400 font-normal">({venueData.reviews})</span>
+                                <span className="text-gray-400 font-normal">({String(venueData.reviews || "0")})</span>
                             </div>
-                            <p className="text-xs text-gray-500 mt-1 truncate max-w-[200px]">{venueData.address}</p>
+                            <p className="text-xs text-gray-500 mt-1 truncate max-w-[200px]">{String(venueData.address)}</p>
                         </div>
                     </div>
                 </div>
@@ -322,15 +516,15 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     ) : (
                         <div className="space-y-4">
                             {selectedServiceObjects.map(s => (
-                                <div key={s.id} className="flex justify-between items-start text-sm">
+                                <div key={String(s.id)} className="flex justify-between items-start text-sm">
                                     <div>
-                                        <div className="font-semibold">{s.name}</div>
-                                        <div className="text-gray-500 text-xs">{s.duration}</div>
+                                        <div className="font-semibold">{String(s.name)}</div>
+                                        <div className="text-gray-500 text-xs">{String(s.duration)}</div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="font-semibold">RM {s.price}</span>
+                                        <span className="font-semibold">RM {String(s.price)}</span>
                                         {currentStep === 0 && (
-                                            <button onClick={() => toggleService(s.id)}><i className="ri-close-circle-fill text-gray-300 hover:text-gray-500"></i></button>
+                                            <button onClick={() => toggleService(String(s.id))}><i className="ri-close-circle-fill text-gray-300 hover:text-gray-500"></i></button>
                                         )}
                                     </div>
                                 </div>

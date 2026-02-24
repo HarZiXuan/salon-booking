@@ -1,0 +1,1342 @@
+{
+  "info": {
+    "_postman_id": "487e2af7-2863-4340-be83-3256dca0084f",
+    "name": "Beauty Booking API",
+    "description": "Booking API for BeautySpaManagement module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14024807"
+  },
+  "item": [
+    {
+      "name": "Shop",
+      "item": [
+        {
+          "name": "Get Shop Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}"
+              ]
+            },
+            "description": "Get shop information including name, address, map URLs, and working hours"
+          },
+          "response": [
+            {
+              "name": "Get Shop Info",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 08 Jan 2026 07:40:29 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X4cb62db19dc930db668ae9d2dc3dc8ac"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"slug\": \"beauty\",\n        \"name\": \"beauty\",\n        \"address\": null,\n        \"phone\": null,\n        \"google_map_url\": \"https://www.facebook.com\",\n        \"waze_url\": \"https://google.com\",\n        \"banner\": {\n            \"heading\": null,\n            \"title\": null,\n            \"image\": null,\n            \"description\": null\n        },\n        \"working_hours\": {\n            \"monday,tuesday,wednesday,thursday,friday\": {\n                \"open\": \"08:00\",\n                \"close\": \"19:00\",\n                \"is_closed\": false\n            }\n        },\n        \"disable_booking_calendar\": true\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Get Services List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/services",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "services"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "1221",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get list of available spa services"
+          },
+          "response": [
+            {
+              "name": "Get Services List",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/services",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "services"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 09:55:43 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "58"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xe698804ef28094681adc594d25013210"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 76,\n                \"name\": \"TEST\",\n                \"category\": \"TET2\",\n                \"price\": 50,\n                \"duration\": 60,\n                \"description\": \"\",\n                \"image\": null,\n                \"type\": \"spa_service\"\n            },\n            {\n                \"id\": 77,\n                \"name\": \"www\",\n                \"category\": \"TET2\",\n                \"price\": 66,\n                \"duration\": 60,\n                \"description\": \"\",\n                \"image\": null,\n                \"type\": \"spa_service\"\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Category",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 08 Jan 2026 07:34:28 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X78ab642a40f4686591de9c2a925e2fc6"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"name\": \"TET2\"\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Specialists",
+      "item": [
+        {
+          "name": "Get Specialists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/specialists/all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "specialists",
+                "all"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Specialists",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/specialists/all",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "specialists",
+                    "all"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 08 Jan 2026 07:27:06 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "58"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xd48a90671a2ce48833649f2470c418cd"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"name\": \"tester\",\n                \"avatar\": null\n            },\n            {\n                \"name\": \"beauty\",\n                \"avatar\": null\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Specialists for Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "76",
+                  "type": "text",
+                  "uuid": "acb225a3-0a3a-45ba-958d-329f6ad94a8d"
+                },
+                {
+                  "key": "gender",
+                  "value": "Female",
+                  "type": "text",
+                  "uuid": "7fe7677f-005d-4af5-a71d-6e640b6b574e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/specialists",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "specialists"
+              ]
+            },
+            "description": "Get available specialists who can provide the selected services"
+          },
+          "response": [
+            {
+              "name": "Get Specialists for Service",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "service_id",
+                      "value": "76",
+                      "type": "text",
+                      "uuid": "acb225a3-0a3a-45ba-958d-329f6ad94a8d"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/specialists",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "specialists"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 09:57:49 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xdd7969d67a5162526d572bee04be37d4"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"name\": \"tester\",\n                \"role\": {\n                    \"id\": 1,\n                    \"branch_id\": null,\n                    \"department_id\": null,\n                    \"name\": \"Specialist\",\n                    \"is_default\": 1,\n                    \"is_global\": 1,\n                    \"workspace\": null,\n                    \"created_by\": 2,\n                    \"created_at\": \"2026-01-05T04:01:06.000000Z\",\n                    \"updated_at\": \"2026-01-05T04:01:06.000000Z\"\n                },\n                \"avatar\": null,\n                \"starting_price\": 50\n            },\n            {\n                \"id\": 4,\n                \"name\": \"beauty\",\n                \"role\": {\n                    \"id\": 1,\n                    \"branch_id\": null,\n                    \"department_id\": null,\n                    \"name\": \"Specialist\",\n                    \"is_default\": 1,\n                    \"is_global\": 1,\n                    \"workspace\": null,\n                    \"created_by\": 2,\n                    \"created_at\": \"2026-01-05T04:01:06.000000Z\",\n                    \"updated_at\": \"2026-01-05T04:01:06.000000Z\"\n                },\n                \"avatar\": null,\n                \"starting_price\": 50\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "item": [
+        {
+          "name": "Get Available Timeslots",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "76",
+                  "type": "text",
+                  "uuid": "245281f5-f235-4346-b082-64e32fe92f2f"
+                },
+                {
+                  "key": "specialist_id",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "c7e85d49-c1f5-4a37-ab18-39189a99964e"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-01-09",
+                  "type": "text",
+                  "uuid": "f1f3c311-accf-4a9b-b8e5-a699ac0c4b10"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/availability/timeslots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "availability",
+                "timeslots"
+              ]
+            },
+            "description": "Get available timeslots for a specific date and specialist"
+          },
+          "response": [
+            {
+              "name": "Get Available Timeslots",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "service_id",
+                      "value": "76",
+                      "type": "text",
+                      "uuid": "245281f5-f235-4346-b082-64e32fe92f2f"
+                    },
+                    {
+                      "key": "specialist_id",
+                      "value": "4",
+                      "type": "text",
+                      "uuid": "c7e85d49-c1f5-4a37-ab18-39189a99964e"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-01-08",
+                      "type": "text",
+                      "uuid": "f1f3c311-accf-4a9b-b8e5-a699ac0c4b10"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/availability/timeslots",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "availability",
+                    "timeslots"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 10:19:12 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xbe9a2a55e3d9a913aace7c36e83467ce"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"date\": \"2026-01-08\",\n        \"timeslots\": [\n            {\n                \"time\": \"08:00\",\n                \"end_time\": \"09:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"09:00\",\n                \"end_time\": \"10:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"10:00\",\n                \"end_time\": \"11:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"11:00\",\n                \"end_time\": \"12:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"14:00\",\n                \"end_time\": \"15:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"15:00\",\n                \"end_time\": \"16:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"16:00\",\n                \"end_time\": \"17:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"17:00\",\n                \"end_time\": \"18:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"18:00\",\n                \"end_time\": \"19:00\",\n                \"available\": true\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "76",
+                  "type": "text",
+                  "uuid": "a31b8aa3-b9b9-4ad5-a96f-a3ba3d9b1c5c"
+                },
+                {
+                  "key": "staff_id",
+                  "value": "4",
+                  "type": "text",
+                  "uuid": "f3c5242d-741f-4b9a-8231-25533be36c36"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-01-10",
+                  "type": "text"
+                },
+                {
+                  "key": "start_time",
+                  "value": "10:00",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Test booking via API",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "testing123",
+                  "type": "text",
+                  "uuid": "1d9ba315-a3a9-483a-967d-074296fd4e7d"
+                },
+                {
+                  "key": "number",
+                  "value": "+60118181",
+                  "type": "text",
+                  "uuid": "ba870a06-8e5c-4578-8c33-1d145852cab3"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "description": "optional",
+                  "type": "text",
+                  "uuid": "00694638-3c61-4a5b-89f3-abf9aa12d4d1",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "Female",
+                  "type": "text",
+                  "uuid": "cd4a4704-1c8b-4618-87a5-0db4413826f5"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "bookings"
+              ]
+            },
+            "description": "Create a new booking"
+          },
+          "response": [
+            {
+              "name": "Create Booking",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "service_id",
+                      "value": " 76",
+                      "type": "text",
+                      "uuid": "a31b8aa3-b9b9-4ad5-a96f-a3ba3d9b1c5c"
+                    },
+                    {
+                      "key": "staff_id",
+                      "value": " 4",
+                      "type": "text",
+                      "uuid": "f3c5242d-741f-4b9a-8231-25533be36c36"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-01-08",
+                      "type": "text"
+                    },
+                    {
+                      "key": "start_time",
+                      "value": " 10:00",
+                      "type": "text"
+                    },
+                    {
+                      "key": "notes",
+                      "value": " Test booking via API",
+                      "type": "text"
+                    },
+                    {
+                      "key": "name",
+                      "value": "testing123",
+                      "type": "text",
+                      "uuid": "1d9ba315-a3a9-483a-967d-074296fd4e7d"
+                    },
+                    {
+                      "key": "number",
+                      "value": "+60118181",
+                      "type": "text",
+                      "uuid": "ba870a06-8e5c-4578-8c33-1d145852cab3"
+                    },
+                    {
+                      "key": "email",
+                      "value": "",
+                      "description": "optional",
+                      "type": "text",
+                      "uuid": "00694638-3c61-4a5b-89f3-abf9aa12d4d1"
+                    },
+                    {
+                      "key": "gender",
+                      "value": "Female",
+                      "type": "text",
+                      "uuid": "cd4a4704-1c8b-4618-87a5-0db4413826f5"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/bookings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "bookings"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 10:33:24 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "58"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X50f68d112f8b3f28c5094c5ea761a997"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 13,\n        \"status\": \"Initial\",\n        \"stage_id\": 0,\n        \"created_at\": \"2026-01-07T18:33:24+08:00\"\n    },\n    \"message\": \"Booking created successfully.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Booking Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/bookings/{{booking_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "bookings",
+                "{{booking_id}}"
+              ]
+            },
+            "description": "Get booking details by ID"
+          },
+          "response": [
+            {
+              "name": "Get Booking Details",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/bookings/{{booking_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "bookings",
+                    "{{booking_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 10:35:55 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X82381d0c58172137f2fd8631395dd165"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 14,\n        \"service\": {\n            \"id\": \"76\",\n            \"name\": \"TEST\",\n            \"price\": 50\n        },\n        \"specialist\": {\n            \"id\": 4,\n            \"name\": \"beauty\"\n        },\n        \"customer\": null,\n        \"date\": \"2026-01-08\",\n        \"start_time\": \"10:00:00\",\n        \"end_time\": \"11:00:00\",\n        \"status\": \"Initial\",\n        \"stage_id\": 0,\n        \"notes\": \"Test booking via API\"\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "contact",
+                  "value": "+601877849118",
+                  "type": "text",
+                  "uuid": "c8fa188a-97f2-4856-a4e7-ef723936f620"
+                },
+                {
+                  "key": "password",
+                  "value": "123456789",
+                  "type": "text",
+                  "uuid": "180b9906-7e2a-42a6-ad04-14dc2cda68cb"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e51adddb-f4fa-4e1e-a7ae-61bb272c991b",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "contact",
+                  "value": "+601877849118",
+                  "type": "text",
+                  "uuid": "9b112c4a-03f5-42ab-ba65-d0fa0a4b641b"
+                },
+                {
+                  "key": "password",
+                  "value": "123456789",
+                  "type": "text",
+                  "uuid": "b2e5fa34-e8c2-40f9-91e3-1a6283408652"
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "26b89718-2e64-4fdc-8a8f-b4df9ba37011",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "f8d85570-91c7-4b94-872f-0ae49fcbea68",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "62c8964c-1344-45d1-bf03-847a590a9d77",
+                  "disabled": true
+                },
+                {
+                  "key": "birthday",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e00ea264-12e3-4508-b8c3-c80530268a6e",
+                  "disabled": true
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "123456789",
+                  "type": "text",
+                  "uuid": "0ef15e1f-fdd2-4b4b-8ddd-c7541753f340"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Info",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "2|JCHN84JlAcFARryzNmJghVXZY7u9NKk4Lio7zp3X7c68b214",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "2|JCHN84JlAcFARryzNmJghVXZY7u9NKk4Lio7zp3X7c68b214",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "const productKey = pm.variables.get(\"productKey\");\r",
+          "const secretKey  = pm.variables.get(\"secretKey\");\r",
+          "const timestamp  = Math.floor(Date.now() / 1000).toString();\r",
+          "\r",
+          "let queryParams = {};\r",
+          "let bodyParams  = {};\r",
+          "\r",
+          "// Query\r",
+          "pm.request.url.query.each(q => {\r",
+          "    if (q.disabled) return;\r",
+          "    queryParams[q.key] = q.value;\r",
+          "});\r",
+          "\r",
+          "// Body（支持三种模式 + 变量替换）\r",
+          "if (pm.request.body) {\r",
+          "    if (pm.request.body.mode === 'raw') {\r",
+          "        let rawBody = pm.variables.replaceIn(pm.request.body.raw || '');\r",
+          "        try {\r",
+          "            bodyParams = JSON.parse(rawBody || '{}');\r",
+          "        } catch {\r",
+          "            bodyParams = {};\r",
+          "        }\r",
+          "    }\r",
+          "    else if (pm.request.body.mode === 'urlencoded') {\r",
+          "        pm.request.body.urlencoded.each(p => bodyParams[p.key] = pm.variables.replaceIn(p.value));\r",
+          "    }\r",
+          "    else if (pm.request.body.mode === 'formdata') {\r",
+          "        bodyParams = {};\r",
+          "        pm.request.body.formdata.each(p => {\r",
+          "            if (p.disabled) return;\r",
+          "            let value = pm.variables.replaceIn(p.value);\r",
+          "            let keyParts = p.key.split(/\\[|\\]/).filter(k => k);\r",
+          "            let ref = bodyParams;\r",
+          "\r",
+          "            for (let i = 0; i < keyParts.length; i++) {\r",
+          "                let part = keyParts[i];\r",
+          "                let isLast = i === keyParts.length - 1;\r",
+          "\r",
+          "                if (isLast) {\r",
+          "                    if (/\\[\\]$/.test(p.key) || part === '') {\r",
+          "                        if (!Array.isArray(ref[part])) ref[part] = [];\r",
+          "                        ref[part].push(value);\r",
+          "                    } else {\r",
+          "                        ref[part] = value;\r",
+          "                    }\r",
+          "                } else {\r",
+          "                    if (!ref[part]) {\r",
+          "                        if (keyParts[i + 1] === '' || /\\[\\]$/.test(p.key)) {\r",
+          "                            ref[part] = [];\r",
+          "                        } else {\r",
+          "                            ref[part] = {};\r",
+          "                        }\r",
+          "                    }\r",
+          "                    ref = ref[part];\r",
+          "                }\r",
+          "            }\r",
+          "        });\r",
+          "    }\r",
+          "}\r",
+          "\r",
+          "// ===== 格式修正逻辑 =====\r",
+          "if (bodyParams.coupons && typeof bodyParams.coupons === 'object' && !Array.isArray(bodyParams.coupons)) {\r",
+          "    bodyParams.coupons = Object.values(bodyParams.coupons);\r",
+          "}\r",
+          "\r",
+          "if (bodyParams.products && typeof bodyParams.products === 'object' && !Array.isArray(bodyParams.products)) {\r",
+          "    bodyParams.products = Object.values(bodyParams.products);\r",
+          "}\r",
+          "\r",
+          "// Merge + Sort\r",
+          "let mergedParams = Object.assign({}, queryParams, bodyParams);\r",
+          "\r",
+          "// 🔥 关键修复：如果没有任何参数，body 应该是空字符串，而不是 \"{}\"\r",
+          "let body;\r",
+          "if (Object.keys(mergedParams).length === 0) {\r",
+          "    body = \"\";\r",
+          "} else {\r",
+          "    let sortedKeys   = Object.keys(mergedParams).sort();\r",
+          "    let sortedParams = {};\r",
+          "    sortedKeys.forEach(k => sortedParams[k] = mergedParams[k]);\r",
+          "    body = JSON.stringify(sortedParams);\r",
+          "}\r",
+          "\r",
+          "const signString = productKey + secretKey + timestamp + body;\r",
+          "const signature  = CryptoJS.MD5(signString).toString();\r",
+          "\r",
+          "\r",
+          "// Headers\r",
+          "pm.request.headers.upsert({ key: \"X-Product-Key\", value: productKey });\r",
+          "pm.request.headers.upsert({ key: \"X-Timestamp\",   value: timestamp });\r",
+          "pm.request.headers.upsert({ key: \"X-Signature\",   value: signature });\r",
+          "\r",
+          "// 🔥 可选：如果你想保留 X-Body 用于调试，可以保留；否则建议删除\r",
+          "// pm.request.headers.upsert({ key: \"X-Body\", value: body });"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/erptw_laravel11/public/api/v1"
+    },
+    {
+      "key": "shop_slug",
+      "value": "beauty"
+    },
+    {
+      "key": "productKey",
+      "value": ""
+    },
+    {
+      "key": "secretKey",
+      "value": ""
+    }
+  ]
+}

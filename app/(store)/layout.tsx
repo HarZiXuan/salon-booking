@@ -40,6 +40,7 @@ export default function StoreLayout({
                     <CompactSearchBar />
 
                     {/* Right Navigation */}
+                    
                     <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                         {user ? (
                             <div className="flex items-center gap-4">

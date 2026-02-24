@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useMemo } from "react";
-import { venuesData, serviceCategories } from "@/lib/mock-data";
+import { useEffect, useState as reactUseState } from "react";
+import { fetchShopDetails, fetchCategories } from "@/app/actions/shop";
+import { normalizeShopToVenue } from "@/lib/normalize";
 import { format, isToday, isTomorrow } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import * as Popover from "@radix-ui/react-popover";
@@ -20,6 +22,36 @@ const uiCategories = [
 ];
 
 export default function HomePage() {
+    const [venuesData, setVenuesData] = reactUseState<Record<string, unknown>[]>([]);
+    const [availableCategories, setAvailableCategories] = reactUseState<{ id: string, label: string }[]>([]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [shopRes, categoriesRes] = await Promise.all([
+                    fetchShopDetails(),
+                    fetchCategories()
+                ]);
+
+                if (shopRes.success && shopRes.data) {
+                    setVenuesData([normalizeShopToVenue(shopRes.data)]); // Convert single shop to array of 1 venue
+                } else {
+                    console.error("Failed to fetch venues:", shopRes.error);
+                }
+
+                if (categoriesRes.success && categoriesRes.data) {
+                    const cats = (categoriesRes.data as Record<string, unknown>[]).map(c => ({
+                        id: String(c.name),
+                        label: String(c.name)
+                    }));
+                    setAvailableCategories(cats);
+                }
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+        };
+        loadData();
+    }, [setVenuesData]);
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
@@ -43,14 +75,14 @@ export default function HomePage() {
     ];
 
     // Filter logic
-    const filteredVenues = useMemo(() => {
+    const filteredVenues: Record<string, unknown>[] = useMemo(() => {
         return venuesData.filter(venue => {
-            const matchesCategory = selectedCategory === "all" || venue.categoryId === selectedCategory;
-            const matchesSearch = venue.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                venue.address.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesCategory = selectedCategory === "all" || String(venue.categoryId) === selectedCategory;
+            const matchesSearch = String(venue.name).toLowerCase().includes(searchQuery.toLowerCase()) ||
+                String(venue.address).toLowerCase().includes(searchQuery.toLowerCase());
             return matchesCategory && matchesSearch;
         });
-    }, [selectedCategory, searchQuery]);
+    }, [selectedCategory, searchQuery, venuesData]);
 
     const getDateLabel = () => {
         if (!selectedDate) return "Any time";
@@ -240,7 +272,20 @@ export default function HomePage() {
             <section className="bg-white border-b sticky top-20 z-40 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] transition-all">
                 <div className="container py-4">
                     <div className="flex gap-3 overflow-x-auto px-1 py-1 no-scrollbar md:justify-center">
-                        {uiCategories.map(cat => (
+                        <button
+                            onClick={() => setSelectedCategory('all')}
+                            className={`
+                                inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 border
+                                ${selectedCategory === 'all'
+                                    ? 'bg-gray-900 text-white border-gray-900 shadow-md scale-105'
+                                    : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:text-black'
+                                }
+                            `}
+                        >
+                            <i className={`ri-apps-2-line text-lg ${selectedCategory === 'all' ? 'text-white' : 'text-gray-400'}`}></i>
+                            All Services
+                        </button>
+                        {availableCategories.map(cat => (
                             <button
                                 key={cat.id}
                                 onClick={() => setSelectedCategory(cat.id)}
@@ -252,7 +297,7 @@ export default function HomePage() {
                                     }
                                 `}
                             >
-                                <i className={`${cat.icon} text-lg ${selectedCategory === cat.id ? 'text-white' : 'text-gray-400'}`}></i>
+                                <i className={`ri-scissors-line text-lg ${selectedCategory === cat.id ? 'text-white' : 'text-gray-400'}`}></i>
                                 {cat.label}
                             </button>
                         ))}
@@ -265,7 +310,7 @@ export default function HomePage() {
                 <div className="container space-y-8">
                     <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-bold tracking-tight">
-                            {selectedCategory === 'all' ? 'Recommended for you' : `Top ${uiCategories.find(c => c.id === selectedCategory)?.label} in your area`}
+                            {selectedCategory === 'all' ? 'Recommended for you' : `Top ${availableCategories.find(c => c.id === selectedCategory)?.label || "Salons"} in your area`}
                         </h2>
                         <Link href="/search" className="text-sm font-semibold text-gray-900 hover:underline">See all</Link>
                     </div>
@@ -273,24 +318,24 @@ export default function HomePage() {
                     {filteredVenues.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredVenues.map(venue => (
-                                <Link key={venue.id} href={`/venues/${venue.id}`} className="group block bg-white rounded-xl overflow-hidden border hover:shadow-lg transition-all duration-300">
+                                <Link key={String(venue.id)} href={`/venues/${venue.id}`} className="group block bg-white rounded-xl overflow-hidden border hover:shadow-lg transition-all duration-300">
                                     <div className="aspect-[4/3] bg-gray-200 relative overflow-hidden">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={venue.image} alt={venue.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <img src={String(venue.image)} alt={String(venue.name)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-bold shadow-sm uppercase tracking-wide">
-                                            {venue.categoryId}
+                                            {String(venue.categoryId)}
                                         </div>
                                     </div>
                                     <div className="p-5 space-y-3">
-                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">{venue.name}</h3>
+                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">{String(venue.name)}</h3>
                                         <div className="flex items-center gap-2 text-sm">
                                             <div className="flex items-center font-bold text-gray-900">
-                                                {venue.rating} <i className="ri-star-fill text-yellow-500 ml-1"></i>
+                                                {String(venue.rating)} <i className="ri-star-fill text-yellow-500 ml-1"></i>
                                             </div>
                                             <span className="text-gray-400">•</span>
-                                            <span className="text-gray-500">{venue.reviews} reviews</span>
+                                            <span className="text-gray-500">{String(venue.reviews)} reviews</span>
                                         </div>
-                                        <p className="text-sm text-gray-500 truncate">{venue.address}</p>
+                                        <p className="text-sm text-gray-500 truncate">{String(venue.address)}</p>
                                     </div>
                                 </Link>
                             ))}

@@ -4,15 +4,21 @@ import { Button } from "@/components/ui/button/button";
 import { VenueNav } from "@/components/venue/venue-nav";
 import { TeamList } from "@/components/venue/team-list";
 import { ReviewList } from "@/components/venue/review-list";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BookingWizard } from "@/components/venue/booking/wizard";
-import { venuesData, serviceCategories, servicesData } from "@/lib/mock-data";
+import { fetchShopDetails, fetchServices, fetchCategories, fetchAllSpecialists } from "@/app/actions/shop";
+import { normalizeShopToVenue } from "@/lib/normalize";
 import { cn } from "@/lib/utils";
 import { useParams, notFound, useRouter } from "next/navigation";
 
 export default function StorePage() {
     const params = useParams();
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(true);
+    const [venue, setVenue] = useState<Record<string, unknown> | null>(null);
+    const [venueServices, setVenueServices] = useState<Record<string, unknown>[]>([]);
+    const [teamMembers, setTeamMembers] = useState<Record<string, unknown>[]>([]);
+    const [availableCategories, setAvailableCategories] = useState<{ id: string, label: string }[]>([]);
     const [isBookingOpen, setIsBookingOpen] = useState(false);
     const [initialServiceId, setInitialServiceId] = useState<string | undefined>(undefined);
     const [activeCategory, setActiveCategory] = useState("all");
@@ -58,22 +64,66 @@ export default function StorePage() {
         }
     };
 
-    // Fetch venue based on ID
     const venueId = params?.id as string;
-    const venue = venuesData.find(v => v.id === venueId);
 
-    // Filter services for this venue
-    const venueServices = servicesData.filter(s => s.venueId === venueId);
+    useEffect(() => {
+        async function loadData() {
+            setIsLoading(true);
+            try {
+                const [shopRes, servicesRes, categoriesRes, specialistsRes] = await Promise.all([
+                    fetchShopDetails(),
+                    fetchServices(),
+                    fetchCategories(),
+                    fetchAllSpecialists()
+                ]);
 
-    // Filter categories that have services for this venue
-    const availableCategories = serviceCategories.filter(cat =>
-        cat.id === 'featured' || venueServices.some(s => s.categoryId === cat.id)
-    );
+                if (shopRes.success && shopRes.data) {
+                    setVenue(normalizeShopToVenue(shopRes.data));
+                }
+
+                if (servicesRes.success && servicesRes.data) {
+                    const services = (servicesRes.data as Record<string, unknown>[]).map(s => ({
+                        ...s,
+                        categoryId: s.category || "uncategorized",
+                        duration: s.duration ? `${s.duration} mins` : "Varies",
+                    }));
+                    setVenueServices(services);
+                }
+
+                if (categoriesRes.success && categoriesRes.data) {
+                    const cats = (categoriesRes.data as Record<string, unknown>[]).map(c => ({
+                        id: String(c.name),
+                        label: String(c.name)
+                    }));
+                    cats.unshift({ id: "uncategorized", label: "Other Services" });
+                    setAvailableCategories(cats);
+                }
+
+                if (specialistsRes.success && specialistsRes.data) {
+                    setTeamMembers(specialistsRes.data as Record<string, unknown>[]);
+                }
+            } catch (error) {
+                console.error("Failed to fetch venue details:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        loadData();
+    }, []);
 
     const handleBook = (serviceId?: string) => {
         setInitialServiceId(serviceId);
         setIsBookingOpen(true);
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <div className="w-8 h-8 rounded-full border-4 border-gray-200 border-t-black animate-spin mb-4"></div>
+                <p className="text-gray-500">Loading venue details...</p>
+            </div>
+        );
+    }
 
     if (!venue) {
         return (
@@ -99,7 +149,7 @@ export default function StorePage() {
                     <span className="text-gray-300">•</span>
                     <span>Johor Bahru</span>
                     <span className="text-gray-300">•</span>
-                    <span className="truncate max-w-[150px]">{venue.name}</span>
+                    <span className="truncate max-w-[150px]">{String(venue.name || "")}</span>
                 </div>
 
                 {/* Mobile Image Hero */}
@@ -117,10 +167,10 @@ export default function StorePage() {
                         )}
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                     >
-                        {venue.images.map((img, index) => (
+                        {((venue.images as string[]) || []).map((img, index) => (
                             <div key={index} className="flex-shrink-0 w-full h-full snap-center">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={img} alt={`${venue.name} - ${index + 1}`} className="w-full h-full object-cover" />
+                                <img src={img} alt={`${String(venue.name || "")} - ${index + 1}`} className="w-full h-full object-cover" />
                             </div>
                         ))}
                     </div>
@@ -147,25 +197,25 @@ export default function StorePage() {
 
                     {/* Image Counter */}
                     <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">
-                        {currentImageIndex + 1}/{venue.images.length}
+                        {currentImageIndex + 1}/{((venue.images as string[]) || []).length}
                     </div>
                 </div>
 
                 {/* Mobile Info Section */}
                 <div className="px-4 pt-4 space-y-3">
-                    <h1 className="text-2xl font-bold leading-tight text-gray-900">{venue.name}</h1>
+                    <h1 className="text-2xl font-bold leading-tight text-gray-900">{String(venue.name || "")}</h1>
 
                     <div className="flex items-center gap-2">
                         <span className="font-bold text-sm bg-gray-100 px-1.5 py-0.5 rounded flex items-center gap-1">
-                            {venue.rating} <i className="ri-star-fill text-yellow-500 text-xs"></i>
+                            {String(venue.rating || "5.0")} <i className="ri-star-fill text-yellow-500 text-xs"></i>
                         </span>
-                        <span className="text-blue-600 text-sm font-semibold">({venue.reviews})</span>
+                        <span className="text-blue-600 text-sm font-semibold">({String(venue.reviews || "0")})</span>
                     </div>
 
                     <div className="text-sm text-gray-500 flex items-center gap-2">
                         <span>10.4km</span>
                         <span>•</span>
-                        <span className="line-clamp-1">{venue.address}</span>
+                        <span className="line-clamp-1">{String(venue.address || "")}</span>
                     </div>
 
                     <div className="text-sm">
@@ -189,16 +239,16 @@ export default function StorePage() {
             <div className="hidden md:block container py-6 space-y-6">
                 <div className="flex flex-col md:flex-row items-start justify-between gap-4">
                     <div className="space-y-3 w-full">
-                        <h1 className="text-3xl md:text-5xl font-bold leading-tight">{venue.name}</h1>
+                        <h1 className="text-3xl md:text-5xl font-bold leading-tight">{String(venue.name || "")}</h1>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700">
                             <span className="flex items-center font-bold text-black bg-gray-100 px-2 py-0.5 rounded-md">
-                                {venue.rating} <i className="ri-star-fill text-yellow-500 ml-1"></i>
-                                <span className="text-gray-500 font-normal ml-1">({venue.reviews})</span>
+                                {String(venue.rating || "5.0")} <i className="ri-star-fill text-yellow-500 ml-1"></i>
+                                <span className="text-gray-500 font-normal ml-1">({String(venue.reviews || "0")})</span>
                             </span>
                             <span className="hidden leading-none text-gray-300 md:inline">•</span>
-                            <span className="break-words">{venue.address}</span>
+                            <span className="break-words">{String(venue.address || "")}</span>
                             <span className="hidden leading-none text-gray-300 md:inline">•</span>
-                            <span className="text-green-700 font-medium bg-green-50 px-2 py-0.5 rounded-md">{venue.status}</span>
+                            <span className="text-green-700 font-medium bg-green-50 px-2 py-0.5 rounded-md">{String(venue.status || "Open")}</span>
                         </div>
                     </div>
                     <div className="flex gap-2 self-end md:self-start">
@@ -211,9 +261,9 @@ export default function StorePage() {
                 <div className="rounded-2xl overflow-hidden h-[280px] md:h-[400px] grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-2">
                     <div className="relative bg-gray-100 md:col-span-2 md:row-span-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={venue.images[0]} alt="Salon Interior" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                        <img src={((venue.images as string[]) || [])[0]} alt="Salon Interior" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                     </div>
-                    {venue.images.slice(1).map((img, i) => (
+                    {((venue.images as string[]) || []).slice(1).map((img, i) => (
                         <div key={i} className="relative bg-gray-100 hidden md:block overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src={img} alt="Salon Detail" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
@@ -267,22 +317,22 @@ export default function StorePage() {
                                     .filter((s) => activeCategory === "all" || s.categoryId === activeCategory)
                                     .map((service) => (
                                         <div
-                                            key={service.id}
+                                            key={String(service.id)}
                                             className="flex items-center justify-between py-4 md:p-4 hover:bg-gray-50 transition-colors group"
                                         >
                                             <div className="flex flex-col gap-1">
-                                                <h3 className="font-semibold text-gray-900">{service.name}</h3>
-                                                <p className="text-sm text-gray-500 line-clamp-2">{service.description}</p>
-                                                <p className="text-sm text-gray-400 mt-1">{service.duration}</p>
+                                                <h3 className="font-semibold text-gray-900">{String(service.name)}</h3>
+                                                <p className="text-sm text-gray-500 line-clamp-2">{String(service.description || "")}</p>
+                                                <p className="text-sm text-gray-400 mt-1">{String(service.duration)}</p>
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <div className="text-right">
-                                                    <span className="block font-semibold text-gray-900">RM {service.price}</span>
+                                                    <span className="block font-semibold text-gray-900">RM {String(service.price)}</span>
                                                 </div>
                                                 <Button
                                                     variant="outline"
                                                     className="h-10 px-6 border-gray-300 hover:border-black hover:bg-transparent font-semibold"
-                                                    onClick={() => handleBook(service.id)}
+                                                    onClick={() => handleBook(String(service.id))}
                                                 >
                                                     Book
                                                 </Button>
@@ -296,7 +346,7 @@ export default function StorePage() {
                         </div>
                     </section>
                     <section id="team" className="scroll-mt-32">
-                        <TeamList />
+                        <TeamList specialists={teamMembers} />
                     </section>
                     <section id="reviews" className="scroll-mt-32">
                         <ReviewList />
@@ -304,13 +354,13 @@ export default function StorePage() {
                     <section id="about" className="scroll-mt-32 pb-20">
                         <h2 className="text-xl font-bold mb-4">About</h2>
                         <p className="text-gray-600 leading-relaxed mb-8">
-                            {venue.description}
+                            {String(venue.description || "")}
                         </p>
 
                         <h3 className="text-lg font-bold mb-4">Opening Hours</h3>
                         <div className="bg-gray-50 rounded-xl p-6 border">
                             <ul className="space-y-3">
-                                {venue.openingHours?.map((schedule: any, index: number) => (
+                                {(venue.openingHours as { day: string, hours: string }[] | undefined)?.map((schedule: { day: string, hours: string }, index: number) => (
                                     <li key={index} className="flex justify-between text-sm">
                                         <span className="font-medium text-gray-900">{schedule.day}</span>
                                         <span className="text-gray-500">{schedule.hours}</span>
@@ -325,8 +375,8 @@ export default function StorePage() {
                 <div className="hidden lg:block relative">
                     <div className="sticky top-40 border rounded-xl p-6 shadow-sm space-y-6">
                         <div className="text-center">
-                            <h3 className="font-bold text-lg">{venue.name}</h3>
-                            <p className="text-sm text-gray-500">{venue.address}</p>
+                            <h3 className="font-bold text-lg">{String(venue.name || "")}</h3>
+                            <p className="text-sm text-gray-500">{String(venue.address || "")}</p>
                         </div>
                         <div className="text-center py-8 text-gray-500 border-t border-b">
                             <p>Self-care is not selfish</p>
@@ -353,6 +403,7 @@ export default function StorePage() {
                     initialServiceId={initialServiceId}
                     venue={venue}
                     services={venueServices}
+                    categories={availableCategories}
                 />
             )}
         </div>
