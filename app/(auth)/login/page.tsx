@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/global-store/user";
 
+import { loginCustomer } from "@/app/actions/auth";
+
 const schema = yup.object({
-    email: yup.string().email("Invalid email").required("Email is required"),
+    contact: yup.string().required("Phone number or email is required"),
     password: yup.string().required("Password is required"),
 }).required();
 
@@ -24,6 +26,7 @@ export default function LoginPage() {
     // Add state for role selection overlay
     const [showRoleSelection, setShowRoleSelection] = useState(false);
     const [loginData, setLoginData] = useState<FormData | null>(null);
+    const [apiError, setApiError] = useState("");
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: yupResolver(schema),
@@ -37,23 +40,48 @@ export default function LoginPage() {
 
     const handleRoleSelection = async (role: "customer" | "merchant") => {
         if (!loginData) return;
+        setApiError("");
 
-        // Simulate API call processing
-        await new Promise((resolve) => setTimeout(resolve, 600));
-
-        // Mock successful login
-        setUser({
-            id: role === "merchant" ? "m1" : "c1",
-            name: role === "merchant" ? "Merchant User" : "Test Customer",
-            email: loginData.email,
-            role: role,
-        });
-
-        // Navigate based on role
         if (role === "merchant") {
+            // Mock merchant login for now
+            setUser({
+                id: "m1",
+                name: "Merchant User",
+                email: loginData.contact,
+                role: role,
+            });
             router.push("/merchant");
         } else {
-            router.push("/");
+            // Real customer login
+            try {
+                // Determine if contact is email or phone for payload
+                const isEmail = loginData.contact.includes("@");
+                const payload = isEmail
+                    ? { contact: loginData.contact, email: loginData.contact, password: loginData.password }
+                    : { contact: loginData.contact, password: loginData.password };
+
+                const res = await loginCustomer(payload);
+                if (res.success && res.data) {
+                    const d = res.data as any;
+                    // Usually API returns token + user inside data
+                    // Depending on what is available we save it. Let's assume generic token map
+                    setUser({
+                        id: String(d.user?.id || d.id || "c1"),
+                        name: d.user?.name || d.name || "Customer",
+                        contact: loginData.contact,
+                        email: isEmail ? loginData.contact : (d.user?.email || d.email),
+                        token: d.token || d.access_token,
+                        role: "customer"
+                    });
+                    router.push("/");
+                } else {
+                    setApiError(res.error || "Login failed");
+                    setShowRoleSelection(false);
+                }
+            } catch (err) {
+                setApiError("An unexpected error occurred.");
+                setShowRoleSelection(false);
+            }
         }
     };
 
@@ -73,22 +101,27 @@ export default function LoginPage() {
                 </div>
 
                 <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                    {apiError && (
+                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-200">
+                            {apiError}
+                        </div>
+                    )}
                     <div className="space-y-5">
                         <div className="relative">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5 block">Email Address</label>
+                            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5 block">Email Address or Phone</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i className="ri-mail-line text-lg text-gray-400 group-focus-within:text-blue-600 transition-colors"></i>
+                                    <i className="ri-user-line text-lg text-gray-400 group-focus-within:text-blue-600 transition-colors"></i>
                                 </div>
                                 <Input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    {...register("email")}
-                                    className={`pl-11 h-12 bg-gray-50 border-gray-200 focus:bg-white hover:bg-gray-100/50 transition-colors rounded-xl ${errors.email ? "border-red-500 ring-1 ring-red-500" : ""}`}
+                                    type="text"
+                                    placeholder="Enter your email or phone"
+                                    {...register("contact")}
+                                    className={`pl-11 h-12 bg-gray-50 border-gray-200 focus:bg-white hover:bg-gray-100/50 transition-colors rounded-xl ${errors.contact ? "border-red-500 ring-1 ring-red-500" : ""}`}
                                 />
                             </div>
-                            {errors.email && (
-                                <p className="mt-1.5 text-xs font-semibold text-red-500"><i className="ri-error-warning-line mr-1"></i>{errors.email.message}</p>
+                            {errors.contact && (
+                                <p className="mt-1.5 text-xs font-semibold text-red-500"><i className="ri-error-warning-line mr-1"></i>{errors.contact.message}</p>
                             )}
                         </div>
 

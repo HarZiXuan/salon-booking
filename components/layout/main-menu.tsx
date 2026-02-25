@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button/button";
 import * as Popover from "@radix-ui/react-popover";
 import { useUserStore } from "@/global-store/user";
+import { logoutCustomer } from "@/app/actions/auth";
 
 export function MainMenu() {
     const { user, logout } = useUserStore();
     const [isOpen, setIsOpen] = useState(false);
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState("English");
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const languages = [
         { code: "en", label: "English" },
@@ -34,12 +40,20 @@ export function MainMenu() {
                     </div>
 
                     <div className="space-y-1">
-                        {!user ? (
+                        {(!isMounted || !user) ? (
                             <Link href="/login" onClick={() => setIsOpen(false)} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
                                 Log in or sign up
                             </Link>
                         ) : (
-                            <button onClick={() => { logout(); setIsOpen(false); }} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <button onClick={async () => {
+                                if (user.token && user.role === "customer") {
+                                    try {
+                                        await logoutCustomer(user.token);
+                                    } catch (e) { }
+                                }
+                                logout();
+                                setIsOpen(false);
+                            }} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                 Log out
                             </button>
                         )}

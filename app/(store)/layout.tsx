@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useUserStore } from "@/global-store/user";
 import { useCartStore } from "@/global-store/cart";
 import { Button } from "@/components/ui/button/button";
@@ -23,9 +24,10 @@ export default function StoreLayout({
         router.refresh();
     };
 
-
-
-    return (
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
+    }, []); return (
         <div className="flex min-h-screen flex-col">
             <header className="sticky top-0 z-50 w-full bg-white border-b transition-all duration-200">
                 <div className="container flex h-20 items-center justify-between px-4 gap-4">
@@ -40,19 +42,19 @@ export default function StoreLayout({
                     <CompactSearchBar />
 
                     {/* Right Navigation */}
-                    
+
                     <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
-                        {user ? (
+                        {(!isMounted || !user) ? (
+                            <Link href="/login" className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
+                                Log in
+                            </Link>
+                        ) : (
                             <div className="flex items-center gap-4">
                                 <span className="hidden md:inline-block text-sm font-semibold">Hi, {user.name}</span>
                                 <Button variant="ghost" className="font-semibold hover:bg-transparent hover:underline" onClick={handleLogout}>
                                     Log out
                                 </Button>
                             </div>
-                        ) : (
-                            <Link href="/login" className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
-                                Log in
-                            </Link>
                         )}
 
                         <Link href="/for-business" className="hidden md:block">

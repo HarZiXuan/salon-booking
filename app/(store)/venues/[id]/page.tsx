@@ -135,6 +135,55 @@ export default function StorePage() {
         );
     }
 
+    const todayIndex = new Date().getDay();
+    const daysArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const todayStr = daysArray[todayIndex];
+    let isOpenRightNow = false;
+    let openStatusText = "";
+
+    const todaySchedule = ((venue?.openingHours as { day: string, hours: string }[]) || []).find(s => s.day === todayStr);
+
+    if (todaySchedule) {
+        if (todaySchedule.hours.toLowerCase().includes("closed")) {
+            isOpenRightNow = false;
+            openStatusText = "today";
+        } else {
+            const [openTime, closeTime] = todaySchedule.hours.split(" - ");
+            if (openTime && closeTime) {
+                const now = new Date();
+                const [openH, openM] = openTime.split(":").map(Number);
+                const [closeH, closeM] = closeTime.split(":").map(Number);
+
+                const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                const openMinutes = openH * 60 + openM;
+                const closeMinutes = closeH * 60 + closeM;
+
+                const formatTime = (h: number, m: number) => {
+                    const ampm = h >= 12 ? 'pm' : 'am';
+                    const hour12 = h % 12 || 12;
+                    return `${hour12}:${String(m).padStart(2, '0')}${ampm}`;
+                };
+
+                if (currentMinutes >= openMinutes && currentMinutes <= closeMinutes) {
+                    isOpenRightNow = true;
+                    openStatusText = `until ${formatTime(closeH, closeM)}`;
+                } else if (currentMinutes < openMinutes) {
+                    isOpenRightNow = false;
+                    openStatusText = `Opens at ${formatTime(openH, openM)}`;
+                } else {
+                    isOpenRightNow = false;
+                    openStatusText = `Closed now`;
+                }
+            } else {
+                isOpenRightNow = true;
+                openStatusText = "";
+            }
+        }
+    } else {
+        isOpenRightNow = true; // Fallback
+        openStatusText = "";
+    }
+
     return (
         <div className="relative">
             {/* Hero Section */}
@@ -219,8 +268,10 @@ export default function StorePage() {
                     </div>
 
                     <div className="text-sm">
-                        <span className="text-green-600 font-medium">Open</span>
-                        <span className="text-gray-500 ml-1">until 10:00pm</span>
+                        <span className={cn("font-medium", isOpenRightNow ? "text-green-600" : "text-red-600")}>
+                            {isOpenRightNow ? "Open" : "Closed"}
+                        </span>
+                        {openStatusText && <span className="text-gray-500 ml-1">{openStatusText}</span>}
                     </div>
 
                     {/* Tags */}
@@ -248,7 +299,13 @@ export default function StorePage() {
                             <span className="hidden leading-none text-gray-300 md:inline">•</span>
                             <span className="break-words">{String(venue.address || "")}</span>
                             <span className="hidden leading-none text-gray-300 md:inline">•</span>
-                            <span className="text-green-700 font-medium bg-green-50 px-2 py-0.5 rounded-md">{String(venue.status || "Open")}</span>
+                            <span className={cn(
+                                "font-medium px-2 py-0.5 rounded-md",
+                                isOpenRightNow ? "text-green-700 bg-green-50" : "text-red-700 bg-red-50"
+                            )}>
+                                {isOpenRightNow ? "Open" : "Closed"}
+                                {openStatusText && <span className="font-normal opacity-75 ml-1">{openStatusText}</span>}
+                            </span>
                         </div>
                     </div>
                     <div className="flex gap-2 self-end md:self-start">
@@ -318,15 +375,15 @@ export default function StorePage() {
                                     .map((service) => (
                                         <div
                                             key={String(service.id)}
-                                            className="flex items-center justify-between py-4 md:p-4 hover:bg-gray-50 transition-colors group"
+                                            className="flex items-center justify-between py-4 md:p-4 hover:bg-gray-50 transition-colors group gap-4"
                                         >
-                                            <div className="flex flex-col gap-1">
-                                                <h3 className="font-semibold text-gray-900">{String(service.name)}</h3>
+                                            <div className="flex flex-col gap-1 flex-1 min-w-0">
+                                                <h3 className="font-semibold text-gray-900 truncate">{String(service.name)}</h3>
                                                 <p className="text-sm text-gray-500 line-clamp-2">{String(service.description || "")}</p>
                                                 <p className="text-sm text-gray-400 mt-1">{String(service.duration)}</p>
                                             </div>
-                                            <div className="flex items-center gap-4">
-                                                <div className="text-right">
+                                            <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                                                <div className="text-right whitespace-nowrap">
                                                     <span className="block font-semibold text-gray-900">RM {String(service.price)}</span>
                                                 </div>
                                                 <Button

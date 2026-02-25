@@ -162,3 +162,22 @@ export async function createBooking(payload: BookingPayload) {
         return { success: false, error: String(error) };
     }
 }
+
+export async function fetchBookingDetails(bookingId: string) {
+    try {
+        const response = await apiFetch<Record<string, unknown>>(`/bookings/${bookingId}`, {
+            method: "GET"
+        });
+
+        if (response.success && response.data) {
+            return { success: true, data: response.data };
+        }
+        return { success: false, error: "Failed to fetch booking details" };
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return { success: false, error: error.message };
+        }
+        return { success: false, error: String(error) };
+    }
+}
+

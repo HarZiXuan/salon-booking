@@ -1,19 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
 import { useUserStore } from "@/global-store/user";
+import { logoutCustomer } from "@/app/actions/auth";
 
 export function UserMenu() {
     const { user, logout } = useUserStore();
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
-    if (!user) return null;
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
-    const handleLogout = () => {
+    if (!isMounted || !user) return null;
+
+    const handleLogout = async () => {
+        if (user.token && user.role === "customer") {
+            try {
+                await logoutCustomer(user.token);
+            } catch (e) {
+                // Ignore API failure, still log them out locally
+            }
+        }
         logout();
         setIsOpen(false);
         router.push("/");

@@ -7,7 +7,7 @@ const SECRET_KEY = process.env.API_SECRET_KEY || "";
 
 type FetchOptions = RequestInit & {
     params?: Record<string, string>;
-    data?: any;
+    data?: unknown;
     token?: string;
 };
 
@@ -34,10 +34,12 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
     
     // Sort parameters alphabetically if there is a payload
     let signatureBody = "";
-    const allParams: Record<string, any> = { ...params, ...data };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const allParams: Record<string, any> = { ...params, ...(data as Record<string, unknown>) };
     
     if (Object.keys(allParams).length > 0) {
         const sortedKeys = Object.keys(allParams).sort();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sortedParams: Record<string, any> = {};
         sortedKeys.forEach(key => {
             sortedParams[key] = allParams[key];
@@ -73,7 +75,7 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
         try {
             const errorData = await response.json();
             errorMessage = errorData.message || errorMessage;
-        } catch (e) {
+        } catch {
             // Error not in JSON format
         }
         throw new Error(errorMessage);

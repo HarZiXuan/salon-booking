@@ -1,12 +1,12 @@
 "use client";
 
-import { fetchServiceSpecialists, fetchAvailability, createBooking } from "@/app/actions/shop";
+import { fetchServiceSpecialists, fetchAvailability, createBooking, fetchBookingDetails } from "@/app/actions/shop";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 // Steps
-const steps = ["Services", "Professional", "Time", "Confirm"];
+const steps = ["Services", "Professional", "Time", "Confirm", "Details"];
 
 interface BookingWizardProps {
     onClose: () => void;
@@ -19,7 +19,7 @@ interface BookingWizardProps {
 export function BookingWizard({ onClose, initialServiceId, venue: venueData, services: servicesData, categories }: BookingWizardProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<string[]>(initialServiceId ? [initialServiceId] : []);
-    const [activeCategory, setActiveCategory] = useState(categories[0]?.id || "uncategorized");
+    const [activeCategory, setActiveCategory] = useState("all");
 
     // State for Step 2 & 3
     const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
@@ -39,6 +39,7 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
     const [customerGender, setCustomerGender] = useState("Female");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [bookingError, setBookingError] = useState("");
+    const [bookingResult, setBookingResult] = useState<Record<string, unknown> | null>(null);
 
     // Fetch staff when moving to step 1
     useEffect(() => {
@@ -73,7 +74,10 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     if (res.success && res.data) {
                         const dataObj = res.data as Record<string, unknown>;
                         if (Array.isArray(dataObj.timeslots)) {
-                            setAvailableTimeslots(dataObj.timeslots as string[]);
+                            const slots = dataObj.timeslots.map((slot: any) =>
+                                typeof slot === 'string' ? slot : (slot.start_time || slot.time || JSON.stringify(slot))
+                            );
+                            setAvailableTimeslots(slots);
                         } else {
                             setAvailableTimeslots([]);
                         }
@@ -103,9 +107,9 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
     };
 
     const handleNext = async () => {
-        if (currentStep < steps.length - 1) {
+        if (currentStep < 3) {
             setCurrentStep(currentStep + 1);
-        } else {
+        } else if (currentStep === 3) {
             // Submit booking
             setBookingError("");
             setIsSubmitting(true);
@@ -121,9 +125,26 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     email: customerEmail
                 });
 
-                if (res.success) {
-                    alert("Booking Confirmed!");
-                    onClose();
+                if (res.success && res.data) {
+                    const resData = res.data as any;
+                    const bId = resData.id || resData.data?.id;
+                    if (bId) {
+                        try {
+                            const detailsRes = await fetchBookingDetails(bId);
+                            if (detailsRes.success && detailsRes.data) {
+                                // Assume data or data.data holds the booking details
+                                const detailData = detailsRes.data as any;
+                                setBookingResult(detailData.data || detailData);
+                            } else {
+                                setBookingResult(resData.data || resData);
+                            }
+                        } catch (e) {
+                            setBookingResult(resData.data || resData);
+                        }
+                    } else {
+                        setBookingResult(resData.data || resData);
+                    }
+                    setCurrentStep(4);
                 } else {
                     setBookingError(res.error || "Failed to create booking.");
                 }
@@ -133,6 +154,8 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
             } finally {
                 setIsSubmitting(false);
             }
+        } else if (currentStep === 4) {
+            onClose();
         }
     };
 
@@ -196,6 +219,17 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                         <div className="space-y-6 pb-20 md:pb-0">
                             {/* Category Pills */}
                             <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar border-b md:border-none sticky top-0 bg-white z-10 py-2">
+                                <button
+                                    onClick={() => setActiveCategory("all")}
+                                    className={cn(
+                                        "px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors",
+                                        activeCategory === "all"
+                                            ? "bg-black text-white"
+                                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                    )}
+                                >
+                                    All services
+                                </button>
                                 {categories.map(cat => (
                                     <button
                                         key={cat.id}
@@ -214,11 +248,9 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
 
                             {/* Service List */}
                             <div className="space-y-8">
-                                {categories.map(cat => {
+                                {categories.filter(cat => activeCategory === "all" || cat.id === activeCategory).map(cat => {
                                     const categoryServices = servicesData.filter(s => String(s.categoryId) === String(cat.id));
                                     if (categoryServices.length === 0) return null;
-
-                                    // Simple scroll spy logic would go here, for now just render all
                                     return (
                                         <div key={cat.id} id={cat.id}>
                                             <h3 className="text-xl font-bold mb-4">{cat.label}</h3>
@@ -362,18 +394,21 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                                    {availableTimeslots.map(t => (
-                                        <button
-                                            key={t}
-                                            onClick={() => setSelectedTime(t)}
-                                            className={cn(
-                                                "py-2 px-4 rounded-lg border text-sm font-semibold hover:border-black transition-colors",
-                                                selectedTime === t ? "bg-black text-white border-black" : "bg-white text-gray-900 border-gray-200"
-                                            )}
-                                        >
-                                            {t}
-                                        </button>
-                                    ))}
+                                    {availableTimeslots.map((tItem: any, idx: number) => {
+                                        const t = typeof tItem === 'string' ? tItem : (tItem.start_time || tItem.time || String(tItem));
+                                        return (
+                                            <button
+                                                key={t + "_" + idx}
+                                                onClick={() => setSelectedTime(t)}
+                                                className={cn(
+                                                    "py-2 px-4 rounded-lg border text-sm font-semibold hover:border-black transition-colors",
+                                                    selectedTime === t ? "bg-black text-white border-black" : "bg-white text-gray-900 border-gray-200"
+                                                )}
+                                            >
+                                                {t}
+                                            </button>
+                                        )
+                                    })}
                                 </div>
                             )}
                         </div>
@@ -473,6 +508,45 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                             </div>
                         </div>
                     )}
+
+                    {/* STEP 5: DETAILS / SUCCESS */}
+                    {currentStep === 4 && (
+                        <div className="space-y-6 text-center py-8">
+                            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i className="ri-check-line text-4xl"></i>
+                            </div>
+                            <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
+                            <p className="text-gray-500">Your booking has been successfully created.</p>
+
+                            {bookingResult && (
+                                <div className="mt-8 text-left bg-gray-50 p-6 rounded-xl space-y-3">
+                                    <h3 className="font-bold text-lg border-b pb-2 mb-4">Booking Details</h3>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Booking ID</span>
+                                        <span className="font-semibold">{String(bookingResult.id || bookingResult.booking_number || "-")}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Status</span>
+                                        <span className="font-semibold capitalize">{String(bookingResult.status || "Pending")}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Date & Time</span>
+                                        <span className="font-semibold">{String(bookingResult.date || selectedDate)} {String(bookingResult.start_time || selectedTime)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Customer</span>
+                                        <span className="font-semibold">{String(bookingResult.name || customerName)}</span>
+                                    </div>
+                                    {Boolean(bookingResult.total_amount) && (
+                                        <div className="flex justify-between border-t pt-2 mt-2">
+                                            <span className="font-bold">Total Amount</span>
+                                            <span className="font-bold">RM {String(bookingResult.total_amount)}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* MOBILE STICKY FOOTER */}
@@ -484,7 +558,7 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                         </div>
                     )}
                     <Button className="w-full h-14 text-lg font-bold" disabled={!isStepValid() || isSubmitting} onClick={handleNext}>
-                        {isSubmitting ? "Processing..." : (currentStep === steps.length - 1 ? "Confirm Booking" : "Continue")}
+                        {isSubmitting ? "Processing..." : (currentStep === 3 ? "Confirm Booking" : (currentStep === 4 ? "Done" : "Continue"))}
                     </Button>
                 </div>
             </div>
@@ -540,10 +614,10 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     </div>
                     <Button
                         className="w-full h-12 text-lg rounded-full"
-                        disabled={!isStepValid()}
+                        disabled={!isStepValid() || isSubmitting}
                         onClick={handleNext}
                     >
-                        {currentStep === steps.length - 1 ? "Confirm" : "Continue"}
+                        {isSubmitting ? "Processing..." : (currentStep === 3 ? "Confirm" : (currentStep === 4 ? "Done" : "Continue"))}
                     </Button>
                 </div>
             </div>

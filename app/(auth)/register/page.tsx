@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,39 +10,64 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/global-store/user";
 
+import { registerCustomer } from "@/app/actions/auth";
+
 const schema = yup.object({
     name: yup.string().required("Name is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
+    contact: yup.string().required("Phone number is required"),
+    email: yup.string().email("Invalid email").default(""),
     password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
     confirmPassword: yup.string()
         .oneOf([yup.ref('password')], 'Passwords must match')
         .required('Confirm Password is required'),
-}).required();
+});
 
 type FormData = yup.InferType<typeof schema>;
 
 export default function RegisterPage() {
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
+    const [apiError, setApiError] = useState("");
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
 
     const onSubmit = async (data: FormData) => {
-        // Simulate API call
-        console.log(data);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setApiError("");
+        try {
+            const res = await registerCustomer({
+                name: data.name,
+                contact: data.contact,
+                email: data.email,
+                password: data.password,
+                password_confirmation: data.confirmPassword
+            });
 
-        // Mock successful registration and login
-        setUser({
-            id: "2",
-            name: data.name,
-            email: data.email,
-            role: "customer",
-        });
-
-        router.push("/");
+            if (res.success && res.data) {
+                const d = res.data as any;
+                // Mock logging them in since registration typically either logs you in or asks to login
+                // However the prompt says "returns bearer token for endpoints below", check docs:
+                // If it doesn't return token, we should push to login page
+                if (d.token || d.access_token) {
+                    setUser({
+                        id: String(d.user?.id || d.id || "2"),
+                        name: data.name,
+                        contact: data.contact,
+                        email: data.email,
+                        token: d.token || d.access_token,
+                        role: "customer",
+                    });
+                    router.push("/");
+                } else {
+                    router.push("/login");
+                }
+            } else {
+                setApiError(res.error || "Failed to register.");
+            }
+        } catch (err) {
+            setApiError("An unexpected error occurred.");
+        }
     };
 
     return (
@@ -59,6 +85,11 @@ export default function RegisterPage() {
                     </p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                    {apiError && (
+                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-200">
+                            {apiError}
+                        </div>
+                    )}
                     <div className="space-y-4 rounded-md shadow-sm">
                         <div>
                             <Input
@@ -73,8 +104,19 @@ export default function RegisterPage() {
                         </div>
                         <div>
                             <Input
+                                type="tel"
+                                placeholder="Phone number (required)"
+                                {...register("contact")}
+                                className={errors.contact ? "border-red-500" : ""}
+                            />
+                            {errors.contact && (
+                                <p className="mt-1 text-sm text-red-500">{errors.contact.message}</p>
+                            )}
+                        </div>
+                        <div>
+                            <Input
                                 type="email"
-                                placeholder="Email address"
+                                placeholder="Email address (optional)"
                                 {...register("email")}
                                 className={errors.email ? "border-red-500" : ""}
                             />
