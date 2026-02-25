@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 const schema = yup.object({
     // Step 1
     businessName: yup.string().required("Business Name is required"),
-    website: yup.string().url("Must be a valid URL").optional(),
+    website: yup.string().url("Must be a valid URL").optional().default(""),
 
     // Step 2
     categories: yup
