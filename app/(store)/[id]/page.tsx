@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button/button";
 import { VenueNav } from "@/components/venue/venue-nav";
 import { TeamList } from "@/components/venue/team-list";
-import { ReviewList } from "@/components/venue/review-list";
+// import { ReviewList } from "@/components/venue/review-list";
 import { useState, useRef, useEffect } from "react";
 import { BookingWizard } from "@/components/venue/booking/wizard";
 import { fetchShopDetails, fetchServices, fetchCategories, fetchAllSpecialists } from "@/app/actions/shop";
@@ -112,6 +112,18 @@ export default function StorePage() {
     }, []);
 
     const handleBook = (serviceId?: string) => {
+        if (venue?.disableBookingCalendar) {
+            const service = serviceId ? venueServices.find((s) => String(s.id) === serviceId) : null;
+            const serviceName = service ? String(service.name) : "";
+            const text = serviceName
+                ? `Hi, I would like to book the service: ${serviceName}.`
+                : "Hi, I would like to make a booking.";
+            const phoneNumber = String(venue.phone || "").replace(/[^0-9]/g, '');
+            // If phone is missing, it will just redirect to generic wa.me
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+            return;
+        }
         setInitialServiceId(serviceId);
         setIsBookingOpen(true);
     };
@@ -286,46 +298,95 @@ export default function StorePage() {
                 </div>
             </div>
 
-            {/* Desktop Hero Layout (Previous Design) */}
-            <div className="hidden md:block container py-6 space-y-6">
-                <div className="flex flex-col md:flex-row items-start justify-between gap-4">
-                    <div className="space-y-3 w-full">
-                        <h1 className="text-3xl md:text-5xl font-bold leading-tight">{String(venue.name || "")}</h1>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-700">
-                            <span className="flex items-center font-bold text-black bg-gray-100 px-2 py-0.5 rounded-md">
-                                {String(venue.rating || "5.0")} <i className="ri-star-fill text-yellow-500 ml-1"></i>
-                                <span className="text-gray-500 font-normal ml-1">({String(venue.reviews || "0")})</span>
-                            </span>
-                            <span className="hidden leading-none text-gray-300 md:inline">•</span>
-                            <span className="break-words">{String(venue.address || "")}</span>
-                            <span className="hidden leading-none text-gray-300 md:inline">•</span>
-                            <span className={cn(
-                                "font-medium px-2 py-0.5 rounded-md",
-                                isOpenRightNow ? "text-green-700 bg-green-50" : "text-red-700 bg-red-50"
-                            )}>
-                                {isOpenRightNow ? "Open" : "Closed"}
-                                {openStatusText && <span className="font-normal opacity-75 ml-1">{openStatusText}</span>}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="flex gap-2 self-end md:self-start">
-                        <Button variant="outline" size="icon" className="rounded-full w-10 h-10 border-gray-200 hover:border-black hover:bg-transparent"><i className="ri-share-line text-lg"></i></Button>
-                        <Button variant="outline" size="icon" className="rounded-full w-10 h-10 border-gray-200 hover:border-black hover:bg-transparent"><i className="ri-heart-line text-lg"></i></Button>
-                    </div>
-                </div>
+            {/* Desktop Hero Layout */}
+            <div className="hidden md:block container py-6">
+                <div className="relative w-full h-[400px] rounded-3xl overflow-hidden group shadow-lg">
+                    {/* Background Banner */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={((venue.images as string[]) || [])[0]}
+                        alt={String(venue.name || "Banner")}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
 
-                {/* Gallery Grid */}
-                <div className="rounded-2xl overflow-hidden h-[280px] md:h-[400px] grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-2">
-                    <div className="relative bg-gray-100 md:col-span-2 md:row-span-2">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={((venue.images as string[]) || [])[0]} alt="Salon Interior" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                    {/* Dark gradient overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10"></div>
+
+                    {/* Top Right Actions */}
+                    <div className="absolute top-6 right-6 flex gap-3">
+                        <button className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all">
+                            <i className="ri-share-line text-lg"></i>
+                        </button>
                     </div>
-                    {((venue.images as string[]) || []).slice(1).map((img, i) => (
-                        <div key={i} className="relative bg-gray-100 hidden md:block overflow-hidden">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={img} alt="Salon Detail" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+
+                    {/* Bottom Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-8 flex items-end justify-between">
+                        <div className="flex flex-col gap-3">
+                            {/* Logo */}
+                            {Boolean(venue.image) && (
+                                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-white overflow-hidden bg-white shadow-lg mb-2 flex-shrink-0">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={String(venue.image)}
+                                        alt={String(venue.name || "Logo")}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Title & Address */}
+                            <div>
+                                <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-2">
+                                    {String(venue.name || "")}
+                                </h1>
+                                <div className="flex items-center text-white/90 text-sm md:text-base gap-1.5 font-medium">
+                                    <i className="ri-map-pin-2-fill text-lg"></i>
+                                    <span>{String(venue.address || "")}</span>
+                                </div>
+                            </div>
+
+                            {/* Details Row */}
+                            <div className="flex items-center text-sm text-white/90 gap-2 md:gap-3 font-medium mt-1">
+                                <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">
+                                    <i className="ri-star-fill text-yellow-400 mb-0.5 text-xs"></i>
+                                    {String(venue.rating || "5.0")}
+                                </span>
+                                <span className="w-1 h-1 rounded-full bg-white/40"></span>
+                                <span className={cn(isOpenRightNow ? "text-green-400" : "text-red-500 font-bold")}>
+                                    {isOpenRightNow ? "Open" : "Closed"}
+                                </span>
+
+                                {isOpenRightNow && (
+                                    <>
+                                        <span className="w-1 h-1 rounded-full bg-white/40"></span>
+                                        <span>{String(todaySchedule?.hours || openStatusText || "Hours unknown")}</span>
+                                    </>
+                                )}
+
+                                {Boolean(venue.phone) && (
+                                    <>
+                                        <span className="w-1 h-1 rounded-full bg-white/40 hidden md:block"></span>
+                                        <a
+                                            href={`https://wa.me/${String(venue.phone).replace(/[^0-9]/g, '')}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-1.5 ml-2 md:ml-0 px-3 py-1 rounded-full text-white transition-colors border border-white/50 hover:bg-white/10"
+                                        >
+                                            <i className="ri-whatsapp-line text-lg text-green-400"></i>
+                                            <span>{String(venue.phone)}</span>
+                                        </a>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                    ))}
+
+                        {/* Bottom Right Actions */}
+                        <div className="hidden md:flex gap-3 mt-auto mb-2">
+                            <button className="px-5 py-2 rounded-xl bg-black/30 hover:bg-black/50 border border-white/50 text-white font-medium backdrop-blur-md transition-colors flex items-center gap-2">
+                                See photos
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -391,7 +452,9 @@ export default function StorePage() {
                                                     className="h-10 px-6 border-gray-300 hover:border-black hover:bg-transparent font-semibold"
                                                     onClick={() => handleBook(String(service.id))}
                                                 >
-                                                    Book
+                                                    {venue.disableBookingCalendar ? (
+                                                        <span className="flex items-center gap-1"><i className="ri-whatsapp-line text-lg"></i> WhatsApp</span>
+                                                    ) : "Book"}
                                                 </Button>
                                             </div>
                                         </div>
@@ -405,14 +468,41 @@ export default function StorePage() {
                     <section id="team" className="scroll-mt-32">
                         <TeamList specialists={teamMembers} />
                     </section>
-                    <section id="reviews" className="scroll-mt-32">
+                    {/* <section id="reviews" className="scroll-mt-32">
                         <ReviewList />
-                    </section>
+                    </section> */}
                     <section id="about" className="scroll-mt-32 pb-20">
                         <h2 className="text-xl font-bold mb-4">About</h2>
                         <p className="text-gray-600 leading-relaxed mb-8">
                             {String(venue.description || "")}
                         </p>
+
+                        <div className="mb-10 mt-6 rounded-2xl overflow-hidden flex flex-col">
+                            <div className="w-full h-[250px] relative bg-gray-200 rounded-2xl overflow-hidden mb-3">
+                                <iframe
+                                    src={`https://maps.google.com/maps?q=${encodeURIComponent(String(venue.address || ""))}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                                    className="w-full h-full border-0 pointer-events-none"
+                                    loading="lazy"
+                                    allowFullScreen
+                                ></iframe>
+                                <a href={String(venue.googleMapUrl || `https://maps.google.com/?q=${encodeURIComponent(String(venue.address || ""))}`)} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-10 w-full h-full">
+                                    {/* Invisible overlay link over map */}
+                                </a>
+                            </div>
+                            <div className="flex items-center justify-between bg-white gap-2 mt-2">
+                                <span className="text-sm md:text-base text-gray-900 font-medium line-clamp-2 pr-4 leading-snug">
+                                    {String(venue.address || "")}
+                                </span>
+                                <a
+                                    href={String(venue.googleMapUrl || `https://maps.google.com/?q=${encodeURIComponent(String(venue.address || ""))}`)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-shrink-0 px-4 py-1.5 rounded-lg border-2 border-black text-blue-600 font-semibold text-sm hover:bg-blue-50 transition-all shadow-sm flex items-center gap-1.5 whitespace-nowrap"
+                                >
+                                    Get directions
+                                </a>
+                            </div>
+                        </div>
 
                         <h3 className="text-lg font-bold mb-4">Opening Hours</h3>
                         <div className="bg-gray-50 rounded-xl p-6 border">
@@ -440,7 +530,9 @@ export default function StorePage() {
                         </div>
 
                         <Button className="w-full h-12 text-lg" onClick={() => handleBook()}>
-                            Book Now
+                            {venue.disableBookingCalendar ? (
+                                <span className="flex items-center justify-center gap-2"><i className="ri-whatsapp-line text-xl"></i> Book via WhatsApp</span>
+                            ) : "Book Now"}
                         </Button>
                     </div>
                 </div>
@@ -449,7 +541,9 @@ export default function StorePage() {
             {/* Mobile Sticky Footer */}
             <div className="fixed bottom-0 left-0 right-0 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-white border-t lg:hidden z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
                 <Button className="w-full h-12 text-lg" onClick={() => handleBook()}>
-                    Book Now
+                    {venue.disableBookingCalendar ? (
+                        <span className="flex items-center justify-center gap-2"><i className="ri-whatsapp-line text-xl"></i> Book via WhatsApp</span>
+                    ) : "Book Now"}
                 </Button>
             </div>
 

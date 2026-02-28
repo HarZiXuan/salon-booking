@@ -23,65 +23,41 @@ export default function LoginPage() {
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
 
-    // Add state for role selection overlay
-    const [showRoleSelection, setShowRoleSelection] = useState(false);
-    const [loginData, setLoginData] = useState<FormData | null>(null);
     const [apiError, setApiError] = useState("");
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
 
-    const onSubmit = (data: FormData) => {
-        // Instead of immediate login, show role selection first
-        setLoginData(data);
-        setShowRoleSelection(true);
-    };
-
-    const handleRoleSelection = async (role: "customer" | "merchant") => {
-        if (!loginData) return;
+    const onSubmit = async (data: FormData) => {
         setApiError("");
 
-        if (role === "merchant") {
-            // Mock merchant login for now
-            setUser({
-                id: "m1",
-                name: "Merchant User",
-                email: loginData.contact,
-                role: role,
-            });
-            router.push("/merchant");
-        } else {
-            // Real customer login
-            try {
-                // Determine if contact is email or phone for payload
-                const isEmail = loginData.contact.includes("@");
-                const payload = isEmail
-                    ? { contact: loginData.contact, email: loginData.contact, password: loginData.password }
-                    : { contact: loginData.contact, password: loginData.password };
+        try {
+            // Determine if contact is email or phone for payload
+            const isEmail = data.contact.includes("@");
+            const payload = isEmail
+                ? { contact: data.contact, email: data.contact, password: data.password }
+                : { contact: data.contact, password: data.password };
 
-                const res = await loginCustomer(payload);
-                if (res.success && res.data) {
-                    const d = res.data as any;
-                    // Usually API returns token + user inside data
-                    // Depending on what is available we save it. Let's assume generic token map
-                    setUser({
-                        id: String(d.user?.id || d.id || "c1"),
-                        name: d.user?.name || d.name || "Customer",
-                        contact: loginData.contact,
-                        email: isEmail ? loginData.contact : (d.user?.email || d.email),
-                        token: d.token || d.access_token,
-                        role: "customer"
-                    });
-                    router.push("/");
-                } else {
-                    setApiError(res.error || "Login failed");
-                    setShowRoleSelection(false);
-                }
-            } catch (err) {
-                setApiError("An unexpected error occurred.");
-                setShowRoleSelection(false);
+            const res = await loginCustomer(payload);
+            if (res.success && res.data) {
+                const d = res.data as any;
+                // Usually API returns token + user inside data
+                // Depending on what is available we save it. Let's assume generic token map
+                setUser({
+                    id: String(d.customer?.id || d.id || "c1"),
+                    name: d.customer?.name || d.name || "Customer",
+                    contact: data.contact,
+                    email: isEmail ? data.contact : (d.customer?.email || d.email),
+                    token: d.token || d.access_token,
+                    role: "customer"
+                });
+                router.back();
+            } else {
+                setApiError(res.error || "Login failed");
             }
+        } catch (err) {
+            setApiError("An unexpected error occurred.");
         }
     };
 
@@ -159,61 +135,7 @@ export default function LoginPage() {
                 </form>
             </div>
 
-            {/* Role Selection Overlay */}
-            {showRoleSelection && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white rounded-[2rem] p-8 max-w-sm w-full mx-4 shadow-2xl animate-in zoom-in-95 duration-200">
-                        <div className="text-center mb-8">
-                            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-sm">
-                                <i className="ri-user-smile-line text-3xl text-blue-600"></i>
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 tracking-tight">Who are you?</h3>
-                            <p className="text-sm text-gray-500 mt-2 font-medium">Select your account type to proceed to the appropriate dashboard.</p>
-                        </div>
 
-                        <div className="space-y-4">
-                            <button
-                                onClick={() => handleRoleSelection("customer")}
-                                className="w-full group relative overflow-hidden rounded-2xl border-2 border-gray-100 bg-white p-4 text-left transition-all hover:border-blue-600 hover:shadow-lg hover:-translate-y-1"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-colors shrink-0">
-                                        <i className="ri-user-line text-xl text-gray-500 group-hover:text-white transition-colors"></i>
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">Customer</p>
-                                        <p className="text-xs text-gray-500 font-medium">Book services & manage appts</p>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <button
-                                onClick={() => handleRoleSelection("merchant")}
-                                className="w-full group relative overflow-hidden rounded-2xl border-2 border-gray-100 bg-white p-4 text-left transition-all hover:border-gray-900 hover:shadow-lg hover:-translate-y-1"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-gray-900 transition-colors shrink-0">
-                                        <i className="ri-store-2-line text-xl text-gray-500 group-hover:text-white transition-colors"></i>
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-gray-900 text-lg group-hover:text-gray-900 transition-colors">Merchant</p>
-                                        <p className="text-xs text-gray-500 font-medium">Manage your venue & team</p>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-
-                        <div className="mt-6 text-center">
-                            <button
-                                onClick={() => setShowRoleSelection(false)}
-                                className="text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors py-2 px-4 rounded-full hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

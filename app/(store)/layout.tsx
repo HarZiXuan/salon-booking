@@ -8,6 +8,7 @@ import { useCartStore } from "@/global-store/cart";
 import { Button } from "@/components/ui/button/button";
 import { CompactSearchBar } from "@/components/layout/compact-search-bar";
 import { MainMenu } from "@/components/layout/main-menu";
+import { UserMenu } from "@/components/layout/user-menu";
 
 export default function StoreLayout({
     children,
@@ -45,25 +46,22 @@ export default function StoreLayout({
 
                     <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                         {(!isMounted || !user) ? (
-                            <Link href="/login" className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
-                                Log in
-                            </Link>
+                            <>
+                                <Link href="/login" className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
+                                    Log in
+                                </Link>
+
+                                <Link href="/for-business" className="hidden md:block">
+                                    <Button variant="outline" className="rounded-full border-gray-300 font-semibold px-6 h-10 hover:bg-gray-100 hover:text-black hover:border-gray-400 transition-all">
+                                        For partners
+                                    </Button>
+                                </Link>
+
+                                <MainMenu />
+                            </>
                         ) : (
-                            <div className="flex items-center gap-4">
-                                <span className="hidden md:inline-block text-sm font-semibold">Hi, {user.name}</span>
-                                <Button variant="ghost" className="font-semibold hover:bg-transparent hover:underline" onClick={handleLogout}>
-                                    Log out
-                                </Button>
-                            </div>
+                            <UserMenu />
                         )}
-
-                        <Link href="/for-business" className="hidden md:block">
-                            <Button variant="outline" className="rounded-full border-gray-300 font-semibold px-6 h-10 hover:bg-gray-100 hover:text-black hover:border-gray-400 transition-all">
-                                For partners
-                            </Button>
-                        </Link>
-
-                        <MainMenu />
                     </div>
                 </div>
             </header>

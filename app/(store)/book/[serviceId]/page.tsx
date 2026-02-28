@@ -48,7 +48,7 @@ export default function ServicePage() {
             setIsAdding(false);
             // Optionally redirect to cart or show success
             alert("Added to cart!");
-            router.push("/");
+            router.push("/kapas-beauty-spa");
         }, 500);
     };
 

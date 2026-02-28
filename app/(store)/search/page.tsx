@@ -13,6 +13,7 @@ function SearchResults() {
     const router = useRouter();
     const query = searchParams.get("q") || "";
     const [isMapVisible, setIsMapVisible] = useState(true);
+    const [activeVenueId, setActiveVenueId] = useState<string | null>(null);
 
     const [isLoading, setIsLoading] = useState(true);
     const [venuesData, setVenuesData] = useState<Record<string, unknown>[]>([]);
@@ -55,6 +56,8 @@ function SearchResults() {
         String(venue.categoryId || "").toLowerCase().includes(query.toLowerCase())
     );
 
+    const activeVenue = filteredVenues.find(v => String(v.id) === activeVenueId) || filteredVenues[0];
+
     if (isLoading) {
         return <SearchLoadingFallback />;
     }
@@ -94,7 +97,9 @@ function SearchResults() {
                         </div>
                     ) : (
                         filteredVenues.map((venue) => (
-                            <VenueCard key={String(venue.id)} venue={venue} servicesData={servicesData} />
+                            <div key={String(venue.id)} onMouseEnter={() => setActiveVenueId(String(venue.id))}>
+                                <VenueCard venue={venue} servicesData={servicesData} />
+                            </div>
                         ))
                     )}
                 </div>
@@ -102,30 +107,21 @@ function SearchResults() {
                 {/* Map Section */}
                 {isMapVisible && (
                     <div className="hidden lg:block w-[40%] bg-gray-100 relative border-l">
-                        {/* Placeholder Map - In a real app, integrate Google Maps / Mapbox here */}
-                        <div className="absolute inset-0 flex items-center justify-center bg-[#E5E9EC]">
-                            <div className="text-center">
-                                <i className="ri-map-pin-2-fill text-4xl text-gray-400 mb-2 block"></i>
-                                <p className="text-gray-500 font-medium">Map View</p>
-                                <p className="text-xs text-gray-400 mt-1">Interactive map would load here</p>
-                            </div>
-
-                            {/* Simulated Pins */}
-                            <div className="absolute top-1/4 left-1/3 transform -translate-x-1/2 -translate-y-1/2">
-                                <div className="bg-black text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-black">
-                                    5.0
+                        <div className="absolute inset-0 flex items-center justify-center bg-[#E5E9EC] overflow-hidden">
+                            {activeVenue ? (
+                                <iframe
+                                    src={`https://maps.google.com/maps?q=${encodeURIComponent(String(activeVenue.address || activeVenue.name || ""))}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                                    className="w-full h-full border-0"
+                                    loading="lazy"
+                                    allowFullScreen
+                                ></iframe>
+                            ) : (
+                                <div className="text-center">
+                                    <i className="ri-map-pin-2-fill text-4xl text-gray-400 mb-2 block"></i>
+                                    <p className="text-gray-500 font-medium">Map View</p>
+                                    <p className="text-xs text-gray-400 mt-1">Interactive map would load here</p>
                                 </div>
-                            </div>
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <div className="bg-black text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-black">
-                                    4.8
-                                </div>
-                            </div>
-                            <div className="absolute bottom-1/3 right-1/4 transform -translate-x-1/2 -translate-y-1/2">
-                                <div className="bg-black text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg relative after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-black">
-                                    4.9
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 )}
@@ -175,7 +171,7 @@ function VenueCard({ venue, servicesData }: { venue: Record<string, unknown>, se
                 <div className="w-full md:w-[280px] shrink-0">
                     <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100">
                         {/* Images */}
-                        <Link href={`/venues/${venueId}`} className="block w-full h-full">
+                        <Link href={`/${venueId}`} className="block w-full h-full">
                             <div
                                 className="flex transition-transform duration-300 ease-in-out h-full"
                                 style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
@@ -238,7 +234,7 @@ function VenueCard({ venue, servicesData }: { venue: Record<string, unknown>, se
                         <div className="flex justify-between items-start">
                             <div>
                                 <h3 className="text-xl font-bold text-gray-900 mb-1 leading-tight group-hover:underline decoration-2 underline-offset-4 decoration-gray-900 cursor-pointer">
-                                    <Link href={`/venues/${venueId}`}>{String(venue.name || "")}</Link>
+                                    <Link href={`/${venueId}`}>{String(venue.name || "")}</Link>
                                 </h3>
                                 <p className="text-sm text-gray-500 mb-2 truncate">{String(venue.address || "")}</p>
                             </div>
@@ -253,7 +249,7 @@ function VenueCard({ venue, servicesData }: { venue: Record<string, unknown>, se
                     {/* Services Preview */}
                     <div className="space-y-1 mb-4">
                         {services.map(service => (
-                            <Link key={String(service.id)} href={`/venues/${venueId}`} className="block">
+                            <Link key={String(service.id)} href={`/${venueId}`} className="block">
                                 <div className="flex items-center justify-between py-2 border-b border-gray-50 hover:bg-gray-50/50 rounded-lg px-2 -mx-2 transition-colors">
                                     <div className="min-w-0">
                                         <p className="font-semibold text-gray-900 text-sm truncate">{String(service.name)}</p>
@@ -268,7 +264,7 @@ function VenueCard({ venue, servicesData }: { venue: Record<string, unknown>, se
                     </div>
 
                     <Link
-                        href={`/venues/${venueId}`}
+                        href={`/${venueId}`}
                         className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
                     >
                         See all {totalServices} services

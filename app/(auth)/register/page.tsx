@@ -51,14 +51,14 @@ export default function RegisterPage() {
                 // If it doesn't return token, we should push to login page
                 if (d.token || d.access_token) {
                     setUser({
-                        id: String(d.user?.id || d.id || "2"),
+                        id: String(d.customer?.id || d.id || "2"),
                         name: data.name,
                         contact: data.contact,
                         email: data.email,
                         token: d.token || d.access_token,
                         role: "customer",
                     });
-                    router.push("/");
+                    router.back();
                 } else {
                     router.push("/login");
                 }

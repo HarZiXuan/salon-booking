@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const tabs = [
     { id: "services", label: "Services" },
     { id: "team", label: "Team" },
-    { id: "reviews", label: "Reviews" },
+    // { id: "reviews", label: "Reviews" },
     { id: "about", label: "About" },
 ];
 

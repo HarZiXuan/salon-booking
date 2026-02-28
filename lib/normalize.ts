@@ -13,6 +13,9 @@ export const normalizeShopToVenue = (shopData: any) => {
         openingHours: shopData.working_hours ? Object.entries(shopData.working_hours).map(([day, hours]: [string, any]) => ({
             day: day.charAt(0).toUpperCase() + day.slice(1),
             hours: hours.is_closed ? "Closed" : `${hours.open} - ${hours.close}`
-        })) : []
+        })) : [],
+        disableBookingCalendar: shopData.disable_booking_calendar || false,
+        phone: shopData.phone || "",
+        googleMapUrl: shopData.google_map_url || ""
     };
 };
