@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 const steps = ["Services", "Professional", "Time", "Confirm", "Details"];
 
 interface BookingWizardProps {
+    isOpen: boolean;
     onClose: () => void;
     initialServiceId?: string;
     venue: Record<string, unknown>; // Type this properly if possible, but any is fine for mock
@@ -16,10 +17,19 @@ interface BookingWizardProps {
     categories: { id: string, label: string }[];
 }
 
-export function BookingWizard({ onClose, initialServiceId, venue: venueData, services: servicesData, categories }: BookingWizardProps) {
+export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueData, services: servicesData, categories }: BookingWizardProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<string[]>(initialServiceId ? [initialServiceId] : []);
     const [activeCategory, setActiveCategory] = useState("all");
+
+    useEffect(() => {
+        if (isOpen && initialServiceId && !selectedServices.includes(initialServiceId)) {
+            setSelectedServices([initialServiceId]);
+            setSelectedStaff(null);
+            setSelectedTime(null);
+            setCurrentStep(0); // If they click a different specific service, reset to start or step 1
+        }
+    }, [isOpen, initialServiceId, selectedServices]);
 
     // State for Step 2 & 3
     const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
@@ -34,7 +44,7 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
 
     // State for Step 4 (Checkout form)
     const [customerName, setCustomerName] = useState("");
-    const [customerPhone, setCustomerPhone] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("+60");
     const [customerEmail, setCustomerEmail] = useState("");
     const [customerGender, setCustomerGender] = useState("Female");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -120,7 +130,7 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     date: selectedDate || "",
                     start_time: selectedTime || "",
                     name: customerName,
-                    number: customerPhone,
+                    number: customerPhone.replace(/^\+/, ""),
                     gender: customerGender,
                     email: customerEmail
                 });
@@ -146,7 +156,11 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                     }
                     setCurrentStep(4);
                 } else {
-                    setBookingError(res.error || "Failed to create booking.");
+                    let errMsg = res.error || "Failed to create booking.";
+                    if (errMsg.toLowerCase().includes("invalid signature") || errMsg.toLowerCase().includes("invalid phone")) {
+                        errMsg = "Invalid phone number format. Please check your phone number.";
+                    }
+                    setBookingError(errMsg);
                 }
             } catch (err) {
                 console.error(err);
@@ -174,6 +188,8 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
         if (currentStep === 3) return customerName.trim() !== "" && customerPhone.trim() !== "";
         return true;
     }
+
+    if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 bg-white flex flex-col md:flex-row animate-in fade-in duration-200">
@@ -466,7 +482,16 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                                         <input
                                             type="tel"
                                             value={customerPhone}
-                                            onChange={(e) => setCustomerPhone(e.target.value)}
+                                            onChange={(e) => {
+                                                let val = e.target.value;
+                                                if (!val.startsWith("+60")) {
+                                                    if (val === "+6" || val === "+" || val === "") val = "+60";
+                                                    else if (val.startsWith("60")) val = "+" + val;
+                                                    else if (val.startsWith("01")) val = "+6" + val;
+                                                    else val = "+60";
+                                                }
+                                                setCustomerPhone(val);
+                                            }}
                                             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-black focus:border-black outline-none"
                                             placeholder="+60123456789"
                                         />
@@ -517,6 +542,15 @@ export function BookingWizard({ onClose, initialServiceId, venue: venueData, ser
                             </div>
                             <h2 className="text-2xl font-bold">Booking Confirmed!</h2>
                             <p className="text-gray-500">Your booking has been successfully created.</p>
+
+                            <div className="bg-green-50 text-green-800 p-4 rounded-xl flex items-start gap-3 text-left mt-6 border border-green-100 shadow-sm max-w-md mx-auto">
+                                <i className="ri-whatsapp-line text-2xl text-green-600 mt-0.5"></i>
+                                <div>
+                                    <strong className="block text-sm font-bold">Check your WhatsApp!</strong>
+                                    <span className="text-sm">We have sent the booking details to your WhatsApp number. Please check your messages to review your appointment.</span>
+                                </div>
+                            </div>
+
 
                             {bookingResult && (
                                 <div className="mt-8 text-left bg-gray-50 p-6 rounded-xl space-y-3">

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button/button";
 import { CompactSearchBar } from "@/components/layout/compact-search-bar";
 import { MainMenu } from "@/components/layout/main-menu";
 import { UserMenu } from "@/components/layout/user-menu";
+import { fetchShopDetails } from "@/app/actions/shop";
 
 export default function StoreLayout({
     children,
@@ -26,16 +27,33 @@ export default function StoreLayout({
     };
 
     const [isMounted, setIsMounted] = useState(false);
+    const [shopLogo, setShopLogo] = useState<string | null>(null);
+
     useEffect(() => {
         setIsMounted(true);
-    }, []); return (
+        fetchShopDetails().then(res => {
+            if (res.success && res.data) {
+                const logo = (res.data as Record<string, unknown>).logo as string;
+                if (logo) setShopLogo(logo);
+            }
+        }).catch(() => { });
+    }, []);
+
+    return (
         <div className="flex min-h-screen flex-col">
             <header className="sticky top-0 z-50 w-full bg-white border-b transition-all duration-200">
                 <div className="container flex h-20 items-center justify-between px-4 gap-4">
                     {/* Logo */}
                     <div className="flex-shrink-0">
-                        <Link href="/" className="text-3xl font-bold tracking-tighter hover:text-gray-700 transition-colors">
-                            Zaloon
+                        <Link href="/" className="hover:opacity-80 transition-opacity flex items-center">
+                            {shopLogo ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={shopLogo} alt="Shop Logo" className="h-10 w-auto object-contain" />
+                            ) : (
+                                <span className="text-3xl font-bold tracking-tighter hover:text-gray-700 transition-colors">
+                                    Zaloon
+                                </span>
+                            )}
                         </Link>
                     </div>
 

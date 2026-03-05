@@ -13,7 +13,7 @@ import { useUserStore } from "@/global-store/user";
 import { loginCustomer } from "@/app/actions/auth";
 
 const schema = yup.object({
-    contact: yup.string().required("Phone number or email is required"),
+    contact: yup.string().required("Email address or phone number is required"),
     password: yup.string().required("Password is required"),
 }).required();
 
@@ -41,6 +41,7 @@ export default function LoginPage() {
 
             const res = await loginCustomer(payload);
             if (res.success && res.data) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const d = res.data as any;
                 // Usually API returns token + user inside data
                 // Depending on what is available we save it. Let's assume generic token map
@@ -54,88 +55,109 @@ export default function LoginPage() {
                 });
                 router.back();
             } else {
-                setApiError(res.error || "Login failed");
+                setApiError("Authentication failed. " + (res.error || "Please check your credentials."));
             }
         } catch (err) {
-            setApiError("An unexpected error occurred.");
+            setApiError("An unexpected error occurred. Please try again later.");
         }
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 relative">
-            <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-                <div className="mb-8">
-                    <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-gray-900">
-                        Welcome back
-                    </h2>
-                    <p className="mt-3 text-center text-sm text-gray-500 font-medium">
-                        Please sign in to continue or{" "}
-                        <Link href="/register" className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
-                            create a new account
-                        </Link>
-                    </p>
+        <div className="flex min-h-screen bg-white font-sans overflow-hidden">
+            {/* Left Side - Form Container */}
+            <div className="w-full lg:w-1/2 flex flex-col relative h-screen overflow-y-auto pt-[60px] pb-6">
+                <div className="absolute top-6 left-6">
+                    <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors inline-flex items-center justify-center">
+                        <i className="ri-arrow-left-line text-[26px] font-normal text-black leading-none"></i>
+                    </button>
                 </div>
 
-                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-                    {apiError && (
-                        <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-200">
-                            {apiError}
-                        </div>
-                    )}
-                    <div className="space-y-5">
-                        <div className="relative">
-                            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5 block">Email Address or Phone</label>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i className="ri-user-line text-lg text-gray-400 group-focus-within:text-blue-600 transition-colors"></i>
-                                </div>
-                                <Input
-                                    type="text"
-                                    placeholder="Enter your email or phone"
-                                    {...register("contact")}
-                                    className={`pl-11 h-12 bg-gray-50 border-gray-200 focus:bg-white hover:bg-gray-100/50 transition-colors rounded-xl ${errors.contact ? "border-red-500 ring-1 ring-red-500" : ""}`}
-                                />
+                <div className="flex-1 px-6 flex flex-col justify-center items-center w-full max-w-[480px] mx-auto">
+                    <div className="mb-8 w-full">
+                        <h2 className="text-center text-[28px] font-bold tracking-tight text-black leading-tight">
+                            Zaloon for customers
+                        </h2>
+                        <p className="mt-3 text-center text-[15px] text-gray-500 font-medium leading-snug">
+                            Create an account or log in to book and manage your appointments.
+                        </p>
+                    </div>
+
+                    <form className="space-y-4 w-full" onSubmit={handleSubmit(onSubmit)}>
+                        {apiError && (
+                            <div className="p-3 bg-red-50 text-red-600 text-[14px] font-medium rounded-xl border border-red-200 text-center mb-4">
+                                {apiError}
                             </div>
+                        )}
+
+                        <div className="space-y-1">
+                            <Input
+                                type="text"
+                                placeholder="Email address or phone number"
+                                {...register("contact")}
+                                className={`h-[56px] bg-white border focus-visible:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors rounded-[12px] text-[16px] px-4 ${errors.contact ? "border-red-500 focus:border-red-500 focus:ring-red-500 text-red-600" : "border-gray-300"}`}
+                            />
                             {errors.contact && (
-                                <p className="mt-1.5 text-xs font-semibold text-red-500"><i className="ri-error-warning-line mr-1"></i>{errors.contact.message}</p>
+                                <p className="text-[13px] font-medium text-red-500 mt-1">{errors.contact.message}</p>
                             )}
                         </div>
 
-                        <div className="relative">
-                            <div className="flex justify-between items-center mb-1.5">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block">Password</label>
-                                <Link href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Forgot?</Link>
-                            </div>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <i className="ri-lock-line text-lg text-gray-400 group-focus-within:text-blue-600 transition-colors"></i>
-                                </div>
-                                <Input
-                                    type="password"
-                                    placeholder="Enter your password"
-                                    {...register("password")}
-                                    className={`pl-11 h-12 bg-gray-50 border-gray-200 focus:bg-white hover:bg-gray-100/50 transition-colors rounded-xl ${errors.password ? "border-red-500 ring-1 ring-red-500" : ""}`}
-                                />
-                            </div>
+                        <div className="space-y-1 relative">
+                            <Input
+                                type="password"
+                                placeholder="Password"
+                                {...register("password")}
+                                className={`h-[56px] bg-white border focus-visible:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors rounded-[12px] text-[16px] px-4 ${errors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500 text-red-600" : "border-gray-300"}`}
+                            />
                             {errors.password && (
-                                <p className="mt-1.5 text-xs font-semibold text-red-500"><i className="ri-error-warning-line mr-1"></i>{errors.password.message}</p>
+                                <p className="text-[13px] font-medium text-red-500 mt-1">{errors.password.message}</p>
                             )}
                         </div>
-                    </div>
 
-                    <div className="pt-2">
-                        <Button
-                            type="submit"
-                            className="w-full h-12 rounded-full text-base font-bold bg-gray-900 hover:bg-black text-white shadow-lg shadow-gray-900/10 transition-all hover:scale-[1.02]"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Please wait..." : "Sign in to account"}
-                        </Button>
+                        <div className="pt-4">
+                            <Button
+                                type="submit"
+                                className="w-full h-[56px] rounded-full text-[17px] font-bold bg-black hover:bg-black/90 text-white transition-all shadow-md"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Please wait..." : "Continue"}
+                            </Button>
+                        </div>
+                    </form>
+
+                    <div className="mt-8 text-center flex flex-col gap-4 w-full">
+                        <Link href="/register" className="w-full h-[56px] rounded-full text-[17px] font-bold border border-gray-300 bg-white hover:bg-gray-50 text-black transition-all flex items-center justify-center shadow-sm">
+                            Create an account
+                        </Link>
+
+                        <div className="mt-4 text-[16px] font-bold text-black flex flex-col gap-1">
+                            Have a business account?
+                            <Link href="/for-business" className="font-normal text-[15px] text-[#635BFF] hover:text-[#5249ea] transition-colors">
+                                Sign in as a professional
+                            </Link>
+                        </div>
                     </div>
-                </form>
+                </div>
+
+                {/* Bottom layout */}
+                <div className="mt-auto px-6 w-full flex justify-center gap-8 pt-8 text-[#635BFF] font-medium text-[14px]">
+                    <button className="flex items-center gap-1.5 hover:text-[#5249ea] transition-colors">
+                        <i className="ri-global-line text-[18px]"></i> English
+                    </button>
+                    <Link href="/help" className="flex items-center gap-1.5 hover:text-[#5249ea] transition-colors">
+                        <i className="ri-customer-service-2-line text-[18px]"></i> Help and support
+                    </Link>
+                </div>
             </div>
 
-
+            {/* Right Side - Hero Image */}
+            <div className="hidden lg:block lg:w-1/2 relative bg-gray-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80"
+                    alt="Salon Lifestyle"
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+            </div>
         </div>
     );
 }

@@ -111,6 +111,23 @@ export default function StorePage() {
         loadData();
     }, []);
 
+    useEffect(() => {
+        if (venue) {
+            document.title = String(venue.name || "Zaloon");
+            let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+            if (venue.image) {
+                if (link) {
+                    link.href = String(venue.image);
+                } else {
+                    link = document.createElement("link");
+                    link.rel = "icon";
+                    link.href = String(venue.image);
+                    document.head.appendChild(link);
+                }
+            }
+        }
+    }, [venue]);
+
     const handleBook = (serviceId?: string) => {
         if (venue?.disableBookingCalendar) {
             const service = serviceId ? venueServices.find((s) => String(s.id) === serviceId) : null;
@@ -201,20 +218,10 @@ export default function StorePage() {
             {/* Hero Section */}
             {/* Hero Section */}
             {/* Mobile Hero Layout */}
-            <div className="md:hidden pb-4">
-                {/* Breadcrumbs */}
-                <div className="px-4 py-3 text-xs text-gray-500 font-medium flex items-center gap-1 overflow-x-auto whitespace-nowrap no-scrollbar">
-                    <span>Home</span>
-                    <span className="text-gray-300">•</span>
-                    <span>Barbers</span>
-                    <span className="text-gray-300">•</span>
-                    <span>Johor Bahru</span>
-                    <span className="text-gray-300">•</span>
-                    <span className="truncate max-w-[150px]">{String(venue.name || "")}</span>
-                </div>
-
+            {/* Mobile Hero Layout */}
+            <div className="md:hidden p-4 pb-4">
                 {/* Mobile Image Hero */}
-                <div className="relative w-full aspect-[4/3] bg-gray-100">
+                <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm">
                     <div
                         ref={scrollContainerRef}
                         onScroll={handleScroll}
@@ -229,72 +236,88 @@ export default function StorePage() {
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                     >
                         {((venue.images as string[]) || []).map((img, index) => (
-                            <div key={index} className="flex-shrink-0 w-full h-full snap-center">
+                            <div key={index} className="flex-shrink-0 w-full h-full snap-center relative">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img src={img} alt={`${String(venue.name || "")} - ${index + 1}`} className="w-full h-full object-cover" />
                             </div>
                         ))}
                     </div>
 
-                    {/* Overlay Buttons */}
-                    <div className="absolute top-4 left-4 z-10">
-                        <Button
-                            variant="secondary"
-                            size="icon"
-                            className="rounded-full w-10 h-10 bg-white shadow-sm hover:bg-gray-100"
-                            onClick={() => router.back()}
-                        >
-                            <i className="ri-arrow-left-line text-xl"></i>
-                        </Button>
-                    </div>
-                    <div className="absolute top-4 right-4 z-10 flex gap-3">
-                        <Button variant="secondary" size="icon" className="rounded-full w-10 h-10 bg-white shadow-sm hover:bg-gray-100">
-                            <i className="ri-share-box-line text-xl"></i>
-                        </Button>
-                        <Button variant="secondary" size="icon" className="rounded-full w-10 h-10 bg-white shadow-sm hover:bg-gray-100">
-                            <i className="ri-heart-line text-xl"></i>
-                        </Button>
-                    </div>
+                    {/* Dark gradient overlay for text readability */}
+                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
 
-                    {/* Image Counter */}
-                    <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">
-                        {currentImageIndex + 1}/{((venue.images as string[]) || []).length}
+                    {/* Top Right Actions */}
+                    <div className="absolute top-4 right-4 z-20 flex gap-2">
+                        <button
+                            onClick={() => {
+                                if (navigator.share) {
+                                    navigator.share({ title: String(venue.name || ""), url: window.location.href }).catch(() => { });
+                                }
+                            }}
+                            className="w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all"
+                        >
+                            <i className="ri-share-line text-lg"></i>
+                        </button>
                     </div>
                 </div>
 
                 {/* Mobile Info Section */}
-                <div className="px-4 pt-4 space-y-3">
-                    <h1 className="text-2xl font-bold leading-tight text-gray-900">{String(venue.name || "")}</h1>
-
-                    <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm bg-gray-100 px-1.5 py-0.5 rounded flex items-center gap-1">
-                            {String(venue.rating || "5.0")} <i className="ri-star-fill text-yellow-500 text-xs"></i>
-                        </span>
-                        <span className="text-blue-600 text-sm font-semibold">({String(venue.reviews || "0")})</span>
+                <div className="pt-4 space-y-4">
+                    {/* Header: Logo and Title */}
+                    <div className="flex items-center gap-3">
+                        {Boolean(venue.image) && (
+                            <div className="w-[50px] h-[50px] rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={String(venue.image)}
+                                    alt={String(venue.name || "Logo")}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        )}
+                        <h1 className="text-2xl font-bold leading-tight text-gray-900">{String(venue.name || "")}</h1>
+                    </div>
+                    {/* Address & Rating */}
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-1.5 text-[13px] text-gray-900 flex-1 pt-1 font-medium">
+                            <i className="ri-map-pin-fill text-black mt-[1px]"></i>
+                            <span className="line-clamp-2 leading-snug">{String(venue.address || "")}</span>
+                        </div>
                     </div>
 
-                    <div className="text-sm text-gray-500 flex items-center gap-2">
-                        <span>10.4km</span>
-                        <span>•</span>
-                        <span className="line-clamp-1">{String(venue.address || "")}</span>
-                    </div>
-
-                    <div className="text-sm">
-                        <span className={cn("font-medium", isOpenRightNow ? "text-green-600" : "text-red-600")}>
+                    {/* Details Row */}
+                    <div className="flex flex-wrap items-center text-[12px] text-gray-800 gap-2 font-medium bg-white">
+                        <span className={cn(isOpenRightNow ? "text-gray-900" : "text-red-600 font-bold")}>
                             {isOpenRightNow ? "Open" : "Closed"}
                         </span>
-                        {openStatusText && <span className="text-gray-500 ml-1">{openStatusText}</span>}
+
+                        {isOpenRightNow && (
+                            <>
+                                <span className="w-1 h-1 rounded-full bg-gray-200"></span>
+                                <span>{String(todaySchedule?.hours || openStatusText || "Hours unknown")}</span>
+                            </>
+                        )}
+
+                        {Boolean(venue.phone) && (
+                            <>
+                                <span className="w-1 h-1 rounded-full bg-gray-200"></span>
+                                <a
+                                    href={`https://wa.me/${String(venue.phone).replace(/[^0-9]/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors font-semibold"
+                                >
+                                    <i className="ri-whatsapp-line text-[14px]"></i>
+                                    {String(venue.phone)}
+                                </a>
+                            </>
+                        )}
                     </div>
 
-                    {/* Tags */}
-                    <div className="flex items-center gap-3 pt-1">
-                        <span className="px-3 py-1 rounded-full text-xs font-bold text-purple-700 border border-purple-200 bg-purple-50">
-                            Featured
-                        </span>
-                        <span className="px-3 py-1 rounded-full text-xs font-bold text-green-700 border border-green-200 bg-green-50">
-                            Deals
-                        </span>
-                    </div>
+                    {/* See all photos button */}
+                    <button className="w-full py-2.5 rounded-[12px] border border-gray-300 font-bold text-[13px] text-black hover:bg-gray-50 transition-colors bg-white">
+                        See Photo
+                    </button>
                 </div>
             </div>
 
@@ -314,7 +337,14 @@ export default function StorePage() {
 
                     {/* Top Right Actions */}
                     <div className="absolute top-6 right-6 flex gap-3">
-                        <button className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all">
+                        <button
+                            onClick={() => {
+                                if (navigator.share) {
+                                    navigator.share({ title: String(venue.name || ""), url: window.location.href }).catch(() => { });
+                                }
+                            }}
+                            className="w-10 h-10 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all"
+                        >
                             <i className="ri-share-line text-lg"></i>
                         </button>
                     </div>
@@ -347,11 +377,6 @@ export default function StorePage() {
 
                             {/* Details Row */}
                             <div className="flex items-center text-sm text-white/90 gap-2 md:gap-3 font-medium mt-1">
-                                <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded backdrop-blur-md">
-                                    <i className="ri-star-fill text-yellow-400 mb-0.5 text-xs"></i>
-                                    {String(venue.rating || "5.0")}
-                                </span>
-                                <span className="w-1 h-1 rounded-full bg-white/40"></span>
                                 <span className={cn(isOpenRightNow ? "text-green-400" : "text-red-500 font-bold")}>
                                     {isOpenRightNow ? "Open" : "Closed"}
                                 </span>
@@ -548,15 +573,14 @@ export default function StorePage() {
             </div>
 
             {/* Booking Wizard Modal */}
-            {isBookingOpen && (
-                <BookingWizard
-                    onClose={() => setIsBookingOpen(false)}
-                    initialServiceId={initialServiceId}
-                    venue={venue}
-                    services={venueServices}
-                    categories={availableCategories}
-                />
-            )}
+            <BookingWizard
+                isOpen={isBookingOpen}
+                onClose={() => setIsBookingOpen(false)}
+                initialServiceId={initialServiceId}
+                venue={venue}
+                services={venueServices}
+                categories={availableCategories}
+            />
         </div>
     );
 }
