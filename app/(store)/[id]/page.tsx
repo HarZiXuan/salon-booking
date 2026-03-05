@@ -7,9 +7,16 @@ import { TeamList } from "@/components/venue/team-list";
 import { useState, useRef, useEffect } from "react";
 import { BookingWizard } from "@/components/venue/booking/wizard";
 import { fetchShopDetails, fetchServices, fetchCategories, fetchAllSpecialists } from "@/app/actions/shop";
+import { getPoints, getMyVouchers } from "@/app/actions/loyalty";
 import { normalizeShopToVenue } from "@/lib/normalize";
 import { cn } from "@/lib/utils";
-import { useParams, notFound, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { getShopSlugFromMerchantUrl } from "@/lib/stores";
+import { useUserStore } from "@/global-store/user";
+import { RedeemModal } from "@/components/loyalty/redeem-modal";
+import { VoucherCard } from "@/components/loyalty/voucher-card";
+import type { ClaimedVoucher } from "@/lib/loyalty-types";
 
 export default function StorePage() {
     const params = useParams();
@@ -27,6 +34,11 @@ export default function StorePage() {
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
+
+    const { user } = useUserStore();
+    const [loyaltyPoints, setLoyaltyPoints] = useState<number | null>(null);
+    const [myVouchers, setMyVouchers] = useState<ClaimedVoucher[]>([]);
+    const [redeemModalOpen, setRedeemModalOpen] = useState(false);
 
     // Update active index on scroll
     const handleScroll = () => {
@@ -64,17 +76,19 @@ export default function StorePage() {
         }
     };
 
-    const venueId = params?.id as string;
+    const merchantSlug = params?.id as string;
+    const shopSlug = getShopSlugFromMerchantUrl(merchantSlug);
 
     useEffect(() => {
+        if (!shopSlug) return;
         async function loadData() {
             setIsLoading(true);
             try {
                 const [shopRes, servicesRes, categoriesRes, specialistsRes] = await Promise.all([
-                    fetchShopDetails(),
-                    fetchServices(),
-                    fetchCategories(),
-                    fetchAllSpecialists()
+                    fetchShopDetails(shopSlug),
+                    fetchServices(undefined, shopSlug),
+                    fetchCategories(shopSlug),
+                    fetchAllSpecialists(shopSlug)
                 ]);
 
                 if (shopRes.success && shopRes.data) {
@@ -109,7 +123,26 @@ export default function StorePage() {
             }
         }
         loadData();
-    }, []);
+    }, [shopSlug]);
+
+    useEffect(() => {
+        if (!shopSlug || !user?.token) {
+            setLoyaltyPoints(null);
+            setMyVouchers([]);
+            return;
+        }
+        (async () => {
+            const [pointsRes, vouchersRes] = await Promise.all([
+                getPoints(shopSlug, user.token),
+                getMyVouchers(shopSlug, user.token),
+            ]);
+            if (pointsRes.success && pointsRes.data) setLoyaltyPoints(pointsRes.data.points);
+            else setLoyaltyPoints(null);
+            if (vouchersRes.success && vouchersRes.data)
+                setMyVouchers(vouchersRes.data.vouchers as ClaimedVoucher[]);
+            else setMyVouchers([]);
+        })();
+    }, [shopSlug, user?.token]);
 
     useEffect(() => {
         if (venue) {
@@ -144,6 +177,16 @@ export default function StorePage() {
         setInitialServiceId(serviceId);
         setIsBookingOpen(true);
     };
+
+    if (merchantSlug && !shopSlug) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <h1 className="text-2xl font-bold mb-4">Venue not found</h1>
+                <p className="text-gray-500">The merchant is not configured.</p>
+                <Button className="mt-4" onClick={() => window.location.href = '/'}>Go Home</Button>
+            </div>
+        );
+    }
 
     if (isLoading) {
         return (
@@ -318,6 +361,46 @@ export default function StorePage() {
                     <button className="w-full py-2.5 rounded-[12px] border border-gray-300 font-bold text-[13px] text-black hover:bg-gray-50 transition-colors bg-white">
                         See Photo
                     </button>
+
+                    {/* Membership card (mobile) */}
+                    <div className="rounded-2xl overflow-hidden border border-amber-300/50 shadow-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 text-amber-950 ring-2 ring-amber-300/40">
+                        <div className="p-4 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                                {venue.image && (
+                                    <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={String(venue.image)} alt="" className="w-full h-full object-contain" />
+                                    </div>
+                                )}
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-amber-900/80 uppercase tracking-wider">Rewards</p>
+                                    <p className="font-bold text-amber-950 truncate">{String(venue.name || "")}</p>
+                                </div>
+                            </div>
+                            {user ? (
+                                <div className="text-right shrink-0">
+                                    <p className="text-2xl font-bold tabular-nums text-amber-950">{loyaltyPoints !== null ? loyaltyPoints : "—"}</p>
+                                    <p className="text-xs text-amber-900/80">points</p>
+                                </div>
+                            ) : null}
+                        </div>
+                        <div className="px-4 pb-4 flex flex-col gap-2">
+                            {user ? (
+                                <>
+                                    <Button size="sm" className="w-full rounded-xl bg-amber-950 text-white hover:bg-amber-900" onClick={() => setRedeemModalOpen(true)}>
+                                        <i className="ri-coupon-line mr-2" /> Claim voucher
+                                    </Button>
+                                    <Link href="/account/wallet" className="text-center text-xs text-amber-900/90 hover:text-amber-950">View all rewards</Link>
+                                </>
+                            ) : (
+                                <Link href="/login">
+                                    <Button size="sm" variant="outline" className="w-full rounded-xl border-amber-800/50 text-amber-950 hover:bg-amber-500/30">
+                                        Log in to earn points
+                                    </Button>
+                                </Link>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -559,6 +642,46 @@ export default function StorePage() {
                                 <span className="flex items-center justify-center gap-2"><i className="ri-whatsapp-line text-xl"></i> Book via WhatsApp</span>
                             ) : "Book Now"}
                         </Button>
+
+                        {/* Membership card (desktop sidebar – under Book) */}
+                        <div className="rounded-2xl overflow-hidden border border-amber-300/50 shadow-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 text-amber-950 ring-2 ring-amber-300/40">
+                            <div className="p-4 flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    {venue.image && (
+                                        <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={String(venue.image)} alt="" className="w-full h-full object-contain" />
+                                        </div>
+                                    )}
+                                    <div className="min-w-0">
+                                        <p className="text-[10px] font-medium text-amber-900/80 uppercase tracking-wider">Rewards</p>
+                                        <p className="font-bold text-sm text-amber-950 truncate">{String(venue.name || "")}</p>
+                                    </div>
+                                </div>
+                                {user && (
+                                    <div className="text-right shrink-0">
+                                        <p className="text-xl font-bold tabular-nums text-amber-950">{loyaltyPoints !== null ? loyaltyPoints : "—"}</p>
+                                        <p className="text-[10px] text-amber-900/80">pts</p>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="px-4 pb-4">
+                                {user ? (
+                                    <>
+                                        <Button size="sm" className="w-full rounded-xl bg-amber-950 text-white hover:bg-amber-900 h-9 text-sm" onClick={() => setRedeemModalOpen(true)}>
+                                            <i className="ri-coupon-line mr-1.5" /> Claim voucher
+                                        </Button>
+                                        <Link href="/account/wallet" className="block text-center text-xs text-amber-900/90 hover:text-amber-950 mt-2">View all rewards</Link>
+                                    </>
+                                ) : (
+                                    <Link href="/login">
+                                        <Button size="sm" variant="outline" className="w-full rounded-xl border-amber-800/50 text-amber-950 hover:bg-amber-500/30 h-9 text-sm">
+                                            Log in to earn points
+                                        </Button>
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -580,7 +703,30 @@ export default function StorePage() {
                 venue={venue}
                 services={venueServices}
                 categories={availableCategories}
+                shopSlug={shopSlug}
+                merchantSlug={merchantSlug}
             />
+
+            {/* Redeem voucher modal */}
+            {shopSlug && (
+                <RedeemModal
+                    isOpen={redeemModalOpen}
+                    onClose={() => setRedeemModalOpen(false)}
+                    shopSlug={shopSlug}
+                    merchantName={String(venue?.name || "")}
+                    token={user?.token}
+                    onRedeemed={async () => {
+                        if (!user?.token) return;
+                        const [pointsRes, vouchersRes] = await Promise.all([
+                            getPoints(shopSlug, user.token),
+                            getMyVouchers(shopSlug, user.token),
+                        ]);
+                        if (pointsRes.success && pointsRes.data) setLoyaltyPoints(pointsRes.data.points);
+                        if (vouchersRes.success && vouchersRes.data)
+                            setMyVouchers(vouchersRes.data.vouchers as ClaimedVoucher[]);
+                    }}
+                />
+            )}
         </div>
     );
 }

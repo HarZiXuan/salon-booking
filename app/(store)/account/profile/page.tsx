@@ -1,6 +1,26 @@
 "use client";
 
+import { useUserStore } from "@/global-store/user";
+import { useEffect, useState } from "react";
+
 export default function ProfilePage() {
+    const user = useUserStore((s) => s.user);
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+
+    useEffect(() => {
+        if (user) {
+            setFullName(user.name || "");
+            setEmail(user.email || "");
+            const c = (user.contact || "").trim();
+            if (c.startsWith("+")) setPhone(c);
+            else if (c.startsWith("60")) setPhone("+" + c);
+            else if (c.startsWith("0")) setPhone("+6" + c);
+            else setPhone(c ? "+60" + c.replace(/^60/, "") : "");
+        }
+    }, [user?.id, user?.name, user?.email, user?.contact]);
+
     return (
         <div className="flex flex-col min-h-full p-8 animate-in fade-in duration-300">
             <div className="mb-8">
@@ -23,15 +43,30 @@ export default function ProfilePage() {
                 <div className="space-y-6">
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                        <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" defaultValue="Test Customer" />
+                        <input
+                            type="text"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                        <input type="email" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" defaultValue="customer@example.com" />
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                        <input type="tel" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="+60 12-345 6789" />
+                        <input
+                            type="tel"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        />
                     </div>
 
                     <div className="pt-4 border-t border-gray-100">

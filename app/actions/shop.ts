@@ -2,9 +2,9 @@
 
 import { apiFetch } from "@/lib/api";
 
-export async function fetchShopDetails() {
+export async function fetchShopDetails(shopSlug?: string) {
     try {
-        const response = await apiFetch<Record<string, unknown>>("");
+        const response = await apiFetch<Record<string, unknown>>("", { shopSlug });
         if (response.success && response.data) {
             return { success: true, data: response.data };
         }
@@ -17,9 +17,9 @@ export async function fetchShopDetails() {
     }
 }
 
-export async function fetchCategories() {
+export async function fetchCategories(shopSlug?: string) {
     try {
-        const response = await apiFetch<Record<string, unknown>>("/categories");
+        const response = await apiFetch<Record<string, unknown>>("/categories", { shopSlug });
         if (response.success && response.data) {
             const dataObj = response.data as Record<string, unknown>;
             if (Array.isArray(dataObj.data)) {
@@ -36,9 +36,9 @@ export async function fetchCategories() {
     }
 }
 
-export async function fetchServices(category?: string) {
+export async function fetchServices(category?: string, shopSlug?: string) {
     try {
-        const options = category ? { params: { category } } : {};
+        const options = category ? { params: { category }, shopSlug } : { shopSlug };
         const response = await apiFetch<Record<string, unknown>>("/services", options);
         if (response.success && response.data) {
             const dataObj = response.data as Record<string, unknown>;
@@ -56,9 +56,9 @@ export async function fetchServices(category?: string) {
     }
 }
 
-export async function fetchAllSpecialists() {
+export async function fetchAllSpecialists(shopSlug?: string) {
     try {
-        const response = await apiFetch<Record<string, unknown>>("/specialists/all");
+        const response = await apiFetch<Record<string, unknown>>("/specialists/all", { shopSlug });
         if (response.success && response.data) {
             const dataObj = response.data as Record<string, unknown>;
             if (Array.isArray(dataObj.data)) {
@@ -75,7 +75,7 @@ export async function fetchAllSpecialists() {
     }
 }
 
-export async function fetchServiceSpecialists(serviceId: string, gender?: string) {
+export async function fetchServiceSpecialists(serviceId: string, gender?: string, shopSlug?: string) {
     try {
         const data: Record<string, unknown> = { service_id: serviceId };
         if (gender && gender !== "Any") {
@@ -83,7 +83,8 @@ export async function fetchServiceSpecialists(serviceId: string, gender?: string
         }
         const response = await apiFetch<Record<string, unknown>>("/specialists", {
             method: "POST",
-            data
+            data,
+            shopSlug
         });
         if (response.success && response.data) {
             const dataObj = response.data as Record<string, unknown>;
@@ -101,7 +102,7 @@ export async function fetchServiceSpecialists(serviceId: string, gender?: string
     }
 }
 
-export async function fetchAvailability(serviceId: string, specialistId: string, date: string) {
+export async function fetchAvailability(serviceId: string, specialistId: string, date: string, shopSlug?: string) {
     try {
         const data: Record<string, unknown> = {
             service_id: serviceId,
@@ -110,7 +111,8 @@ export async function fetchAvailability(serviceId: string, specialistId: string,
         };
         const response = await apiFetch<Record<string, unknown>>("/availability/timeslots", {
             method: "POST",
-            data
+            data,
+            shopSlug
         });
         if (response.success && response.data) {
             const dataObj = response.data as Record<string, unknown>;
@@ -140,13 +142,14 @@ export interface BookingPayload {
     email?: string;
 }
 
-export async function createBooking(payload: BookingPayload) {
+export async function createBooking(payload: BookingPayload, shopSlug?: string) {
     try {
         const data: Record<string, unknown> = { ...payload as unknown as Record<string, unknown> };
 
         const response = await apiFetch<Record<string, unknown>>("/bookings", {
             method: "POST",
-            data
+            data,
+            shopSlug
         });
 
         if (response.success) {
@@ -163,10 +166,11 @@ export async function createBooking(payload: BookingPayload) {
     }
 }
 
-export async function fetchBookingDetails(bookingId: string) {
+export async function fetchBookingDetails(bookingId: string, shopSlug?: string) {
     try {
         const response = await apiFetch<Record<string, unknown>>(`/bookings/${bookingId}`, {
-            method: "GET"
+            method: "GET",
+            shopSlug
         });
 
         if (response.success && response.data) {

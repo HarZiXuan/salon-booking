@@ -4,6 +4,8 @@ import { fetchServiceSpecialists, fetchAvailability, createBooking, fetchBooking
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/global-store/user";
+import { addMyBookingRef } from "@/lib/my-bookings";
 
 // Steps
 const steps = ["Services", "Professional", "Time", "Confirm", "Details"];
@@ -15,9 +17,14 @@ interface BookingWizardProps {
     venue: Record<string, unknown>; // Type this properly if possible, but any is fine for mock
     services: Record<string, unknown>[];
     categories: { id: string, label: string }[];
+    /** Store slug for API credentials (e.g. "service", "yishun"). */
+    shopSlug?: string;
+    /** Merchant URL slug for linking from appointments (e.g. "kapas-beauty-spa"). */
+    merchantSlug?: string;
 }
 
-export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueData, services: servicesData, categories }: BookingWizardProps) {
+export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueData, services: servicesData, categories, shopSlug, merchantSlug }: BookingWizardProps) {
+    const user = useUserStore((state) => state.user);
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<string[]>(initialServiceId ? [initialServiceId] : []);
     const [activeCategory, setActiveCategory] = useState("all");
@@ -51,13 +58,28 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
     const [bookingError, setBookingError] = useState("");
     const [bookingResult, setBookingResult] = useState<Record<string, unknown> | null>(null);
 
+    // Pre-fill full name and phone from logged-in customer when wizard opens
+    useEffect(() => {
+        if (isOpen && user) {
+            if (user.name) setCustomerName(user.name);
+            if (user.contact) {
+                const c = user.contact.trim();
+                if (c.startsWith("+")) setCustomerPhone(c);
+                else if (c.startsWith("60")) setCustomerPhone("+" + c);
+                else if (c.startsWith("0")) setCustomerPhone("+6" + c);
+                else setCustomerPhone("+60" + c.replace(/^60/, ""));
+            }
+            if (user.email) setCustomerEmail(user.email);
+        }
+    }, [isOpen, user?.id]);
+
     // Fetch staff when moving to step 1
     useEffect(() => {
         if (currentStep === 1 && selectedServices.length > 0) {
             const loadStaff = async () => {
                 setIsLoadingStaff(true);
                 try {
-                    const res = await fetchServiceSpecialists(selectedServices[0]);
+                    const res = await fetchServiceSpecialists(selectedServices[0], undefined, shopSlug);
                     if (res.success && res.data) {
                         setAvailableStaff(res.data as Record<string, unknown>[]);
                     } else {
@@ -80,7 +102,7 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                 setIsLoadingTimeslots(true);
                 try {
                     const specialistId = selectedStaff === "any" ? "" : selectedStaff;
-                    const res = await fetchAvailability(selectedServices[0], specialistId, selectedDate);
+                    const res = await fetchAvailability(selectedServices[0], specialistId, selectedDate, shopSlug);
                     if (res.success && res.data) {
                         const dataObj = res.data as Record<string, unknown>;
                         if (Array.isArray(dataObj.timeslots)) {
@@ -133,14 +155,14 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                     number: customerPhone.replace(/^\+/, ""),
                     gender: customerGender,
                     email: customerEmail
-                });
+                }, shopSlug);
 
                 if (res.success && res.data) {
                     const resData = res.data as any;
                     const bId = resData.id || resData.data?.id;
                     if (bId) {
                         try {
-                            const detailsRes = await fetchBookingDetails(bId);
+                            const detailsRes = await fetchBookingDetails(bId, shopSlug);
                             if (detailsRes.success && detailsRes.data) {
                                 // Assume data or data.data holds the booking details
                                 const detailData = detailsRes.data as any;
@@ -150,6 +172,9 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                             }
                         } catch (e) {
                             setBookingResult(resData.data || resData);
+                        }
+                        if (user?.id && shopSlug) {
+                            addMyBookingRef(user.id, { id: String(bId), shopSlug, merchantSlug });
                         }
                     } else {
                         setBookingResult(resData.data || resData);

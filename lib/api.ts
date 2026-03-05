@@ -1,19 +1,24 @@
 import CryptoJS from 'crypto-js';
+import { getStoreCredentials } from '@/lib/stores';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-const SHOP_SLUG = process.env.NEXT_PUBLIC_SHOP_SLUG || "";
-const PRODUCT_KEY = process.env.API_PRODUCT_KEY || "";
-const SECRET_KEY = process.env.API_SECRET_KEY || "";
 
 type FetchOptions = RequestInit & {
     params?: Record<string, string>;
     data?: unknown;
     token?: string;
+    /** When set, use this store's slug and credentials instead of default env. */
+    shopSlug?: string;
 };
 
 export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
-    const { params, data, token, ...init } = options;
-    const url = new URL(`${BASE_URL}/shops/${SHOP_SLUG}${endpoint}`);
+    const { params, data, token, shopSlug, ...init } = options;
+    const credentials = getStoreCredentials(shopSlug);
+    if (!credentials) {
+        throw new Error(shopSlug ? `Unknown store: ${shopSlug}` : "Store credentials not configured");
+    }
+    const { slug, productKey: PRODUCT_KEY, secretKey: SECRET_KEY } = credentials;
+    const url = new URL(`${BASE_URL}/shops/${slug}${endpoint}`);
 
     // Parse and attach query params
     if (params) {

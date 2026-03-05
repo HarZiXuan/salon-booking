@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button/button";
 import { fetchShopDetails, fetchServices } from "@/app/actions/shop";
 import { normalizeShopToVenue } from "@/lib/normalize";
+import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -23,25 +24,51 @@ function SearchResults() {
         async function loadData() {
             setIsLoading(true);
             try {
-                const [shopRes, servicesRes] = await Promise.all([
-                    fetchShopDetails(),
-                    fetchServices()
-                ]);
-
-                if (shopRes.success && shopRes.data) {
-                    setVenuesData([normalizeShopToVenue(shopRes.data)]);
+                const merchantSlugs = getMerchantSlugs();
+                if (merchantSlugs.length === 0) {
+                    setVenuesData([]);
+                    setIsLoading(false);
+                    return;
                 }
 
-                if (servicesRes.success && servicesRes.data) {
-                    const services = (servicesRes.data as Record<string, unknown>[]).map(s => ({
-                        ...s,
-                        categoryId: s.category || "uncategorized",
-                        duration: s.duration ? `${s.duration} mins` : "Varies",
-                    }));
-                    setServicesData(services);
-                }
+                const results = await Promise.all(
+                    merchantSlugs.map(async (merchantSlug) => {
+                        const shopSlug = getShopSlugFromMerchantUrl(merchantSlug);
+                        if (!shopSlug) return { merchantSlug, venue: null, services: [] };
+                        const [shopRes, servicesRes] = await Promise.all([
+                            fetchShopDetails(shopSlug),
+                            fetchServices(undefined, shopSlug)
+                        ]);
+                        const venue = shopRes.success && shopRes.data
+                            ? normalizeShopToVenue(shopRes.data)
+                            : null;
+                        if (venue) (venue as Record<string, unknown>).id = merchantSlug;
+                        const services = servicesRes.success && servicesRes.data
+                            ? (servicesRes.data as Record<string, unknown>[]).map((s: Record<string, unknown>) => ({
+                                ...s,
+                                categoryId: s.category || "uncategorized",
+                                duration: s.duration ? `${s.duration} mins` : "Varies",
+                            }))
+                            : [];
+                        return { merchantSlug, venue, services };
+                    })
+                );
+
+                const venues: Record<string, unknown>[] = [];
+                const allServices: Record<string, unknown>[] = [];
+                results.forEach(({ venue, services }) => {
+                    if (venue) {
+                        (venue as Record<string, unknown>).services = services;
+                        venues.push(venue);
+                        allServices.push(...services);
+                    }
+                });
+
+                setVenuesData(venues);
+                setServicesData(allServices);
             } catch (error) {
                 console.error("Failed to fetch search data:", error);
+                setVenuesData([]);
             } finally {
                 setIsLoading(false);
             }
@@ -157,8 +184,9 @@ function SearchLoadingFallback() {
 }
 
 function VenueCard({ venue, servicesData }: { venue: Record<string, unknown>, servicesData: Record<string, unknown>[] }) {
-    const services = servicesData.slice(0, 3);
-    const totalServices = servicesData.length;
+    const venueServices = (venue.services as Record<string, unknown>[] | undefined) ?? servicesData;
+    const services = venueServices.slice(0, 3);
+    const totalServices = venueServices.length;
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const venueId = String(venue.id);

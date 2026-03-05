@@ -105,3 +105,9 @@ Here is the list of all available endpoints grouped by their function:
   * **Method:** `POST`
   * **Endpoint:** `{{base_url}}/shops/{{shop_slug}}/customers/logout`
   * **Description:** Logs out the currently authenticated user.
+
+### **Customer Loyalty Program (CLP)**
+Loyalty endpoints are documented in [LOYALTY_API.md](LOYALTY_API.md). Summary:
+* **GET** `{{base_url}}/shops/{{shop_slug}}/loyalty/points` – Customer's points (Bearer required).
+* **GET** `{{base_url}}/shops/{{shop_slug}}/loyalty/vouchers` – Voucher catalog (optional `?customer_claimed=1` for my vouchers).
+* **POST** `{{base_url}}/shops/{{shop_slug}}/loyalty/redeem` – Redeem points for a voucher (Bearer required). Body: `{ "voucher_id": "..." }`.

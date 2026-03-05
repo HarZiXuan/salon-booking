@@ -10,6 +10,7 @@ import { CompactSearchBar } from "@/components/layout/compact-search-bar";
 import { MainMenu } from "@/components/layout/main-menu";
 import { UserMenu } from "@/components/layout/user-menu";
 import { fetchShopDetails } from "@/app/actions/shop";
+import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
 
 export default function StoreLayout({
     children,
@@ -21,36 +22,54 @@ export default function StoreLayout({
     const router = useRouter();
     const pathname = usePathname();
 
+    const [merchantLogo, setMerchantLogo] = useState<string | null>(null);
+    const [storeSlug, setStoreSlug] = useState<string | null>(null);
+    const [isMounted, setIsMounted] = useState(false);
+
     const handleLogout = () => {
         logout();
         router.refresh();
     };
 
-    const [isMounted, setIsMounted] = useState(false);
-    const [shopLogo, setShopLogo] = useState<string | null>(null);
-
     useEffect(() => {
         setIsMounted(true);
-        fetchShopDetails().then(res => {
-            if (res.success && res.data) {
-                const logo = (res.data as Record<string, unknown>).logo as string;
-                if (logo) setShopLogo(logo);
-            }
-        }).catch(() => { });
     }, []);
 
+    useEffect(() => {
+        const segment = pathname.split("/").filter(Boolean)[0] || "";
+        const merchantSlugs = getMerchantSlugs();
+        const shopSlug = getShopSlugFromMerchantUrl(segment);
+        if (segment && merchantSlugs.includes(segment.toLowerCase()) && shopSlug) {
+            setStoreSlug(segment);
+            fetchShopDetails(shopSlug).then((res) => {
+                if (res.success && res.data) {
+                    const data = res.data as { logo?: string };
+                    if (data.logo) setMerchantLogo(data.logo);
+                    else setMerchantLogo(null);
+                } else {
+                    setMerchantLogo(null);
+                }
+            }).catch(() => setMerchantLogo(null));
+        } else {
+            setStoreSlug(null);
+            setMerchantLogo(null);
+        }
+    }, [pathname]);
     return (
         <div className="flex min-h-screen flex-col">
             <header className="sticky top-0 z-50 w-full bg-white border-b transition-all duration-200">
                 <div className="container flex h-20 items-center justify-between px-4 gap-4">
                     {/* Logo */}
-                    <div className="flex-shrink-0">
-                        <Link href="/" className="hover:opacity-80 transition-opacity flex items-center">
-                            {shopLogo ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={shopLogo} alt="Shop Logo" className="h-10 w-auto object-contain" />
+                    <div className="flex-shrink-0 h-10 w-[140px] flex items-center justify-center bg-white rounded-lg overflow-hidden">
+                        <Link href={storeSlug ? `/${storeSlug}` : "/"} className="block h-full w-full hover:opacity-80 transition-opacity flex items-center justify-center p-1">
+                            {merchantLogo ? (
+                                <img
+                                    src={merchantLogo}
+                                    alt="Merchant logo"
+                                    className="h-full w-full object-contain"
+                                />
                             ) : (
-                                <span className="text-3xl font-bold tracking-tighter hover:text-gray-700 transition-colors">
+                                <span className="text-3xl font-bold tracking-tighter text-gray-900 hover:text-gray-700 transition-colors">
                                     Zaloon
                                 </span>
                             )}

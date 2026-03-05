@@ -15,7 +15,7 @@ export default function AccountLayout({
     const sidebarItems = [
         { name: "Profile", path: "/account/profile", icon: "ri-user-line" },
         { name: "Appointments", path: "/account/appointments", icon: "ri-calendar-line" },
-        { name: "Wallet", path: "/account/wallet", icon: "ri-wallet-3-line" },
+        { name: "Rewards", path: "/account/wallet", icon: "ri-gift-line" },
         { name: "Product orders", path: "/account/orders", icon: "ri-shopping-bag-line" },
         { name: "Settings", path: "/account/settings", icon: "ri-settings-3-line" },
     ];
