@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getShopSlugFromMerchantUrl } from "@/lib/stores";
+import { getSafeImageSrc } from "@/lib/image-url";
 import { useUserStore } from "@/global-store/user";
 import { RedeemModal } from "@/components/loyalty/redeem-modal";
 import { VoucherCard } from "@/components/loyalty/voucher-card";
@@ -282,7 +283,7 @@ export default function StorePage() {
                         {((venue.images as string[]) || []).map((img, index) => (
                             <div key={index} className="flex-shrink-0 w-full h-full snap-center relative">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={img} alt={`${String(venue.name || "")} - ${index + 1}`} className="w-full h-full object-cover" />
+                                <img src={getSafeImageSrc(img)} alt={`${String(venue.name || "")} - ${index + 1}`} className="w-full h-full object-cover" />
                             </div>
                         ))}
                     </div>
@@ -313,7 +314,7 @@ export default function StorePage() {
                             <div className="w-[50px] h-[50px] rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={String(venue.image)}
+                                    src={getSafeImageSrc(String(venue.image))}
                                     alt={String(venue.name || "Logo")}
                                     className="w-full h-full object-cover"
                                 />
@@ -370,7 +371,7 @@ export default function StorePage() {
                                 {Boolean(venue.image) && (
                                     <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={String(venue.image)} alt="" className="w-full h-full object-contain" />
+                                        <img src={getSafeImageSrc(String(venue.image))} alt="" className="w-full h-full object-contain" />
                                     </div>
                                 )}
                                 <div className="min-w-0">
@@ -411,7 +412,7 @@ export default function StorePage() {
                     {/* Background Banner */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src={((venue.images as string[]) || [])[0] || String(venue.image || "")}
+                        src={getSafeImageSrc(((venue.images as string[]) || [])[0] || String(venue.image || ""))}
                         alt={String(venue.name || "Banner")}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -441,7 +442,7 @@ export default function StorePage() {
                                 <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-white overflow-hidden bg-white shadow-lg mb-2 flex-shrink-0">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src={String(venue.image)}
+                                        src={getSafeImageSrc(String(venue.image))}
                                         alt={String(venue.name || "Logo")}
                                         className="w-full h-full object-cover"
                                     />
@@ -651,7 +652,7 @@ export default function StorePage() {
                                     {Boolean(venue.image) && (
                                         <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={String(venue.image)} alt="" className="w-full h-full object-contain" />
+                                            <img src={getSafeImageSrc(String(venue.image))} alt="" className="w-full h-full object-contain" />
                                         </div>
                                     )}
                                     <div className="min-w-0">
