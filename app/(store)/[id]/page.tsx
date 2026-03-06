@@ -149,14 +149,15 @@ export default function StorePage() {
     useEffect(() => {
         if (venue) {
             document.title = String(venue.name || "Zaloon");
-            let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-            if (venue.image) {
+            const iconUrl = venue.image ? getSafeImageSrc(String(venue.image)) : "";
+            if (iconUrl) {
+                let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
                 if (link) {
-                    link.href = String(venue.image);
+                    link.href = iconUrl;
                 } else {
                     link = document.createElement("link");
                     link.rel = "icon";
-                    link.href = String(venue.image);
+                    link.href = iconUrl;
                     document.head.appendChild(link);
                 }
             }

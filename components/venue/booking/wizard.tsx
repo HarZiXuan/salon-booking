@@ -4,6 +4,7 @@ import { fetchServiceSpecialists, fetchAvailability, createBooking, fetchBooking
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { getSafeImageSrc } from "@/lib/image-url";
 import { useUserStore } from "@/global-store/user";
 import { addMyBookingRef } from "@/lib/my-bookings";
 
@@ -376,7 +377,7 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                                             <div className={cn("w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0", (!staff.image && !staff.avatar) && "flex items-center justify-center")}>
                                                 {(staff.image || staff.avatar) ? (
                                                     // eslint-disable-next-line @next/next/no-img-element
-                                                    <img src={String(staff.avatar || staff.image)} alt={String(staff.name)} className="w-full h-full object-cover" />
+                                                    <img src={getSafeImageSrc(String(staff.avatar || staff.image))} alt={String(staff.name)} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <i className="ri-user-line text-gray-500"></i>
                                                 )}
@@ -461,7 +462,7 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                             <div className="bg-gray-50 p-6 rounded-xl space-y-4">
                                 <div className="flex items-center gap-4 border-b pb-4">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img src={String(venueData.image || "")} className="w-16 h-16 rounded-lg object-cover" alt="Venue" />
+                                    <img src={getSafeImageSrc(String(venueData.image || ""))} className="w-16 h-16 rounded-lg object-cover" alt="Venue" />
                                     <div>
                                         <h3 className="font-bold">{String(venueData.name)}</h3>
                                         <p className="text-sm text-gray-500">{String(venueData.address)}</p>
@@ -630,7 +631,7 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                     </button>
                     <div className="flex items-start gap-3 mt-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={String(venueData.image || "")} alt="Venue" className="w-16 h-16 rounded-md object-cover" />
+                        <img src={getSafeImageSrc(String(venueData.image || ""))} alt="Venue" className="w-16 h-16 rounded-md object-cover" />
                         <div>
                             <h3 className="font-bold text-sm leading-tight">{String(venueData.name)}</h3>
                             <div className="flex items-center gap-1 text-xs font-semibold mt-1">

@@ -2,9 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
+/** Allow URLs that share the same origin (scheme + host + port) as the API base. */
+function isAllowedImageUrl(imageUrl: string): boolean {
+    if (!API_BASE) return false;
+    try {
+        const baseUrl = new URL(API_BASE);
+        const targetUrl = new URL(imageUrl);
+        return (
+            baseUrl.protocol === targetUrl.protocol &&
+            baseUrl.hostname === targetUrl.hostname &&
+            baseUrl.port === targetUrl.port
+        );
+    } catch {
+        return false;
+    }
+}
+
 /**
  * Proxy image requests to avoid mixed content when the site is HTTPS
- * but the API serves images over HTTP. Only allows URLs under API_BASE.
+ * but the API serves images over HTTP. Only allows URLs from the same origin as API_BASE.
  */
 export async function GET(request: NextRequest) {
     const url = request.nextUrl.searchParams.get("url");
@@ -15,8 +31,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "API base not configured" }, { status: 500 });
     }
     const decoded = decodeURIComponent(url);
-    const base = API_BASE.replace(/\/$/, "");
-    if (!decoded.startsWith(base + "/") && decoded !== base) {
+    if (!isAllowedImageUrl(decoded)) {
         return NextResponse.json({ error: "URL not allowed" }, { status: 403 });
     }
     try {

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button/button";
 import { fetchShopDetails, fetchServices } from "@/app/actions/shop";
 import { normalizeShopToVenue } from "@/lib/normalize";
 import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
+import { getSafeImageSrc } from "@/lib/image-url";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -207,7 +208,7 @@ function VenueCard({ venue, servicesData }: { venue: Record<string, unknown>, se
                                 {images.map((img: string, i: number) => (
                                     <img
                                         key={i}
-                                        src={img}
+                                        src={getSafeImageSrc(img)}
                                         alt={`${String(venue.name || "")} ${i + 1}`}
                                         className="w-full h-full object-cover shrink-0 cursor-pointer"
                                     />

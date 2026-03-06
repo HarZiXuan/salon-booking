@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getSafeImageSrc } from "@/lib/image-url";
 
 export function TeamList({ specialists }: { specialists: Record<string, any>[] }) {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -39,7 +40,7 @@ export function TeamList({ specialists }: { specialists: Record<string, any>[] }
                     <div key={String(member.id)} className="flex flex-col items-center justify-center p-4 border rounded-xl hover:border-black transition-colors cursor-pointer group bg-white">
                         <div className="w-20 h-20 rounded-full overflow-hidden mb-3 bg-gray-100 border group-hover:border-black/10 transition-colors">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={String(member.avatar || member.image || "https://ui-avatars.com/api/?name=" + String(member.name))} alt={String(member.name)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img src={getSafeImageSrc(String(member.avatar || member.image || "https://ui-avatars.com/api/?name=" + String(member.name)))} alt={String(member.name)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         </div>
                         <h3 className="font-semibold text-gray-900">{String(member.name)}</h3>
                         <p className="text-xs text-gray-500 uppercase tracking-wide">{String(member.role || "Specialist")}</p>
