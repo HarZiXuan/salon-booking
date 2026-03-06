@@ -81,14 +81,15 @@ export default function StorePage() {
 
     useEffect(() => {
         if (!shopSlug) return;
+        const slug = shopSlug;
         async function loadData() {
             setIsLoading(true);
             try {
                 const [shopRes, servicesRes, categoriesRes, specialistsRes] = await Promise.all([
-                    fetchShopDetails(shopSlug),
-                    fetchServices(undefined, shopSlug),
-                    fetchCategories(shopSlug),
-                    fetchAllSpecialists(shopSlug)
+                    fetchShopDetails(slug),
+                    fetchServices(undefined, slug),
+                    fetchCategories(slug),
+                    fetchAllSpecialists(slug)
                 ]);
 
                 if (shopRes.success && shopRes.data) {
@@ -366,7 +367,7 @@ export default function StorePage() {
                     <div className="rounded-2xl overflow-hidden border border-amber-300/50 shadow-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 text-amber-950 ring-2 ring-amber-300/40">
                         <div className="p-4 flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                                {venue.image && (
+                                {Boolean(venue.image) && (
                                     <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img src={String(venue.image)} alt="" className="w-full h-full object-contain" />
@@ -410,7 +411,7 @@ export default function StorePage() {
                     {/* Background Banner */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src={((venue.images as string[]) || [])[0]}
+                        src={((venue.images as string[]) || [])[0] || String(venue.image || "")}
                         alt={String(venue.name || "Banner")}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -647,7 +648,7 @@ export default function StorePage() {
                         <div className="rounded-2xl overflow-hidden border border-amber-300/50 shadow-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 text-amber-950 ring-2 ring-amber-300/40">
                             <div className="p-4 flex items-center justify-between gap-3">
                                 <div className="flex items-center gap-3 min-w-0">
-                                    {venue.image && (
+                                    {Boolean(venue.image) && (
                                         <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={String(venue.image)} alt="" className="w-full h-full object-contain" />
@@ -703,7 +704,7 @@ export default function StorePage() {
                 venue={venue}
                 services={venueServices}
                 categories={availableCategories}
-                shopSlug={shopSlug}
+                shopSlug={shopSlug ?? undefined}
                 merchantSlug={merchantSlug}
             />
 
@@ -712,7 +713,7 @@ export default function StorePage() {
                 <RedeemModal
                     isOpen={redeemModalOpen}
                     onClose={() => setRedeemModalOpen(false)}
-                    shopSlug={shopSlug}
+                    shopSlug={shopSlug ?? undefined}
                     merchantName={String(venue?.name || "")}
                     token={user?.token}
                     onRedeemed={async () => {
