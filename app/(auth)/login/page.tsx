@@ -137,24 +137,11 @@ export default function LoginPage() {
                             Create an account
                         </Link>
 
-                        <div className="mt-4 text-[16px] font-bold text-black flex flex-col gap-1">
-                            Have a business account?
-                            <Link href="/for-business" className="font-normal text-[15px] text-[#635BFF] hover:text-[#5249ea] transition-colors">
-                                Sign in as a professional
-                            </Link>
-                        </div>
+
                     </div>
                 </div>
 
-                {/* Bottom layout */}
-                <div className="mt-auto px-6 w-full flex justify-center gap-8 pt-8 text-[#635BFF] font-medium text-[14px]">
-                    <button className="flex items-center gap-1.5 hover:text-[#5249ea] transition-colors">
-                        <i className="ri-global-line text-[18px]"></i> English
-                    </button>
-                    <Link href="/help" className="flex items-center gap-1.5 hover:text-[#5249ea] transition-colors">
-                        <i className="ri-customer-service-2-line text-[18px]"></i> Help and support
-                    </Link>
-                </div>
+
             </div>
 
             {/* Right Side - Hero Image */}
