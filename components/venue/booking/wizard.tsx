@@ -140,6 +140,18 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
     };
 
     const handleNext = async () => {
+        if (currentStep === 0 && venueData?.disableBookingCalendar) {
+            const serviceNames = selectedServiceObjects.map(s => String(s.name)).join(", ");
+            const text = serviceNames
+                ? `Hi, I would like to book the following service(s): ${serviceNames}.`
+                : "Hi, I would like to make a booking.";
+            const phoneNumber = String(venueData.phone || "").replace(/[^0-9]/g, '');
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+            onClose();
+            return;
+        }
+
         if (currentStep < 3) {
             setCurrentStep(currentStep + 1);
         } else if (currentStep === 3) {
@@ -237,19 +249,21 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                     <button onClick={onClose} className="absolute top-6 left-6 p-2 rounded-full hover:bg-gray-100">
                         <i className="ri-arrow-left-line text-xl"></i>
                     </button>
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 ml-10">
-                        {steps.map((step, idx) => (
-                            <div key={step} className="flex items-center gap-2">
-                                <span className={cn(
-                                    "cursor-pointer hover:text-black transition-colors",
-                                    currentStep === idx ? "text-black font-bold" : (currentStep > idx ? "text-black" : "")
-                                )} onClick={() => currentStep > idx && setCurrentStep(idx)}>
-                                    {step}
-                                </span>
-                                {idx < steps.length - 1 && <i className="ri-arrow-right-s-line"></i>}
-                            </div>
-                        ))}
-                    </div>
+                    {!venueData?.disableBookingCalendar && (
+                        <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 ml-10">
+                            {steps.map((step, idx) => (
+                                <div key={step} className="flex items-center gap-2">
+                                    <span className={cn(
+                                        "cursor-pointer hover:text-black transition-colors",
+                                        currentStep === idx ? "text-black font-bold" : (currentStep > idx ? "text-black" : "")
+                                    )} onClick={() => currentStep > idx && setCurrentStep(idx)}>
+                                        {step}
+                                    </span>
+                                    {idx < steps.length - 1 && <i className="ri-arrow-right-s-line"></i>}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <h1 className="text-3xl font-bold ml-10">{steps[currentStep]}</h1>
                 </div>
 
@@ -618,7 +632,11 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                         </div>
                     )}
                     <Button className="w-full h-14 text-lg font-bold" disabled={!isStepValid() || isSubmitting} onClick={handleNext}>
-                        {isSubmitting ? "Processing..." : (currentStep === 3 ? "Confirm Booking" : (currentStep === 4 ? "Done" : "Continue"))}
+                        {isSubmitting ? "Processing..." : venueData?.disableBookingCalendar ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <i className="ri-whatsapp-line text-xl"></i> Book via WhatsApp
+                            </span>
+                        ) : (currentStep === 3 ? "Confirm Booking" : (currentStep === 4 ? "Done" : "Continue"))}
                     </Button>
                 </div>
             </div>
@@ -677,7 +695,11 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                         disabled={!isStepValid() || isSubmitting}
                         onClick={handleNext}
                     >
-                        {isSubmitting ? "Processing..." : (currentStep === 3 ? "Confirm" : (currentStep === 4 ? "Done" : "Continue"))}
+                        {isSubmitting ? "Processing..." : venueData?.disableBookingCalendar ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <i className="ri-whatsapp-line text-xl"></i> Book via WhatsApp
+                            </span>
+                        ) : (currentStep === 3 ? "Confirm" : (currentStep === 4 ? "Done" : "Continue"))}
                     </Button>
                 </div>
             </div>

@@ -149,18 +149,7 @@ export default function StorePage() {
 
 
     const handleBook = (serviceId?: string) => {
-        if (venue?.disableBookingCalendar) {
-            const service = serviceId ? venueServices.find((s) => String(s.id) === serviceId) : null;
-            const serviceName = service ? String(service.name) : "";
-            const text = serviceName
-                ? `Hi, I would like to book the service: ${serviceName}.`
-                : "Hi, I would like to make a booking.";
-            const phoneNumber = String(venue.phone || "").replace(/[^0-9]/g, '');
-            // If phone is missing, it will just redirect to generic wa.me
-            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
-            return;
-        }
+
         setInitialServiceId(serviceId);
         setIsBookingOpen(true);
     };

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useUserStore } from "@/global-store/user";
 import { useCartStore } from "@/global-store/cart";
@@ -64,9 +65,11 @@ export default function StoreLayout({
                     <div className="flex-shrink-0 h-10 w-[140px] flex items-center justify-center bg-white rounded-lg overflow-hidden">
                         <Link href={storeSlug ? `/${storeSlug}` : "/"} className="block h-full w-full hover:opacity-80 transition-opacity flex items-center justify-center p-1">
                             {merchantLogo ? (
-                                <img
+                                <Image
                                     src={merchantLogo}
                                     alt="Merchant logo"
+                                    width={140}
+                                    height={40}
                                     className="h-full w-full object-contain"
                                 />
                             ) : (
