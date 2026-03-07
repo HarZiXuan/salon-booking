@@ -97,30 +97,7 @@ export function UserMenu() {
                         </button>
                     </div>
 
-                    <div className="border-t border-gray-100 my-2 mx-4"></div>
 
-                    {/* Secondary Items (Keep) */}
-                    <div className="flex flex-col gap-1 pb-2">
-                        <Link
-                            href="/help"
-                            onClick={() => setIsOpen(false)}
-                            className="flex items-center px-4 py-3 rounded-xl text-[16px] font-normal text-black hover:bg-gray-50/80 transition-colors focus:outline-none"
-                        >
-                            Help and support
-                        </Link>
-                        <button
-                            className="flex items-center px-4 py-3 rounded-xl text-[16px] font-normal text-black hover:bg-gray-50/80 transition-colors focus:outline-none w-full text-left"
-                        >
-                            Language
-                        </button>
-                        <Link
-                            href="/for-business"
-                            onClick={() => setIsOpen(false)}
-                            className="flex items-center px-4 py-3 rounded-xl text-[16px] font-normal text-black hover:bg-gray-50/80 transition-colors focus:outline-none"
-                        >
-                            For business
-                        </Link>
-                    </div>
                 </Popover.Content>
             </Popover.Portal>
         </Popover.Root>

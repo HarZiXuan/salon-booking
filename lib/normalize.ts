@@ -11,8 +11,8 @@ export const normalizeShopToVenue = (shopData: any) => {
     const logo = resolveImageUrl(shopData.logo) ?? shopData.logo;
     const bannerImage = shopData.banner?.image != null ? resolveImageUrl(shopData.banner.image) ?? shopData.banner.image : null;
     const images = shopData.banner && bannerImage
-        ? [bannerImage, logo].filter(Boolean)
-        : logo ? [logo] : [];
+        ? [bannerImage]
+        : [];
     return {
         id: shopData.slug,
         name: shopData.name,

@@ -15,6 +15,7 @@ export default function AccountLayout({
     const sidebarItems = [
         { name: "Profile", path: "/account/profile", icon: "ri-user-line" },
         { name: "Appointments", path: "/account/appointments", icon: "ri-calendar-line" },
+        { name: "Membership", path: "/account/membership", icon: "ri-vip-crown-2-line" },
         { name: "Rewards", path: "/account/wallet", icon: "ri-gift-line" },
         { name: "Product orders", path: "/account/orders", icon: "ri-shopping-bag-line" },
         { name: "Settings", path: "/account/settings", icon: "ri-settings-3-line" },
@@ -44,8 +45,8 @@ export default function AccountLayout({
                                     key={item.name}
                                     href={item.path}
                                     className={`flex items-center gap-4 px-4 py-3 rounded-lg text-sm font-semibold transition-colors ${isActive
-                                            ? "bg-blue-50 text-black shadow-sm"
-                                            : "text-gray-700 hover:bg-gray-50 hover:text-black"
+                                        ? "bg-blue-50 text-black shadow-sm"
+                                        : "text-gray-700 hover:bg-gray-50 hover:text-black"
                                         }`}
                                 >
                                     <i className={`${item.icon} text-lg ${isActive ? "text-blue-600" : "text-gray-500"}`}></i>

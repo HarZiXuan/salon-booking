@@ -11,6 +11,7 @@ import { MainMenu } from "@/components/layout/main-menu";
 import { UserMenu } from "@/components/layout/user-menu";
 import { fetchShopDetails } from "@/app/actions/shop";
 import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
+import { normalizeShopToVenue } from "@/lib/normalize";
 
 export default function StoreLayout({
     children,
@@ -43,8 +44,8 @@ export default function StoreLayout({
             setStoreSlug(segment);
             fetchShopDetails(shopSlug).then((res) => {
                 if (res.success && res.data) {
-                    const data = res.data as { logo?: string };
-                    if (data.logo) setMerchantLogo(data.logo);
+                    const venue = normalizeShopToVenue(res.data);
+                    if (venue.image) setMerchantLogo(String(venue.image));
                     else setMerchantLogo(null);
                 } else {
                     setMerchantLogo(null);
@@ -86,12 +87,6 @@ export default function StoreLayout({
                             <>
                                 <Link href="/login" className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
                                     Log in
-                                </Link>
-
-                                <Link href="/for-business" className="hidden md:block">
-                                    <Button variant="outline" className="rounded-full border-gray-300 font-semibold px-6 h-10 hover:bg-gray-100 hover:text-black hover:border-gray-400 transition-all">
-                                        For partners
-                                    </Button>
                                 </Link>
 
                                 <MainMenu />

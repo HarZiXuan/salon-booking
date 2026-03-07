@@ -36,12 +36,12 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
 
     // Signature logic
     const timestamp = Math.floor(Date.now() / 1000).toString();
-    
+
     // Sort parameters alphabetically if there is a payload
     let signatureBody = "";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const allParams: Record<string, any> = { ...params, ...(data as Record<string, unknown>) };
-    
+
     if (Object.keys(allParams).length > 0) {
         const sortedKeys = Object.keys(allParams).sort();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,7 +79,17 @@ export async function apiFetch<T>(endpoint: string, options: FetchOptions = {}):
         let errorMessage = `API Error: ${response.statusText}`;
         try {
             const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
+            if (errorData.errors) {
+                // Flatten and join all nested validation messages
+                const messages = Object.values(errorData.errors).flat();
+                if (messages.length > 0) {
+                    errorMessage = messages.join(' ');
+                } else {
+                    errorMessage = errorData.message || (typeof errorData.error === 'object' ? errorData.error.message : errorData.error) || errorMessage;
+                }
+            } else {
+                errorMessage = errorData.message || (typeof errorData.error === 'object' ? errorData.error.message : errorData.error) || errorMessage;
+            }
         } catch {
             // Error not in JSON format
         }

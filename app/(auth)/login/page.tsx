@@ -35,9 +35,17 @@ export default function LoginPage() {
         try {
             // Determine if contact is email or phone for payload
             const isEmail = data.contact.includes("@");
+            let contactValue = data.contact;
+
+            if (!isEmail) {
+                // If it's a phone number, prepend +60 and remove leading 0
+                const numericOnly = data.contact.replace(/[^0-9]/g, ''); // strip out any spaces or + if user accidentally typed it
+                contactValue = `+60${numericOnly.replace(/^60|^0/, '')}`;
+            }
+
             const payload = isEmail
-                ? { contact: data.contact, email: data.contact, password: data.password }
-                : { contact: data.contact, password: data.password };
+                ? { contact: contactValue, email: contactValue, password: data.password }
+                : { contact: contactValue, password: data.password };
 
             const res = await loginCustomer(payload);
             if (res.success && res.data) {

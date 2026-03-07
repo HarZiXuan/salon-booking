@@ -58,10 +58,6 @@ export function MainMenu() {
                             </button>
                         )}
 
-                        <Link href="/help" onClick={() => setIsOpen(false)} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                            Help and support
-                        </Link>
-
                         {/* Language Selector */}
                         <div className="relative">
                             <button
@@ -94,18 +90,7 @@ export function MainMenu() {
                         </div>
                     </div>
 
-                    <div className="my-2 border-t border-gray-100"></div>
 
-                    {/* For businesses section */}
-                    <div className="p-2">
-                        <Link href="/for-business" onClick={() => setIsOpen(false)} className="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors group">
-                            <div className="flex items-center justify-between mb-1">
-                                <span className="font-bold text-sm text-gray-900">For businesses</span>
-                                <i className="ri-arrow-right-line text-gray-400 group-hover:text-gray-900 transition-colors"></i>
-                            </div>
-                            <p className="text-xs text-gray-500">List your business and grow</p>
-                        </Link>
-                    </div>
 
                 </Popover.Content>
             </Popover.Portal>

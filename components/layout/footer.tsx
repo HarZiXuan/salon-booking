@@ -34,7 +34,6 @@ export function Footer() {
                     <div>
                         <h4 className="font-semibold mb-4">Support</h4>
                         <ul className="space-y-2 text-sm text-gray-500">
-                            <li><Link href="/help" className="hover:text-black transition-colors">Help Center</Link></li>
                             <li><Link href="/terms" className="hover:text-black transition-colors">Terms of Service</Link></li>
                             <li><Link href="/privacy" className="hover:text-black transition-colors">Privacy Policy</Link></li>
                         </ul>

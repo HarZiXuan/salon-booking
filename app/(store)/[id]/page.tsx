@@ -146,23 +146,7 @@ export default function StorePage() {
         })();
     }, [shopSlug, user?.token]);
 
-    useEffect(() => {
-        if (venue) {
-            document.title = String(venue.name || "Zaloon");
-            const iconUrl = venue.image ? getSafeImageSrc(String(venue.image)) : "";
-            if (iconUrl) {
-                let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-                if (link) {
-                    link.href = iconUrl;
-                } else {
-                    link = document.createElement("link");
-                    link.rel = "icon";
-                    link.href = iconUrl;
-                    document.head.appendChild(link);
-                }
-            }
-        }
-    }, [venue]);
+
 
     const handleBook = (serviceId?: string) => {
         if (venue?.disableBookingCalendar) {
@@ -267,45 +251,60 @@ export default function StorePage() {
             {/* Mobile Hero Layout */}
             <div className="md:hidden p-4 pb-4">
                 {/* Mobile Image Hero */}
-                <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm">
-                    <div
-                        ref={scrollContainerRef}
-                        onScroll={handleScroll}
-                        onMouseDown={handleMouseDown}
-                        onMouseLeave={handleMouseLeave}
-                        onMouseUp={handleMouseUp}
-                        onMouseMove={handleMouseMove}
-                        className={cn(
-                            "flex w-full h-full overflow-x-auto no-scrollbar",
-                            isDragging ? "cursor-grabbing snap-none" : "cursor-grab snap-x snap-mandatory"
-                        )}
-                        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-                    >
-                        {((venue.images as string[]) || []).map((img, index) => (
-                            <div key={index} className="flex-shrink-0 w-full h-full snap-center relative">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src={getSafeImageSrc(img)} alt={`${String(venue.name || "")} - ${index + 1}`} className="w-full h-full object-cover" />
-                            </div>
-                        ))}
+                {(((venue.images as string[]) || []).length > 0) ? (
+                    <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm">
+                        <div
+                            ref={scrollContainerRef}
+                            onScroll={handleScroll}
+                            onMouseDown={handleMouseDown}
+                            onMouseLeave={handleMouseLeave}
+                            onMouseUp={handleMouseUp}
+                            onMouseMove={handleMouseMove}
+                            className={cn(
+                                "flex w-full h-full overflow-x-auto no-scrollbar",
+                                isDragging ? "cursor-grabbing snap-none" : "cursor-grab snap-x snap-mandatory"
+                            )}
+                            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                        >
+                            {((venue.images as string[]) || []).map((img, index) => (
+                                <div key={index} className="flex-shrink-0 w-full h-full snap-center relative">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={getSafeImageSrc(img)} alt={`${String(venue.name || "")} - ${index + 1}`} className="w-full h-full object-cover" />
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Dark gradient overlay for text readability */}
+                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
+
+                        {/* Top Right Actions */}
+                        <div className="absolute top-4 right-4 z-20 flex gap-2">
+                            <button
+                                onClick={() => {
+                                    if (navigator.share) {
+                                        navigator.share({ title: String(venue.name || ""), url: window.location.href }).catch(() => { });
+                                    }
+                                }}
+                                className="w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all"
+                            >
+                                <i className="ri-share-line text-lg"></i>
+                            </button>
+                        </div>
                     </div>
-
-                    {/* Dark gradient overlay for text readability */}
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
-
-                    {/* Top Right Actions */}
-                    <div className="absolute top-4 right-4 z-20 flex gap-2">
+                ) : (
+                    <div className="flex justify-end pt-2">
                         <button
                             onClick={() => {
                                 if (navigator.share) {
                                     navigator.share({ title: String(venue.name || ""), url: window.location.href }).catch(() => { });
                                 }
                             }}
-                            className="w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all"
+                            className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 border border-gray-200 flex items-center justify-center text-gray-700 transition-all"
                         >
                             <i className="ri-share-line text-lg"></i>
                         </button>
                     </div>
-                </div>
+                )}
 
                 {/* Mobile Info Section */}
                 <div className="pt-4 space-y-4">
@@ -317,7 +316,7 @@ export default function StorePage() {
                                 <img
                                     src={getSafeImageSrc(String(venue.image))}
                                     alt={String(venue.name || "Logo")}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-contain p-1"
                                 />
                             </div>
                         )}
@@ -366,38 +365,39 @@ export default function StorePage() {
                     </button>
 
                     {/* Membership card (mobile) */}
-                    <div className="rounded-2xl overflow-hidden border border-amber-300/50 shadow-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 text-amber-950 ring-2 ring-amber-300/40">
-                        <div className="p-4 flex items-center justify-between gap-3">
+                    <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-[#e4cb93]/30 shadow-2xl bg-gradient-to-br from-[#dec081] via-[#fae7b9] to-[#c6a04f] xl:from-[#dabb7c] xl:via-[#fdf0cc] xl:to-[#cda652] text-[#624615] relative mt-1">
+                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/40 rounded-full blur-2xl pointer-events-none"></div>
+                        <div className="p-4 flex items-center justify-between gap-3 relative z-10">
                             <div className="flex items-center gap-3 min-w-0">
                                 {Boolean(venue.image) && (
-                                    <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
+                                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-[#cba153]/30 shrink-0 bg-white/90 p-1 flex items-center justify-center shadow-inner">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img src={getSafeImageSrc(String(venue.image))} alt="" className="w-full h-full object-contain" />
                                     </div>
                                 )}
-                                <div className="min-w-0">
-                                    <p className="text-xs font-medium text-amber-900/80 uppercase tracking-wider">Rewards</p>
-                                    <p className="font-bold text-amber-950 truncate">{String(venue.name || "")}</p>
+                                <div className="min-w-0 pt-1">
+                                    <p className="text-[10px] font-bold text-[#8a6522] uppercase tracking-[0.1em] mb-[1px]">VIP Gold</p>
+                                    <p className="font-bold text-[#4a350f] truncate">{String(venue.name || "")}</p>
                                 </div>
                             </div>
                             {user ? (
                                 <div className="text-right shrink-0">
-                                    <p className="text-2xl font-bold tabular-nums text-amber-950">{loyaltyPoints !== null ? loyaltyPoints : "—"}</p>
-                                    <p className="text-xs text-amber-900/80">points</p>
+                                    <p className="text-2xl font-bold tabular-nums tracking-tight text-[#4a350f] drop-shadow-sm">{loyaltyPoints !== null ? loyaltyPoints : "—"}</p>
+                                    <p className="text-[10px] font-semibold text-[#8a6522] uppercase tracking-wider">Points</p>
                                 </div>
                             ) : null}
                         </div>
-                        <div className="px-4 pb-4 flex flex-col gap-2">
+                        <div className="px-4 pb-4 flex flex-col gap-2 relative z-10">
                             {user ? (
                                 <>
-                                    <Button size="sm" className="w-full rounded-xl bg-amber-950 text-white hover:bg-amber-900" onClick={() => setRedeemModalOpen(true)}>
-                                        <i className="ri-coupon-line mr-2" /> Claim voucher
+                                    <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => setRedeemModalOpen(true)}>
+                                        <i className="ri-coupon-fill mr-1.5 text-lg" /> Claim voucher
                                     </Button>
-                                    <Link href="/account/wallet" className="text-center text-xs text-amber-900/90 hover:text-amber-950">View all rewards</Link>
+                                    <Link href="/account/wallet" className="text-center text-[13px] font-medium text-[#8a6522] hover:text-[#4a350f] transition-colors mt-0.5">View all rewards</Link>
                                 </>
                             ) : (
                                 <Link href="/login">
-                                    <Button size="sm" variant="outline" className="w-full rounded-xl border-amber-800/50 text-amber-950 hover:bg-amber-500/30">
+                                    <Button size="sm" variant="outline" className="w-full rounded-xl border border-[#b88c3a] text-[#4a350f] bg-white/20 hover:bg-white/40 hover:text-[#342407] font-semibold backdrop-blur-sm transition-all shadow-sm">
                                         Log in to earn points
                                     </Button>
                                 </Link>
@@ -411,12 +411,15 @@ export default function StorePage() {
             <div className="hidden md:block container py-6">
                 <div className="relative w-full h-[400px] rounded-3xl overflow-hidden group shadow-lg">
                     {/* Background Banner */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src={getSafeImageSrc(((venue.images as string[]) || [])[0] || String(venue.image || ""))}
-                        alt={String(venue.name || "Banner")}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    {(((venue.images as string[]) || []).length > 0) ? (
+                        <img
+                            src={getSafeImageSrc(((venue.images as string[]) || [])[0])}
+                            alt={String(venue.name || "Banner")}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-600 transition-transform duration-700 group-hover:scale-105" />
+                    )}
 
                     {/* Dark gradient overlay for text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10"></div>
@@ -445,7 +448,7 @@ export default function StorePage() {
                                     <img
                                         src={getSafeImageSrc(String(venue.image))}
                                         alt={String(venue.name || "Logo")}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain p-2"
                                     />
                                 </div>
                             )}
@@ -647,38 +650,40 @@ export default function StorePage() {
                         </Button>
 
                         {/* Membership card (desktop sidebar – under Book) */}
-                        <div className="rounded-2xl overflow-hidden border border-amber-300/50 shadow-xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 text-amber-950 ring-2 ring-amber-300/40">
-                            <div className="p-4 flex items-center justify-between gap-3">
+                        <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-[#e4cb93]/30 shadow-[0_10px_40px_-10px_rgba(195,155,75,0.3)] bg-gradient-to-br from-[#dec081] via-[#fae7b9] to-[#c6a04f] xl:from-[#dabb7c] xl:via-[#fdf0cc] xl:to-[#cda652] text-[#624615] relative mt-2">
+                            <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/40 rounded-full blur-2xl pointer-events-none"></div>
+
+                            <div className="p-5 flex items-center justify-between gap-3 relative z-10">
                                 <div className="flex items-center gap-3 min-w-0">
                                     {Boolean(venue.image) && (
-                                        <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-amber-700/30 shrink-0 bg-white p-1 flex items-center justify-center">
+                                        <div className="w-12 h-12 rounded-xl overflow-hidden border border-[#cba153]/30 shrink-0 bg-white/90 p-1 flex items-center justify-center shadow-inner">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img src={getSafeImageSrc(String(venue.image))} alt="" className="w-full h-full object-contain" />
                                         </div>
                                     )}
-                                    <div className="min-w-0">
-                                        <p className="text-[10px] font-medium text-amber-900/80 uppercase tracking-wider">Rewards</p>
-                                        <p className="font-bold text-sm text-amber-950 truncate">{String(venue.name || "")}</p>
+                                    <div className="min-w-0 pt-1">
+                                        <p className="text-[10px] font-bold text-[#8a6522] uppercase tracking-[0.1em] mb-[1px]">VIP Gold</p>
+                                        <p className="font-bold text-base text-[#4a350f] truncate">{String(venue.name || "")}</p>
                                     </div>
                                 </div>
                                 {user && (
                                     <div className="text-right shrink-0">
-                                        <p className="text-xl font-bold tabular-nums text-amber-950">{loyaltyPoints !== null ? loyaltyPoints : "—"}</p>
-                                        <p className="text-[10px] text-amber-900/80">pts</p>
+                                        <p className="text-2xl font-bold tabular-nums tracking-tight text-[#4a350f] drop-shadow-sm">{loyaltyPoints !== null ? loyaltyPoints : "—"}</p>
+                                        <p className="text-[10px] font-semibold text-[#8a6522] uppercase tracking-wider">Points</p>
                                     </div>
                                 )}
                             </div>
-                            <div className="px-4 pb-4">
+                            <div className="px-5 pb-5 flex flex-col gap-2 relative z-10">
                                 {user ? (
                                     <>
-                                        <Button size="sm" className="w-full rounded-xl bg-amber-950 text-white hover:bg-amber-900 h-9 text-sm" onClick={() => setRedeemModalOpen(true)}>
-                                            <i className="ri-coupon-line mr-1.5" /> Claim voucher
+                                        <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] h-10 text-sm font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => setRedeemModalOpen(true)}>
+                                            <i className="ri-coupon-fill mr-1.5 text-lg" /> Claim voucher
                                         </Button>
-                                        <Link href="/account/wallet" className="block text-center text-xs text-amber-900/90 hover:text-amber-950 mt-2">View all rewards</Link>
+                                        <Link href="/account/wallet" className="block text-center text-[13px] font-medium text-[#8a6522] hover:text-[#4a350f] mt-1 transition-colors">View all rewards</Link>
                                     </>
                                 ) : (
                                     <Link href="/login">
-                                        <Button size="sm" variant="outline" className="w-full rounded-xl border-amber-800/50 text-amber-950 hover:bg-amber-500/30 h-9 text-sm">
+                                        <Button size="sm" variant="outline" className="w-full rounded-xl border border-[#b88c3a] text-[#4a350f] bg-white/20 hover:bg-white/40 hover:text-[#342407] h-10 text-sm font-semibold backdrop-blur-sm transition-all shadow-sm">
                                             Log in to earn points
                                         </Button>
                                     </Link>
