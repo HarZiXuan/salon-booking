@@ -42,51 +42,65 @@ export default function FnbPage() {
 
     return (
         <div className="relative">
-            {/* Mobile Hero Layout */}
-            <div className="md:hidden p-4 pb-4">
-                <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm">
+            {/* Mobile Layout based on Sketch */}
+            <div className="md:hidden">
+                {/* 1. Banner with Overlaid Logo */}
+                <div className="relative w-full aspect-[21/9] bg-gray-100 overflow-hidden">
                     <img src={fnbOutlet.images[0]} alt={fnbOutlet.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
-                    <div className="absolute top-4 right-4 z-20 flex gap-2">
-                        <button onClick={handleShare} className="w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all">
+                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none z-10"></div>
+                    
+                    <div className="absolute left-4 bottom-3 z-20">
+                        {/* 2. Logo overlaid inside the banner */}
+                        <div className="w-[50px] h-[50px] rounded-full border-2 border-white overflow-hidden bg-white shadow-md flex items-center justify-center shrink-0">
+                            <span className="text-xl font-bold text-slate-800">Y</span>
+                        </div>
+                    </div>
+
+                    <div className="absolute top-3 right-3 z-20">
+                        <button onClick={handleShare} className="w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 border border-white/20 flex items-center justify-center text-white backdrop-blur-md transition-all">
                             <i className="ri-share-line text-lg"></i>
                         </button>
                     </div>
                 </div>
-                <div className="pt-4 space-y-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-[50px] h-[50px] rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm flex items-center justify-center">
-                            <span className="text-xl font-bold font-serif text-slate-800">Y</span>
-                        </div>
-                        <h1 className="text-2xl font-bold leading-tight text-gray-900">{fnbOutlet.name}</h1>
-                    </div>
-                    <div className="flex items-start gap-1.5 text-[13px] text-gray-900 font-medium">
-                        <i className="ri-map-pin-fill text-black mt-[1px]"></i>
-                        <span className="line-clamp-2 leading-snug">{fnbOutlet.address}</span>
-                    </div>
-                    <div className="flex flex-wrap items-center text-[12px] text-gray-800 gap-2 font-medium bg-white">
-                        <span className="text-gray-900">Open</span>
-                        <span className="w-1 h-1 rounded-full bg-gray-200"></span>
+
+                {/* Merchant Info under banner */}
+                <div className="pt-4 pb-3 px-4 bg-white">
+                    <h1 className="text-xl font-bold leading-tight text-gray-900">{fnbOutlet.name}</h1>
+                    <div className="flex items-center text-[12px] text-gray-500 gap-2 font-medium mt-1">
+                        <span className="text-green-600 font-semibold">Open</span>
+                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
                         <span>{fnbOutlet.hours[0].hours}</span>
                     </div>
+                </div>
 
-                    {/* VIP Mobile Membership Card Placeholder */}
-                    <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-[#e4cb93]/30 shadow-2xl bg-gradient-to-br from-[#dec081] via-[#fae7b9] to-[#c6a04f] xl:from-[#dabb7c] xl:via-[#fdf0cc] xl:to-[#cda652] text-[#624615] relative mt-1">
-                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/40 rounded-full blur-2xl pointer-events-none"></div>
-                        <div className="p-4 flex items-center justify-between gap-3 relative z-10">
-                            <div className="min-w-0 pt-1">
-                                <p className="text-[10px] font-bold text-[#8a6522] uppercase tracking-[0.1em] mb-[1px]">VIP Member</p>
-                                <p className="font-bold text-[#4a350f] truncate">{fnbOutlet.name}</p>
-                            </div>
-                            <div className="text-right shrink-0">
-                                <p className="text-2xl font-bold tabular-nums tracking-tight text-[#4a350f] drop-shadow-sm">1,200</p>
-                                <p className="text-[10px] font-semibold text-[#8a6522] uppercase tracking-wider">Points</p>
-                            </div>
-                        </div>
+                {/* 3. Segmented Box Nav */}
+                <div className="bg-white px-4 pb-5">
+                    <div className="grid grid-cols-4 gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200/50 shadow-inner">
+                        {[
+                            { id: "news", label: "News" },
+                            { id: "rewards", label: "Rewards" },
+                            { id: "reservation", label: "Reserve" },
+                            { id: "about", label: "About" }
+                        ].map(tab => (
+                            <button 
+                                key={tab.id} 
+                                onClick={() => {
+                                    const element = document.getElementById(tab.id);
+                                    if (element) {
+                                        const offset = 80;
+                                        const bodyRect = document.body.getBoundingClientRect().top;
+                                        const elementRect = element.getBoundingClientRect().top;
+                                        window.scrollTo({ top: elementRect - bodyRect - offset, behavior: "smooth" });
+                                    }
+                                }} 
+                                className="bg-white py-2 rounded-lg shadow-sm text-[11px] font-bold text-slate-700 text-center hover:bg-slate-50 transition-colors border-b border-slate-200/40"
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
-
             {/* Desktop Hero Layout */}
             <div className="hidden md:block container py-6">
                 <div className="relative w-full h-[400px] rounded-3xl overflow-hidden group shadow-lg">
@@ -119,8 +133,10 @@ export default function FnbPage() {
                 </div>
             </div>
 
-            {/* Sticky Section Nav */}
-            <FnbNav />
+            {/* Sticky Section Nav (Desktop Only) */}
+            <div className="hidden md:block">
+                <FnbNav />
+            </div>
 
             {/* Main Content Two Column */}
             <div className="container py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
@@ -299,12 +315,6 @@ export default function FnbPage() {
                 </div>
             </div>
 
-            {/* Mobile Sticky Footer */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-white border-t lg:hidden z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-                <button onClick={scrollToReservation} className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition-colors shadow-md">
-                    Reserve Now
-                </button>
-            </div>
 
             {/* --- MODALS --- */}
 
