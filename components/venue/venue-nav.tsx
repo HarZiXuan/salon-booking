@@ -3,15 +3,32 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-const tabs = [
+interface Tab {
+    id: string;
+    label: string;
+}
+
+interface VenueNavProps {
+    tabs?: Tab[];
+    stickyTop?: string;
+    className?: string;
+    center?: boolean;
+}
+
+const defaultTabs = [
     { id: "services", label: "Services" },
     { id: "team", label: "Team" },
     // { id: "reviews", label: "Reviews" },
     { id: "about", label: "About" },
 ];
 
-export function VenueNav() {
-    const [activeTab, setActiveTab] = useState("services");
+export function VenueNav({ 
+    tabs = defaultTabs, 
+    stickyTop = "top-20",
+    className,
+    center = false
+}: VenueNavProps) {
+    const [activeTab, setActiveTab] = useState(tabs[0]?.id || "");
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
@@ -32,9 +49,9 @@ export function VenueNav() {
     };
 
     return (
-        <div className="sticky top-20 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <div className={cn("sticky z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b", stickyTop, className)}>
             <div className="container overflow-x-auto no-scrollbar">
-                <div className="flex items-center gap-6 h-14">
+                <div className={cn("flex items-center gap-6 h-14", center && "justify-center")}>
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
