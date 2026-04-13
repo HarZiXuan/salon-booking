@@ -8,7 +8,7 @@ export default function FnbNewsPage() {
 
     return (
         <div className="container py-6 max-w-2xl mx-auto px-4">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">News &amp; Promos</h2>
+            <h2 className="text-xl font-bold text-slate-900 mb-4">Featured Offers</h2>
             <div className="flex flex-col gap-4">
                 {fnbNews.map((news) => (
                     <button

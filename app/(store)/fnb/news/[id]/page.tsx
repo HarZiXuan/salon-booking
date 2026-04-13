@@ -14,7 +14,7 @@ export default function FnbNewsDetailPage() {
                 <i className="ri-newspaper-line text-5xl text-slate-300" />
                 <p className="text-slate-500 font-medium">Promo not found.</p>
                 <button onClick={() => router.push("/fnb/news")} className="text-sm font-semibold underline text-slate-700">
-                    Back to News
+                    Back to Offers
                 </button>
             </div>
         );

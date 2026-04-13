@@ -71,7 +71,7 @@ function SuccessContent() {
                     onClick={() => router.push("/fnb/news")}
                     className="w-full border border-slate-200 text-slate-600 font-semibold py-3 rounded-xl hover:bg-slate-50 transition-colors"
                 >
-                    Back to Home
+                    Back to Offers
                 </button>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { fnbOutlet } from "@/lib/fnb-dummy-data";
 
 const FNB_TABS = [
-    { id: "news",        label: "News",    href: "/fnb/news" },
+    { id: "news",        label: "Featured Offers",    href: "/fnb/news" },
     { id: "rewards",     label: "Rewards", href: "/fnb/rewards" },
     { id: "reservation", label: "Reserve", href: "/fnb/reservation" },
     { id: "wallet",      label: "Wallet",  href: "/fnb/wallet" },
