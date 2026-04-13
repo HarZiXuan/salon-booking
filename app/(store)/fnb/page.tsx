@@ -66,6 +66,23 @@ export default function FnbPage() {
                 </div>
             </div>
 
+            {/* Mobile Action Grid */}
+            <div className="md:hidden px-4 pb-6">
+                <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-2 gap-3">
+                        <button onClick={() => { const el = document.getElementById("news"); if (el) { const offset = 140; const bodyRect = document.body.getBoundingClientRect().top; const elementRect = el.getBoundingClientRect().top; window.scrollTo({ top: elementRect - bodyRect - offset, behavior: "smooth" }); } }} className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
+                            <span className="font-bold text-[15px] text-slate-800">News</span>
+                        </button>
+                        <button onClick={scrollToRewards} className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
+                            <span className="font-bold text-[15px] text-slate-800">Rewards</span>
+                        </button>
+                    </div>
+                    <button onClick={scrollToReservation} className="bg-slate-900 rounded-xl p-4 shadow-md flex items-center justify-center hover:bg-slate-800 transition-colors">
+                        <span className="font-bold text-[15px] text-white">Reserve a Table</span>
+                    </button>
+                </div>
+            </div>
+
             {/* Desktop Hero Layout */}
             <div className="hidden md:block container py-6">
                 <div className="relative w-full h-[400px] rounded-3xl overflow-hidden group shadow-lg">
