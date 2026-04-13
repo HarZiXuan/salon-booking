@@ -42,47 +42,26 @@ export default function FnbPage() {
 
     return (
         <div className="relative">
-            {/* Mobile Hero Layout */}
-            <div className="md:hidden p-4 pb-4">
-                <div className="relative w-full aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden shadow-sm">
-                    <img src={fnbOutlet.images[0]} alt={fnbOutlet.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
-                    <div className="absolute top-4 right-4 z-20 flex gap-2">
-                        <button onClick={handleShare} className="w-9 h-9 rounded-full bg-black/20 hover:bg-black/40 border border-white/50 flex items-center justify-center text-white backdrop-blur-md transition-all">
+            {/* Mobile Hero Layout (Minimized) */}
+            <div className="md:hidden p-4 pb-2">
+                <div className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm border border-slate-100">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm flex items-center justify-center">
+                            <span className="text-lg font-bold text-slate-800">Y</span>
+                        </div>
+                        <div>
+                            <h1 className="text-lg font-bold leading-tight text-gray-900">{fnbOutlet.name}</h1>
+                            <div className="flex items-center text-[12px] text-gray-500 gap-2 font-medium mt-0.5">
+                                <span className="text-green-500">Open</span>
+                                <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                                <span>{fnbOutlet.hours[0].hours}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <button onClick={handleShare} className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all">
                             <i className="ri-share-line text-lg"></i>
                         </button>
-                    </div>
-                </div>
-                <div className="pt-4 space-y-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-[50px] h-[50px] rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm flex items-center justify-center">
-                            <span className="text-xl font-bold font-serif text-slate-800">Y</span>
-                        </div>
-                        <h1 className="text-2xl font-bold leading-tight text-gray-900">{fnbOutlet.name}</h1>
-                    </div>
-                    <div className="flex items-start gap-1.5 text-[13px] text-gray-900 font-medium">
-                        <i className="ri-map-pin-fill text-black mt-[1px]"></i>
-                        <span className="line-clamp-2 leading-snug">{fnbOutlet.address}</span>
-                    </div>
-                    <div className="flex flex-wrap items-center text-[12px] text-gray-800 gap-2 font-medium bg-white">
-                        <span className="text-gray-900">Open</span>
-                        <span className="w-1 h-1 rounded-full bg-gray-200"></span>
-                        <span>{fnbOutlet.hours[0].hours}</span>
-                    </div>
-                    
-                    {/* VIP Mobile Membership Card Placeholder */}
-                    <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-[#e4cb93]/30 shadow-2xl bg-gradient-to-br from-[#dec081] via-[#fae7b9] to-[#c6a04f] xl:from-[#dabb7c] xl:via-[#fdf0cc] xl:to-[#cda652] text-[#624615] relative mt-1">
-                        <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/40 rounded-full blur-2xl pointer-events-none"></div>
-                        <div className="p-4 flex items-center justify-between gap-3 relative z-10">
-                            <div className="min-w-0 pt-1">
-                                <p className="text-[10px] font-bold text-[#8a6522] uppercase tracking-[0.1em] mb-[1px]">VIP Member</p>
-                                <p className="font-bold text-[#4a350f] truncate">{fnbOutlet.name}</p>
-                            </div>
-                            <div className="text-right shrink-0">
-                                <p className="text-2xl font-bold tabular-nums tracking-tight text-[#4a350f] drop-shadow-sm">1,200</p>
-                                <p className="text-[10px] font-semibold text-[#8a6522] uppercase tracking-wider">Points</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
