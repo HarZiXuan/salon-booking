@@ -32,7 +32,7 @@ The F&B layout will employ a mobile-first PWA approach consisting of:
 
 ### 2. Rewards (`app/(fnb)/rewards/page.tsx`)
 *   **Purpose:** Allow users to view what they can claim using their points.
-*   **UI Structure:** Grid or list of reward vouchers (e.g., "Free Coffee", "$10 Off Total Bill"). 
+*   **UI Structure:** Grid or list of reward vouchers (e.g., "Free Coffee", "$10 Off Total Bill"). Clicking "Redeem" on a voucher triggers a modal displaying a scannable QR Code and a confirmation identifier.
 *   **Card Design:** Will heavily borrow from existing `components/loyalty/voucher-card.tsx` design patterns. Each card shows the required points cost to redeem it.
 
 ### 3. Reservation (`app/(fnb)/reservation/page.tsx`)
@@ -47,9 +47,9 @@ The F&B layout will employ a mobile-first PWA approach consisting of:
 *   **Purpose:** Instructional flow for redeeming rewards.
 *   **UI Structure:** A bold, stepped list/timeline component:
     *   **Step 1:** Visit the outlet.
-    *   **Step 2:** Inform our staff about your voucher.
-    *   **Step 3:** Provide registered mobile number.
-    *   **Step 4:** Redeem your voucher and enjoy your rewards!
+    *   **Step 2:** Choose an item and tap "Redeem". A unique QR code will be generated on your screen.
+    *   **Step 3:** Show the QR code to our staff for them to scan.
+    *   **Step 4:** Enjoy your reward!
 
 ## Data Strategy
 **Location:** `lib/fnb-dummy-data.ts`
