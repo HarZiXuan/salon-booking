@@ -69,7 +69,7 @@ export default function FnbPage() {
                         <span className="w-1 h-1 rounded-full bg-gray-200"></span>
                         <span>{fnbOutlet.hours[0].hours}</span>
                     </div>
-                    
+
                     {/* VIP Mobile Membership Card Placeholder */}
                     <div className="rounded-2xl overflow-hidden ring-1 ring-inset ring-[#e4cb93]/30 shadow-2xl bg-gradient-to-br from-[#dec081] via-[#fae7b9] to-[#c6a04f] xl:from-[#dabb7c] xl:via-[#fdf0cc] xl:to-[#cda652] text-[#624615] relative mt-1">
                         <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/40 rounded-full blur-2xl pointer-events-none"></div>
@@ -125,7 +125,7 @@ export default function FnbPage() {
             {/* Main Content Two Column */}
             <div className="container py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
                 <div className="space-y-16 min-w-0">
-                    
+
                     {/* NEWS SECTION */}
                     <section id="news" className="scroll-mt-32">
                         <h2 className="text-2xl font-bold mb-6 text-slate-900 border-b pb-2">News & Promos</h2>
@@ -136,7 +136,7 @@ export default function FnbPage() {
                                     <div className="p-4 flex flex-col flex-1">
                                         <h3 className="text-lg font-bold text-slate-800">{news.title}</h3>
                                         <p className="text-sm text-slate-500 mt-1 mb-4 flex-1 line-clamp-3">{news.description}</p>
-                                        <button 
+                                        <button
                                             onClick={() => setSelectedNews(news)}
                                             className="w-full py-2 bg-slate-100 text-slate-900 font-semibold rounded-lg hover:bg-slate-200 transition-colors"
                                         >
@@ -163,7 +163,7 @@ export default function FnbPage() {
                                             {reward.points} Points To Claim
                                         </span>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={(e) => { e.stopPropagation(); setSelectedRewardDetails(reward); }}
                                         className="w-full md:w-auto px-6 py-2.5 bg-slate-100 text-slate-900 font-bold rounded-xl hover:bg-slate-200 transition-colors whitespace-nowrap"
                                     >
@@ -215,7 +215,7 @@ export default function FnbPage() {
                     <section id="about" className="scroll-mt-32">
                         <h2 className="text-2xl font-bold mb-6 text-slate-900 border-b pb-2">About</h2>
                         <p className="text-slate-600 leading-relaxed mb-6">{fnbOutlet.description}</p>
-                        
+
                         <div className="bg-slate-100 h-64 rounded-2xl mb-6 relative overflow-hidden flex items-center justify-center border border-slate-200">
                             <iframe
                                 src={`https://maps.google.com/maps?q=${encodeURIComponent(fnbOutlet.address)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
@@ -243,7 +243,7 @@ export default function FnbPage() {
                         <h2 className="text-2xl font-bold mb-6 text-slate-900 border-b pb-2">Rewards Guide</h2>
                         <div className="flex flex-col gap-6 relative ml-2">
                             <div className="absolute left-[23px] top-8 bottom-8 w-0.5 bg-slate-200"></div>
-                            
+
                             {[
                                 { step: 1, title: "Visit the Outlet", desc: "Head down to any of our participating locations." },
                                 { step: 2, title: "Tap Claims", desc: "Choose an item from the Rewards tab, view details, and tap 'Confirm Claim'. A unique QR code will appear." },
@@ -272,7 +272,7 @@ export default function FnbPage() {
                             <h3 className="font-bold text-lg text-slate-900">{fnbOutlet.name}</h3>
                             <p className="text-sm text-slate-500">{fnbOutlet.address}</p>
                         </div>
-                        
+
                         <button onClick={scrollToReservation} className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md">
                             Reserve Now
                         </button>
@@ -360,11 +360,11 @@ export default function FnbPage() {
                             </div>
                         </div>
                         <div className="p-6 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
-                            <button 
+                            <button
                                 onClick={() => {
                                     setClaimedQrData(`REDEEM-${selectedRewardDetails.id}-${Date.now()}`);
                                     setSelectedRewardDetails(null);
-                                }} 
+                                }}
                                 className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-md text-lg"
                             >
                                 Confirm Claim Reward
