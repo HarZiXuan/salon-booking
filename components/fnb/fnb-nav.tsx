@@ -1,34 +1,18 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-interface Tab {
-    id: string;
-    label: string;
-}
-
-interface VenueNavProps {
-    tabs?: Tab[];
-    stickyTop?: string;
-    className?: string;
-    center?: boolean;
-}
-
-const defaultTabs = [
-    { id: "services", label: "Services" },
-    { id: "team", label: "Team" },
-    // { id: "reviews", label: "Reviews" },
+const tabs = [
+    { id: "news", label: "News & Promos" },
+    { id: "rewards", label: "Rewards" },
+    { id: "reservation", label: "Reservation" },
     { id: "about", label: "About" },
+    { id: "guide", label: "Guide" },
 ];
 
-export function VenueNav({ 
-    tabs = defaultTabs, 
-    stickyTop = "top-20",
-    className,
-    center = false
-}: VenueNavProps) {
-    const [activeTab, setActiveTab] = useState(tabs[0]?.id || "");
+export function FnbNav() {
+    const [activeTab, setActiveTab] = useState("news");
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
@@ -49,9 +33,9 @@ export function VenueNav({
     };
 
     return (
-        <div className={cn("sticky z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b", stickyTop, className)}>
+        <div className="sticky top-20 z-40 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
             <div className="container overflow-x-auto no-scrollbar">
-                <div className={cn("flex items-center gap-6 h-14", center && "justify-center")}>
+                <div className="flex items-center gap-6 h-14">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
