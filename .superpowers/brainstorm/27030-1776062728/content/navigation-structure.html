@@ -1,0 +1,43 @@
+<h2>F&B Membership App Navigation Structure</h2>
+<p class="subtitle">Where should the 5 main sections live?</p>
+
+<div class="options">
+  <div class="option" data-choice="bottom-nav" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>All 5 in Bottom Navigation Area</h3>
+      <p>News | Rewards | Reservation | About | Guide</p>
+      <div style="margin-top: 10px; padding: 10px; border: 1px dashed #ccc; display: flex; justify-content: space-between; font-size: 11px;">
+        <div>📰 News</div>
+        <div>🎁 Rewards</div>
+        <div>📅 Reserve</div>
+        <div>ℹ️ About</div>
+        <div>📖 Guide</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="option" data-choice="tab-and-drawer" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>4 Core Tabs + Profile/More Menu</h3>
+      <p>News | Rewards | Reservation | More</p>
+      <p style="font-size: 12px; color: #666; margin-top: 4px;">'About' and 'Rewards Guide' would be placed inside the "More" or "Account" page to prevent crowding the bottom bar.</p>
+       <div style="margin-top: 10px; padding: 10px; border: 1px dashed #ccc; display: flex; justify-content: space-between; font-size: 11px;">
+        <div>📰 News</div>
+        <div>🎁 Rewards</div>
+        <div>📅 Reserve</div>
+        <div>☰ More</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="option" data-choice="home-dashboard" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>News as Home, others as cards</h3>
+      <p>Home | Rewards | Reservation</p>
+      <p style="font-size: 12px; color: #666; margin-top: 4px;">News acts as the homepage feed. Guide and About are prominently displayed on the Home feed as cards.</p>
+    </div>
+  </div>
+</div>

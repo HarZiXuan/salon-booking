@@ -1,0 +1,74 @@
+<h2>Mobile Redesign Approaches</h2>
+<p class="subtitle">We've minimized the merchant header at the top. Choose how you want the main sections (News, Rewards, Reservations) to be displayed.</p>
+
+<div class="cards">
+  <!-- Option A -->
+  <div class="card" data-choice="option-grid" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f1f5f9; display:flex; flex-direction:column; padding:16px; height:320px; box-sizing:border-box;">
+      
+      <!-- Minimized Header -->
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="width:40px; height:40px; background:#e2e8f0; border-radius:50%"></div>
+        <div>
+          <div style="font-size:16px; font-weight:bold; color:#0f172a;">Merchant Title</div>
+          <div style="font-size:12px; color:#64748b;">Open Now &bull; Map</div>
+        </div>
+      </div>
+
+      <!-- Action Grid -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div style="background:white; border-radius:12px; padding:20px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+          <div style="font-weight:bold; font-size:15px; color:#0f172a">News</div>
+        </div>
+        <div style="background:white; border-radius:12px; padding:20px; text-align:center; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+          <div style="font-weight:bold; font-size:15px; color:#0f172a">Rewards</div>
+        </div>
+        <div style="grid-column: span 2; background:#0f172a; color:white; border-radius:12px; padding:20px; text-align:center; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+          <div style="font-weight:bold; font-size:15px;">Reserve a Table</div>
+        </div>
+      </div>
+
+      <!-- Content placeholder -->
+      <div style="margin-top:20px; background:white; border-radius:12px; flex:1; box-shadow:0 2px 4px rgba(0,0,0,0.05);"></div>
+    </div>
+
+    <div class="card-body">
+      <h3>Option A: Grid Navigation (Recommended)</h3>
+      <p>Clean, compact merchant header. Action tabs are placed boldly at the center in a grid, making them easy to tap and prioritized visually.</p>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="option-vertical" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f1f5f9; display:flex; flex-direction:column; padding:16px; height:320px; box-sizing:border-box;">
+      
+      <!-- Minimized Header (Alternative style) -->
+      <div style="background:white; border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+         <div style="font-size:14px; font-weight:bold; color:#0f172a;">Merchant Title</div>
+         <div style="width:24px; height:24px; background:#e2e8f0; border-radius:50%"></div>
+      </div>
+
+      <!-- Action Stack -->
+      <div style="display:flex; flex-direction:column; gap:12px;">
+         <div style="background:white; border-radius:12px; padding:20px 16px; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:space-between;">
+           <span style="font-weight:bold; font-size:16px; color:#0f172a">News & Promos</span>
+           <span style="font-weight:bold; color:#cbd5e1">></span>
+         </div>
+         <div style="background:white; border-radius:12px; padding:20px 16px; box-shadow:0 2px 4px rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:space-between;">
+           <span style="font-weight:bold; font-size:16px; color:#0f172a">Rewards</span>
+           <span style="font-weight:bold; color:#cbd5e1">></span>
+         </div>
+      </div>
+      
+       <!-- Sticky Reserve Banner (Simulated) -->
+       <div style="margin-top:auto; background:#0f172a; color:white; border-radius:12px; padding:16px; text-align:center; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+          <div style="font-weight:bold; font-size:15px;">Reserve Now</div>
+        </div>
+    </div>
+
+    <div class="card-body">
+      <h3>Option B: Vertical Stacked</h3>
+      <p>Merchant header is a thin bar. Sections are stacked list items leading to their own full-page view. Reservation button sticks to the bottom.</p>
+    </div>
+  </div>
+</div>

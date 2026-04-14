@@ -56,13 +56,6 @@
   }
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If you'd like to use `currentColor` instead, you can remove this block.
-*/
 @layer base {
 
   *,
@@ -83,11 +76,6 @@
   }
 }
 
-/*
-  The variables are defined in :root.
-  Note that in v4, we don't need @layer base for standard CSS var definitions if we just put them in :root at top level,
-  but putting them in @layer base is also fine.
-*/
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -173,4 +161,53 @@
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+}
+
+/* MERCHANT MEMBERSHIP THEME - STANDARDIZED */
+:root {
+  --merch-primary: #111827;
+  --merch-accent: #3b82f6;
+  --merch-bg: #ffffff;
+  --merch-card-bg: #f9fafb;
+  --merch-border: #e5e7eb;
+  --merch-radius-lg: 1.5rem;
+  --merch-radius-md: 1rem;
+  --merch-success: #10b981;
+  --merch-warning: #f59e0b;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-merch-slide {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.merch-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--merch-border);
+}
+
+.merch-shadow-premium {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+.merch-step-line {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--merch-border) 0%,
+    var(--merch-border) 50%,
+    transparent 50%,
+    transparent 100%
+  );
+  background-size: 1px 10px;
 }
