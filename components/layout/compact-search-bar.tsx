@@ -14,6 +14,12 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep
 const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function CompactSearchBar() {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     const pathname = usePathname();
     const router = useRouter();
     const [isTimeOpen, setIsTimeOpen] = useState(false);
@@ -129,7 +135,7 @@ export function CompactSearchBar() {
     }, []);
 
     // Only show on non-home pages (e.g. shop details)
-    if (pathname === "/") return null;
+    if (pathname === "/" || !isMounted) return null;
 
     return (
         <div className="hidden lg:flex flex-1 max-w-2xl mx-auto items-center justify-center" ref={containerRef}>

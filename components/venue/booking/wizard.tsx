@@ -330,7 +330,7 @@ export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueD
                                                             </div>
                                                             <button
                                                                 className={cn(
-                                                                    "w-8 h-8 rounded-full flex items-center justify-center border transition-all",
+                                                                    "w-8 h-8 shrink-0 rounded-full flex items-center justify-center border transition-all",
                                                                     isSelected
                                                                         ? "bg-black text-white border-black"
                                                                         : "bg-white text-black border-gray-300 group-hover:border-black"

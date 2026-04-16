@@ -24,6 +24,8 @@ export function MainMenu() {
         { code: "zh", label: "中文" },
     ];
 
+    if (!isMounted) return null;
+
     return (
         <Popover.Root open={isOpen} onOpenChange={setIsOpen}>
             <Popover.Trigger asChild>

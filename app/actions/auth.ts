@@ -23,7 +23,28 @@ export async function loginCustomer(payload: { contact: string; password: string
     }
 }
 
-export async function registerCustomer(payload: { contact: string; password: string; password_confirmation: string; name?: string; email?: string; gender?: string; birthday?: string }) {
+export async function sendRegistrationOtp(contact: string) {
+    try {
+        const response = await apiFetch<Record<string, unknown>>("/customers/register/send-otp", {
+            method: "POST",
+            data: { contact }
+        });
+
+        if (response.success) {
+            return { success: true, message: response.message || "OTP sent successfully" };
+        }
+
+        const errorMsg = response.message || (response.error as Record<string, unknown>)?.message || "Failed to send OTP";
+        return { success: false, error: String(errorMsg) };
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return { success: false, error: error.message };
+        }
+        return { success: false, error: String(error) };
+    }
+}
+
+export async function registerCustomer(payload: { contact: string; password: string; password_confirmation: string; otp: string; name?: string; email?: string; gender?: string; birthday?: string }) {
     try {
         const response = await apiFetch<Record<string, unknown>>("/customers/register", {
             method: "POST",

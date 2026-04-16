@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useUserStore } from "@/global-store/user";
 import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
-import { getPoints, getMyVouchers } from "@/app/actions/loyalty";
-import { VoucherCard } from "@/components/loyalty/voucher-card";
+import { getPointBalance } from "@/app/actions/loyalty";
 import { RedeemModal } from "@/components/loyalty/redeem-modal";
 import { Button } from "@/components/ui/button/button";
-import type { ClaimedVoucher } from "@/lib/loyalty-types";
 import { cn } from "@/lib/utils";
 
 interface MerchantLoyalty {
@@ -16,7 +14,6 @@ interface MerchantLoyalty {
     shopSlug: string;
     merchantName: string;
     points: number;
-    vouchers: ClaimedVoucher[];
 }
 
 export default function MembershipPage() {
@@ -47,26 +44,12 @@ export default function MembershipPage() {
             for (const merchantSlug of merchantSlugs) {
                 const shopSlug = getShopSlugFromMerchantUrl(merchantSlug);
                 if (!shopSlug) continue;
-                const [pointsRes, vouchersRes] = await Promise.all([
-                    getPoints(shopSlug, user.token),
-                    getMyVouchers(shopSlug, user.token),
-                ]);
-                const points = pointsRes.success && pointsRes.data ? pointsRes.data.points : 0;
-                const merchantName = pointsRes.success && pointsRes.data?.merchantName
-                    ? pointsRes.data.merchantName
+                const balRes = await getPointBalance(shopSlug, user.token!);
+                const points = balRes.success && balRes.data ? balRes.data.points : 0;
+                const merchantName = balRes.success && balRes.data?.name
+                    ? balRes.data.name
                     : merchantSlug.replace(/-/g, ' ');
-
-                const vouchers =
-                    vouchersRes.success && vouchersRes.data
-                        ? (vouchersRes.data.vouchers as ClaimedVoucher[])
-                        : [];
-                results.push({
-                    merchantSlug,
-                    shopSlug,
-                    merchantName,
-                    points,
-                    vouchers,
-                });
+                results.push({ merchantSlug, shopSlug, merchantName, points });
             }
             setMerchants(results);
             if (results.length > 0) {
@@ -216,7 +199,7 @@ export default function MembershipPage() {
                                     </div>
 
                                     <div className="flex justify-between items-center mb-4">
-                                        <h3 className="text-lg font-bold text-gray-900">Your Vouchers</h3>
+                                        <h3 className="text-lg font-bold text-gray-900">Redemption History</h3>
                                         <Button
                                             size="sm"
                                             onClick={() =>
@@ -231,21 +214,10 @@ export default function MembershipPage() {
                                         </Button>
                                     </div>
 
-                                    {activeData.vouchers.length > 0 ? (
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            {activeData.vouchers.map((v) => (
-                                                <div key={v.code} className="transform transition-transform hover:scale-[1.02]">
-                                                    <VoucherCard voucher={v} />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed">
-                                            <i className="ri-coupon-3-line text-4xl text-gray-300 mb-3 block"></i>
-                                            <p className="text-gray-500 font-medium text-sm">No vouchers claimed yet.</p>
-                                            <p className="text-gray-400 text-xs mt-1">Earn points by making bookings, then redeem them here.</p>
-                                        </div>
-                                    )}
+                                    <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed">
+                                        <i className="ri-history-line text-4xl text-gray-300 mb-3 block"></i>
+                                        <p className="text-gray-500 font-medium text-sm">Redemption history available in the FNB wallet</p>
+                                    </div>
                                 </div>
                             );
                         })()}
@@ -260,35 +232,17 @@ export default function MembershipPage() {
                     shopSlug={redeemModal.shopSlug}
                     merchantName={redeemModal.merchantName}
                     token={user?.token}
-                    onRedeemed={() => {
+                    onRedeemed={async () => {
                         if (!user?.token) return;
-                        const m = merchants.find((x) => x.shopSlug === redeemModal.shopSlug);
-                        if (m) {
-                            getMyVouchers(redeemModal.shopSlug, user.token).then((res) => {
-                                if (res.success && res.data) {
-                                    setMerchants((prev) =>
-                                        prev.map((x) =>
-                                            x.shopSlug === redeemModal.shopSlug
-                                                ? {
-                                                    ...x,
-                                                    vouchers: res.data!.vouchers as ClaimedVoucher[],
-                                                }
-                                                : x
-                                        )
-                                    );
-                                }
-                            });
-                            getPoints(redeemModal.shopSlug, user.token).then((res) => {
-                                if (res.success && res.data) {
-                                    setMerchants((prev) =>
-                                        prev.map((x) =>
-                                            x.shopSlug === redeemModal.shopSlug
-                                                ? { ...x, points: res.data!.points }
-                                                : x
-                                        )
-                                    );
-                                }
-                            });
+                        const balRes = await getPointBalance(redeemModal.shopSlug, user.token!);
+                        if (balRes.success && balRes.data) {
+                            setMerchants((prev) =>
+                                prev.map((x) =>
+                                    x.shopSlug === redeemModal.shopSlug
+                                        ? { ...x, points: balRes.data!.points }
+                                        : x
+                                )
+                            );
                         }
                     }}
                 />

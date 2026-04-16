@@ -7,7 +7,7 @@ import { TeamList } from "@/components/venue/team-list";
 import { useState, useRef, useEffect } from "react";
 import { BookingWizard } from "@/components/venue/booking/wizard";
 import { fetchShopDetails, fetchServices, fetchCategories, fetchAllSpecialists } from "@/app/actions/shop";
-import { getPoints, getMyVouchers } from "@/app/actions/loyalty";
+import { getPointBalance } from "@/app/actions/loyalty";
 import { normalizeShopToVenue } from "@/lib/normalize";
 import { cn } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ import { getSafeImageSrc } from "@/lib/image-url";
 import { useUserStore } from "@/global-store/user";
 import { RedeemModal } from "@/components/loyalty/redeem-modal";
 import { VoucherCard } from "@/components/loyalty/voucher-card";
-import type { ClaimedVoucher } from "@/lib/loyalty-types";
+
 
 export default function StorePage() {
     const params = useParams();
@@ -38,7 +38,6 @@ export default function StorePage() {
 
     const { user } = useUserStore();
     const [loyaltyPoints, setLoyaltyPoints] = useState<number | null>(null);
-    const [myVouchers, setMyVouchers] = useState<ClaimedVoucher[]>([]);
     const [redeemModalOpen, setRedeemModalOpen] = useState(false);
 
     // Update active index on scroll
@@ -130,19 +129,12 @@ export default function StorePage() {
     useEffect(() => {
         if (!shopSlug || !user?.token) {
             setLoyaltyPoints(null);
-            setMyVouchers([]);
             return;
         }
         (async () => {
-            const [pointsRes, vouchersRes] = await Promise.all([
-                getPoints(shopSlug, user.token),
-                getMyVouchers(shopSlug, user.token),
-            ]);
-            if (pointsRes.success && pointsRes.data) setLoyaltyPoints(pointsRes.data.points);
+            const balRes = await getPointBalance(shopSlug, user.token!);
+            if (balRes.success && balRes.data) setLoyaltyPoints(balRes.data.points);
             else setLoyaltyPoints(null);
-            if (vouchersRes.success && vouchersRes.data)
-                setMyVouchers(vouchersRes.data.vouchers as ClaimedVoucher[]);
-            else setMyVouchers([]);
         })();
     }, [shopSlug, user?.token]);
 
@@ -382,7 +374,6 @@ export default function StorePage() {
                                     <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => setRedeemModalOpen(true)}>
                                         <i className="ri-coupon-fill mr-1.5 text-lg" /> Claim voucher
                                     </Button>
-                                    <Link href="/account/wallet" className="text-center text-[13px] font-medium text-[#8a6522] hover:text-[#4a350f] transition-colors mt-0.5">View all rewards</Link>
                                 </>
                             ) : (
                                 <Link href="/login">
@@ -668,7 +659,6 @@ export default function StorePage() {
                                         <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] h-10 text-sm font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => setRedeemModalOpen(true)}>
                                             <i className="ri-coupon-fill mr-1.5 text-lg" /> Claim voucher
                                         </Button>
-                                        <Link href="/account/wallet" className="block text-center text-[13px] font-medium text-[#8a6522] hover:text-[#4a350f] mt-1 transition-colors">View all rewards</Link>
                                     </>
                                 ) : (
                                     <Link href="/login">
@@ -714,13 +704,8 @@ export default function StorePage() {
                     token={user?.token}
                     onRedeemed={async () => {
                         if (!user?.token) return;
-                        const [pointsRes, vouchersRes] = await Promise.all([
-                            getPoints(shopSlug, user.token),
-                            getMyVouchers(shopSlug, user.token),
-                        ]);
-                        if (pointsRes.success && pointsRes.data) setLoyaltyPoints(pointsRes.data.points);
-                        if (vouchersRes.success && vouchersRes.data)
-                            setMyVouchers(vouchersRes.data.vouchers as ClaimedVoucher[]);
+                        const balRes = await getPointBalance(shopSlug, user.token!);
+                        if (balRes.success && balRes.data) setLoyaltyPoints(balRes.data.points);
                     }}
                 />
             )}

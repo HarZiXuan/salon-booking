@@ -1,0 +1,2076 @@
+{
+  "info": {
+    "_postman_id": "487e2af7-2863-4340-be83-3256dca0084f",
+    "name": "Beauty Booking API",
+    "description": "Booking API for BeautySpaManagement module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "14024807"
+  },
+  "item": [
+    {
+      "name": "Shop",
+      "item": [
+        {
+          "name": "Get Shop Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}"
+              ]
+            },
+            "description": "Get shop information including name, address, map URLs, and working hours"
+          },
+          "response": [
+            {
+              "name": "Get Shop Info",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 08 Jan 2026 07:40:29 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X4cb62db19dc930db668ae9d2dc3dc8ac"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"slug\": \"beauty\",\n        \"name\": \"beauty\",\n        \"address\": null,\n        \"phone\": null,\n        \"google_map_url\": \"https://www.facebook.com\",\n        \"waze_url\": \"https://google.com\",\n        \"banner\": {\n            \"heading\": null,\n            \"title\": null,\n            \"image\": null,\n            \"description\": null\n        },\n        \"working_hours\": {\n            \"monday,tuesday,wednesday,thursday,friday\": {\n                \"open\": \"08:00\",\n                \"close\": \"19:00\",\n                \"is_closed\": false\n            }\n        },\n        \"disable_booking_calendar\": true\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Get Services List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/services",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "services"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "1221",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get list of available spa services"
+          },
+          "response": [
+            {
+              "name": "Get Services List",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/services",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "services"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 09:55:43 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "58"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xe698804ef28094681adc594d25013210"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 76,\n                \"name\": \"TEST\",\n                \"category\": \"TET2\",\n                \"price\": 50,\n                \"duration\": 60,\n                \"description\": \"\",\n                \"image\": null,\n                \"type\": \"spa_service\"\n            },\n            {\n                \"id\": 77,\n                \"name\": \"www\",\n                \"category\": \"TET2\",\n                \"price\": 66,\n                \"duration\": 60,\n                \"description\": \"\",\n                \"image\": null,\n                \"type\": \"spa_service\"\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Category",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 08 Jan 2026 07:34:28 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X78ab642a40f4686591de9c2a925e2fc6"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"name\": \"TET2\"\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Specialists",
+      "item": [
+        {
+          "name": "Get Specialists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/specialists/all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "specialists",
+                "all"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Specialists",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/specialists/all",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "specialists",
+                    "all"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Thu, 08 Jan 2026 07:27:06 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "58"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xd48a90671a2ce48833649f2470c418cd"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"name\": \"tester\",\n                \"avatar\": null\n            },\n            {\n                \"name\": \"beauty\",\n                \"avatar\": null\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Specialists for Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "76",
+                  "type": "text",
+                  "uuid": "acb225a3-0a3a-45ba-958d-329f6ad94a8d"
+                },
+                {
+                  "key": "gender",
+                  "value": "Female",
+                  "type": "text",
+                  "uuid": "7fe7677f-005d-4af5-a71d-6e640b6b574e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/specialists",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "specialists"
+              ]
+            },
+            "description": "Get available specialists who can provide the selected services"
+          },
+          "response": [
+            {
+              "name": "Get Specialists for Service",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "service_id",
+                      "value": "76",
+                      "type": "text",
+                      "uuid": "acb225a3-0a3a-45ba-958d-329f6ad94a8d"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/specialists",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "specialists"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 09:57:49 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xdd7969d67a5162526d572bee04be37d4"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"data\": [\n            {\n                \"id\": 1,\n                \"name\": \"tester\",\n                \"role\": {\n                    \"id\": 1,\n                    \"branch_id\": null,\n                    \"department_id\": null,\n                    \"name\": \"Specialist\",\n                    \"is_default\": 1,\n                    \"is_global\": 1,\n                    \"workspace\": null,\n                    \"created_by\": 2,\n                    \"created_at\": \"2026-01-05T04:01:06.000000Z\",\n                    \"updated_at\": \"2026-01-05T04:01:06.000000Z\"\n                },\n                \"avatar\": null,\n                \"starting_price\": 50\n            },\n            {\n                \"id\": 4,\n                \"name\": \"beauty\",\n                \"role\": {\n                    \"id\": 1,\n                    \"branch_id\": null,\n                    \"department_id\": null,\n                    \"name\": \"Specialist\",\n                    \"is_default\": 1,\n                    \"is_global\": 1,\n                    \"workspace\": null,\n                    \"created_by\": 2,\n                    \"created_at\": \"2026-01-05T04:01:06.000000Z\",\n                    \"updated_at\": \"2026-01-05T04:01:06.000000Z\"\n                },\n                \"avatar\": null,\n                \"starting_price\": 50\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Availability",
+      "item": [
+        {
+          "name": "Get Available Timeslots",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "76",
+                  "type": "text",
+                  "uuid": "245281f5-f235-4346-b082-64e32fe92f2f"
+                },
+                {
+                  "key": "specialist_id",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "c7e85d49-c1f5-4a37-ab18-39189a99964e"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-01-09",
+                  "type": "text",
+                  "uuid": "f1f3c311-accf-4a9b-b8e5-a699ac0c4b10"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/availability/timeslots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "availability",
+                "timeslots"
+              ]
+            },
+            "description": "Get available timeslots for a specific date and specialist"
+          },
+          "response": [
+            {
+              "name": "Get Available Timeslots",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "service_id",
+                      "value": "76",
+                      "type": "text",
+                      "uuid": "245281f5-f235-4346-b082-64e32fe92f2f"
+                    },
+                    {
+                      "key": "specialist_id",
+                      "value": "4",
+                      "type": "text",
+                      "uuid": "c7e85d49-c1f5-4a37-ab18-39189a99964e"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-01-08",
+                      "type": "text",
+                      "uuid": "f1f3c311-accf-4a9b-b8e5-a699ac0c4b10"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/availability/timeslots",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "availability",
+                    "timeslots"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 10:19:12 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xbe9a2a55e3d9a913aace7c36e83467ce"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"date\": \"2026-01-08\",\n        \"timeslots\": [\n            {\n                \"time\": \"08:00\",\n                \"end_time\": \"09:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"09:00\",\n                \"end_time\": \"10:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"10:00\",\n                \"end_time\": \"11:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"11:00\",\n                \"end_time\": \"12:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"14:00\",\n                \"end_time\": \"15:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"15:00\",\n                \"end_time\": \"16:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"16:00\",\n                \"end_time\": \"17:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"17:00\",\n                \"end_time\": \"18:00\",\n                \"available\": true\n            },\n            {\n                \"time\": \"18:00\",\n                \"end_time\": \"19:00\",\n                \"available\": true\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_id",
+                  "value": "76",
+                  "type": "text",
+                  "uuid": "a31b8aa3-b9b9-4ad5-a96f-a3ba3d9b1c5c"
+                },
+                {
+                  "key": "staff_id",
+                  "value": "4",
+                  "type": "text",
+                  "uuid": "f3c5242d-741f-4b9a-8231-25533be36c36"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-01-10",
+                  "type": "text"
+                },
+                {
+                  "key": "start_time",
+                  "value": "10:00",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Test booking via API",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "testing123",
+                  "type": "text",
+                  "uuid": "1d9ba315-a3a9-483a-967d-074296fd4e7d"
+                },
+                {
+                  "key": "number",
+                  "value": "+60118181",
+                  "type": "text",
+                  "uuid": "ba870a06-8e5c-4578-8c33-1d145852cab3"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "description": "optional",
+                  "type": "text",
+                  "uuid": "00694638-3c61-4a5b-89f3-abf9aa12d4d1",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "Female",
+                  "type": "text",
+                  "uuid": "cd4a4704-1c8b-4618-87a5-0db4413826f5"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/bookings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "bookings"
+              ]
+            },
+            "description": "Create a new booking"
+          },
+          "response": [
+            {
+              "name": "Create Booking",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "service_id",
+                      "value": " 76",
+                      "type": "text",
+                      "uuid": "a31b8aa3-b9b9-4ad5-a96f-a3ba3d9b1c5c"
+                    },
+                    {
+                      "key": "staff_id",
+                      "value": " 4",
+                      "type": "text",
+                      "uuid": "f3c5242d-741f-4b9a-8231-25533be36c36"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-01-08",
+                      "type": "text"
+                    },
+                    {
+                      "key": "start_time",
+                      "value": " 10:00",
+                      "type": "text"
+                    },
+                    {
+                      "key": "notes",
+                      "value": " Test booking via API",
+                      "type": "text"
+                    },
+                    {
+                      "key": "name",
+                      "value": "testing123",
+                      "type": "text",
+                      "uuid": "1d9ba315-a3a9-483a-967d-074296fd4e7d"
+                    },
+                    {
+                      "key": "number",
+                      "value": "+60118181",
+                      "type": "text",
+                      "uuid": "ba870a06-8e5c-4578-8c33-1d145852cab3"
+                    },
+                    {
+                      "key": "email",
+                      "value": "",
+                      "description": "optional",
+                      "type": "text",
+                      "uuid": "00694638-3c61-4a5b-89f3-abf9aa12d4d1"
+                    },
+                    {
+                      "key": "gender",
+                      "value": "Female",
+                      "type": "text",
+                      "uuid": "cd4a4704-1c8b-4618-87a5-0db4413826f5"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/bookings",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "bookings"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 10:33:24 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "58"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X50f68d112f8b3f28c5094c5ea761a997"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 13,\n        \"status\": \"Initial\",\n        \"stage_id\": 0,\n        \"created_at\": \"2026-01-07T18:33:24+08:00\"\n    },\n    \"message\": \"Booking created successfully.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Booking Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/bookings/{{booking_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "bookings",
+                "{{booking_id}}"
+              ]
+            },
+            "description": "Get booking details by ID"
+          },
+          "response": [
+            {
+              "name": "Get Booking Details",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/bookings/{{booking_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "bookings",
+                    "{{booking_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.3.9"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 07 Jan 2026 10:35:55 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X82381d0c58172137f2fd8631395dd165"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 14,\n        \"service\": {\n            \"id\": \"76\",\n            \"name\": \"TEST\",\n            \"price\": 50\n        },\n        \"specialist\": {\n            \"id\": 4,\n            \"name\": \"beauty\"\n        },\n        \"customer\": null,\n        \"date\": \"2026-01-08\",\n        \"start_time\": \"10:00:00\",\n        \"end_time\": \"11:00:00\",\n        \"status\": \"Initial\",\n        \"stage_id\": 0,\n        \"notes\": \"Test booking via API\"\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "contact",
+                  "value": "+601877849118",
+                  "type": "text",
+                  "uuid": "c8fa188a-97f2-4856-a4e7-ef723936f620"
+                },
+                {
+                  "key": "password",
+                  "value": "123456789",
+                  "type": "text",
+                  "uuid": "180b9906-7e2a-42a6-ad04-14dc2cda68cb"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e51adddb-f4fa-4e1e-a7ae-61bb272c991b",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "contact",
+                  "value": "+60181145141551",
+                  "type": "text",
+                  "uuid": "9b112c4a-03f5-42ab-ba65-d0fa0a4b641b"
+                },
+                {
+                  "key": "password",
+                  "value": "123456789",
+                  "type": "text",
+                  "uuid": "b2e5fa34-e8c2-40f9-91e3-1a6283408652"
+                },
+                {
+                  "key": "name",
+                  "value": "reward_tester",
+                  "type": "text",
+                  "uuid": "26b89718-2e64-4fdc-8a8f-b4df9ba37011"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "f8d85570-91c7-4b94-872f-0ae49fcbea68",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "62c8964c-1344-45d1-bf03-847a590a9d77",
+                  "disabled": true
+                },
+                {
+                  "key": "birthday",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e00ea264-12e3-4508-b8c3-c80530268a6e",
+                  "disabled": true
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "123456789",
+                  "type": "text",
+                  "uuid": "0ef15e1f-fdd2-4b4b-8ddd-c7541753f340"
+                },
+                {
+                  "key": "otp",
+                  "value": "809215",
+                  "type": "text",
+                  "uuid": "76cf6123-51f2-417e-b78b-58feafd3149e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "contact",
+                  "value": "+60181145141551",
+                  "type": "text",
+                  "uuid": "9b112c4a-03f5-42ab-ba65-d0fa0a4b641b"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/register/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "register",
+                "send-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Info",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/customers/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "customers",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reward",
+      "item": [
+        {
+          "name": "Get Reward",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/rewards",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "rewards"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Reward",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/rewards",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "rewards"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.2.30"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 13 Apr 2026 09:31:51 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"campaigns\": [\n            {\n                \"reward\": {\n                    \"id\": \"a0d55f8d-6452-47ec-8059-4fb747082503\",\n                    \"image\": null,\n                    \"campaign_id\": null,\n                    \"reward_type\": \"cashback_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"5.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-14T09:28:35.000000Z\",\n                    \"updated_at\": \"2026-01-16T02:19:22.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d8cc04-2396-4841-8ab1-845eea838fe0\",\n                            \"reward_id\": \"a0d55f8d-6452-47ec-8059-4fb747082503\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"50.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-16T02:19:22.000000Z\",\n                            \"updated_at\": \"2026-01-16T02:19:22.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": null\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient points (required 50, balance 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d73af6-095f-403a-a5fb-5bf99616b9e6\",\n                    \"image\": null,\n                    \"campaign_id\": null,\n                    \"reward_type\": \"cashback_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"50.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": \"6000.00\",\n                    \"is_stackable\": true,\n                    \"start_at\": \"2026-01-10T16:00:00.000000Z\",\n                    \"end_at\": \"2026-01-13T16:00:00.000000Z\",\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-15T07:37:56.000000Z\",\n                    \"updated_at\": \"2026-01-15T07:37:56.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d73af6-0cbc-4148-bedd-6d62dba1c356\",\n                            \"reward_id\": \"a0d73af6-095f-403a-a5fb-5bf99616b9e6\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"5000.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-15T07:37:56.000000Z\",\n                            \"updated_at\": \"2026-01-15T07:37:56.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [\n                        {\n                            \"id\": \"a0cb4099-3d4f-451d-8637-9f8e12a40a9f\",\n                            \"name\": \"TESTDRIVER\",\n                            \"description\": \"12345\",\n                            \"min_order_amount\": null,\n                            \"min_order_count\": null,\n                            \"upgrade_condition\": \"any\",\n                            \"sort_order\": 0,\n                            \"is_active\": true,\n                            \"is_purchasable\": true,\n                            \"price\": \"50.00\",\n                            \"workspace_id\": 6,\n                            \"created_by\": 7,\n                            \"created_at\": \"2026-01-09T08:43:45.000000Z\",\n                            \"updated_at\": \"2026-01-09T08:43:45.000000Z\",\n                            \"pivot\": {\n                                \"reward_id\": \"a0d73af6-095f-403a-a5fb-5bf99616b9e6\",\n                                \"tier_id\": \"a0cb4099-3d4f-451d-8637-9f8e12a40a9f\",\n                                \"created_at\": \"2026-01-15T07:37:56.000000Z\",\n                                \"updated_at\": \"2026-01-15T07:37:56.000000Z\"\n                            }\n                        }\n                    ],\n                    \"skus\": [],\n                    \"campaign\": null\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Expired\",\n                    \"Requires specific member tier\",\n                    \"Insufficient spend amount (required $6,000.0)\",\n                    \"Insufficient points (required 5,000, balance 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d76867-8692-40c7-ad78-04b43a303952\",\n                    \"image\": null,\n                    \"campaign_id\": null,\n                    \"reward_type\": \"cashback_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"percentage\",\n                    \"value_amount\": \"50.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": false,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-15T09:45:00.000000Z\",\n                    \"updated_at\": \"2026-01-15T10:08:26.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d770c9-38fc-4826-9407-d959c9d186b0\",\n                            \"reward_id\": \"a0d76867-8692-40c7-ad78-04b43a303952\",\n                            \"cost_type\": \"loyalty_card\",\n                            \"cost_value\": \"2.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-15T10:08:26.000000Z\",\n                            \"updated_at\": \"2026-01-15T10:08:26.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": null\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient loyalty stamps (Required: 2.00, Available: 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d8ca28-04e7-4f41-b469-edb6ed6d1aca\",\n                    \"image\": null,\n                    \"campaign_id\": null,\n                    \"reward_type\": \"free_item\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": null,\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-16T02:14:10.000000Z\",\n                    \"updated_at\": \"2026-01-16T02:14:10.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d8d2d7-49c8-4f1c-8ff4-6233e673b689\",\n                            \"reward_id\": \"a0d8ca28-04e7-4f41-b469-edb6ed6d1aca\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"1.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-16T02:38:27.000000Z\",\n                            \"updated_at\": \"2026-01-16T02:38:27.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [\n                        {\n                            \"id\": \"a0d8d2d7-4cce-4986-8251-7bb925719919\",\n                            \"reward_id\": \"a0d8ca28-04e7-4f41-b469-edb6ed6d1aca\",\n                            \"sku\": \"SKU-H5CL9M9\",\n                            \"quantity\": 1,\n                            \"created_at\": \"2026-01-16T02:38:27.000000Z\",\n                            \"updated_at\": \"2026-01-16T02:38:27.000000Z\"\n                        }\n                    ],\n                    \"campaign\": null\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient points (required 1, balance 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d99138-4d40-4993-9793-6f722081dcfa\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                    \"reward_type\": \"discount\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"5.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"updated_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d99138-5046-4284-b530-26cddb148fb0\",\n                            \"reward_id\": \"a0d99138-4d40-4993-9793-6f722081dcfa\",\n                            \"cost_type\": \"loyalty_card\",\n                            \"cost_value\": \"1.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                            \"updated_at\": \"2026-01-16T11:30:47.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": {\n                        \"id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                        \"name\": \"Loyalty Card\",\n                        \"campaign_type\": \"consecutive\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T11:03:23.000000Z\",\n                        \"updated_at\": \"2026-01-16T11:03:23.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient loyalty stamps (Required: 1.00, Available: 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d99138-510e-4edb-950e-dd8b1a021142\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                    \"reward_type\": \"cashback_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"5.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"updated_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d99138-51ab-4dc1-b3d3-479a30061831\",\n                            \"reward_id\": \"a0d99138-510e-4edb-950e-dd8b1a021142\",\n                            \"cost_type\": \"loyalty_card\",\n                            \"cost_value\": \"2.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                            \"updated_at\": \"2026-01-16T11:30:47.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": {\n                        \"id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                        \"name\": \"Loyalty Card\",\n                        \"campaign_type\": \"consecutive\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T11:03:23.000000Z\",\n                        \"updated_at\": \"2026-01-16T11:03:23.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient loyalty stamps (Required: 2.00, Available: 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d99138-525d-4564-9c07-09b3eeeadf90\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                    \"reward_type\": \"free_item\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": null,\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"updated_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d99138-5305-40be-838c-6a63ea8bf978\",\n                            \"reward_id\": \"a0d99138-525d-4564-9c07-09b3eeeadf90\",\n                            \"cost_type\": \"loyalty_card\",\n                            \"cost_value\": \"3.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                            \"updated_at\": \"2026-01-16T11:30:47.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [\n                        {\n                            \"id\": \"a0d99138-53bf-4825-8eaa-87a941a543e7\",\n                            \"reward_id\": \"a0d99138-525d-4564-9c07-09b3eeeadf90\",\n                            \"sku\": \"SKU-28GNE0C\",\n                            \"quantity\": 1,\n                            \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                            \"updated_at\": \"2026-01-16T11:30:47.000000Z\"\n                        }\n                    ],\n                    \"campaign\": {\n                        \"id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                        \"name\": \"Loyalty Card\",\n                        \"campaign_type\": \"consecutive\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T11:03:23.000000Z\",\n                        \"updated_at\": \"2026-01-16T11:03:23.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient loyalty stamps (Required: 3.00, Available: 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0d99138-546a-4de8-aacf-aeb52e071148\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                    \"reward_type\": \"item_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": null,\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": 50,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"updated_at\": \"2026-01-16T11:30:47.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a0d99138-5516-42f0-bd59-68d959e4c4f1\",\n                            \"reward_id\": \"a0d99138-546a-4de8-aacf-aeb52e071148\",\n                            \"cost_type\": \"loyalty_card\",\n                            \"cost_value\": \"4.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                            \"updated_at\": \"2026-01-16T11:30:47.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [\n                        {\n                            \"id\": \"a0d99138-55b3-4f3a-baec-2a7726ee76fa\",\n                            \"reward_id\": \"a0d99138-546a-4de8-aacf-aeb52e071148\",\n                            \"sku\": \"SKU-28GNE0C\",\n                            \"quantity\": 1,\n                            \"created_at\": \"2026-01-16T11:30:47.000000Z\",\n                            \"updated_at\": \"2026-01-16T11:30:47.000000Z\"\n                        }\n                    ],\n                    \"campaign\": {\n                        \"id\": \"a0d9876b-48bd-4c8a-9d6f-a7ada6c1cd9b\",\n                        \"name\": \"Loyalty Card\",\n                        \"campaign_type\": \"consecutive\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T11:03:23.000000Z\",\n                        \"updated_at\": \"2026-01-16T11:03:23.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient loyalty stamps (Required: 4.00, Available: 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0df019e-419c-4e79-9e2b-5cbf8c35ff80\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0df019e-3f74-4b1b-89d6-f219a86a5819\",\n                    \"reward_type\": \"cashback_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"50.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-19T04:24:12.000000Z\",\n                    \"updated_at\": \"2026-01-19T04:24:12.000000Z\",\n                    \"costs\": [],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": {\n                        \"id\": \"a0df019e-3f74-4b1b-89d6-f219a86a5819\",\n                        \"name\": \"First Purchase\",\n                        \"campaign_type\": \"first_purchase\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-19T04:24:12.000000Z\",\n                        \"updated_at\": \"2026-01-19T04:24:12.000000Z\"\n                    }\n                },\n                \"is_eligible\": true,\n                \"reasons\": []\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a0ed60c8-c9ad-4afe-95b3-4742778088c1\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0df51cd-ea92-4de9-9291-0e3e4f15b9ea\",\n                    \"reward_type\": \"point\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"5000.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-01-26T07:51:54.000000Z\",\n                    \"updated_at\": \"2026-01-26T07:51:54.000000Z\",\n                    \"costs\": [],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": {\n                        \"id\": \"a0df51cd-ea92-4de9-9291-0e3e4f15b9ea\",\n                        \"name\": \"Birthday\",\n                        \"campaign_type\": \"birthday\",\n                        \"birthday_period_mode\": \"specific_days\",\n                        \"birthday_days_before\": 5,\n                        \"birthday_days_after\": 60,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-19T08:08:26.000000Z\",\n                        \"updated_at\": \"2026-01-26T07:51:54.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Birthday information not available\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a10b38fd-dd3f-4364-8231-e2aa71ea46ef\",\n                    \"image\": \"uploads/rewards/1770695728_Screenshot_20250922_195350.jpg\",\n                    \"campaign_id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                    \"reward_type\": \"cashback_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"5.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"updated_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a10b38fd-eb70-4fe9-b3c3-b98cd1fdd099\",\n                            \"reward_id\": \"a10b38fd-dd3f-4364-8231-e2aa71ea46ef\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"100.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                            \"updated_at\": \"2026-02-10T03:55:28.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": {\n                        \"id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                        \"name\": \"Point Campage\",\n                        \"campaign_type\": \"point\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T09:53:22.000000Z\",\n                        \"updated_at\": \"2026-01-16T09:53:22.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient points (required 100, balance 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a10b38fd-ec54-4628-9e80-1856f75c8949\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                    \"reward_type\": \"free_item\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": null,\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"updated_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a10b38fd-ed0a-46ae-b36f-a0e35ae8d315\",\n                            \"reward_id\": \"a10b38fd-ec54-4628-9e80-1856f75c8949\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"200.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                            \"updated_at\": \"2026-02-10T03:55:28.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [\n                        {\n                            \"id\": \"a10b38fd-edd0-441d-8fdf-8f308d5fc2dd\",\n                            \"reward_id\": \"a10b38fd-ec54-4628-9e80-1856f75c8949\",\n                            \"sku\": \"SKU-H5CL9M9\",\n                            \"quantity\": 1,\n                            \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                            \"updated_at\": \"2026-02-10T03:55:28.000000Z\"\n                        }\n                    ],\n                    \"campaign\": {\n                        \"id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                        \"name\": \"Point Campage\",\n                        \"campaign_type\": \"point\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T09:53:22.000000Z\",\n                        \"updated_at\": \"2026-01-16T09:53:22.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient points (required 200, balance 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a10b38fd-ee7f-41d3-b91c-c36ad1769cc3\",\n                    \"image\": null,\n                    \"campaign_id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                    \"reward_type\": \"item_voucher\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": null,\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"updated_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a10b38fd-ef28-437f-a84f-f917bbc2eaab\",\n                            \"reward_id\": \"a10b38fd-ee7f-41d3-b91c-c36ad1769cc3\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"200.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                            \"updated_at\": \"2026-02-10T03:55:28.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [\n                        {\n                            \"id\": \"a10b38fd-efc7-4b43-92a1-1837903d4db5\",\n                            \"reward_id\": \"a10b38fd-ee7f-41d3-b91c-c36ad1769cc3\",\n                            \"sku\": \"SKU-03C4DJF\",\n                            \"quantity\": 1,\n                            \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                            \"updated_at\": \"2026-02-10T03:55:28.000000Z\"\n                        }\n                    ],\n                    \"campaign\": {\n                        \"id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                        \"name\": \"Point Campage\",\n                        \"campaign_type\": \"point\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T09:53:22.000000Z\",\n                        \"updated_at\": \"2026-01-16T09:53:22.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient points (required 200, balance 0)\"\n                ]\n            },\n            {\n                \"reward\": {\n                    \"id\": \"a10b38fd-f176-43ab-933b-7092461130fe\",\n                    \"image\": \"uploads/rewards/1770695728_85708057-2027892319.jpg\",\n                    \"campaign_id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                    \"reward_type\": \"discount\",\n                    \"is_active\": true,\n                    \"sort_order\": 0,\n                    \"value_type\": \"amount\",\n                    \"value_amount\": \"50.00\",\n                    \"max_discount\": null,\n                    \"min_member_tier_id\": null,\n                    \"daily_limit\": null,\n                    \"monthly_limit\": null,\n                    \"min_spend_amount\": null,\n                    \"is_stackable\": true,\n                    \"start_at\": null,\n                    \"end_at\": null,\n                    \"validity_days\": null,\n                    \"workspace_id\": 6,\n                    \"created_by\": 7,\n                    \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"updated_at\": \"2026-02-10T03:55:28.000000Z\",\n                    \"costs\": [\n                        {\n                            \"id\": \"a10b38fd-f225-4ea1-ae42-a0c79a8f7779\",\n                            \"reward_id\": \"a10b38fd-f176-43ab-933b-7092461130fe\",\n                            \"cost_type\": \"point\",\n                            \"cost_value\": \"150.00\",\n                            \"cost_unit\": null,\n                            \"created_at\": \"2026-02-10T03:55:28.000000Z\",\n                            \"updated_at\": \"2026-02-10T03:55:28.000000Z\"\n                        }\n                    ],\n                    \"tiers\": [],\n                    \"skus\": [],\n                    \"campaign\": {\n                        \"id\": \"a0d96e61-da29-4868-80dd-8791bea16b3c\",\n                        \"name\": \"Point Campage\",\n                        \"campaign_type\": \"point\",\n                        \"birthday_period_mode\": \"on_day\",\n                        \"birthday_days_before\": 0,\n                        \"birthday_days_after\": 0,\n                        \"description\": null,\n                        \"is_active\": true,\n                        \"workspace_id\": 6,\n                        \"created_by\": 7,\n                        \"created_at\": \"2026-01-16T09:53:22.000000Z\",\n                        \"updated_at\": \"2026-01-16T09:53:22.000000Z\"\n                    }\n                },\n                \"is_eligible\": false,\n                \"reasons\": [\n                    \"Insufficient points (required 150, balance 0)\"\n                ]\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Point Balance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/balance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "rewards",
+                "balance"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Point Balance",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/balance",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "rewards",
+                    "balance"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.2.30"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 13 Apr 2026 09:42:46 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "59"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xdc8ed898091bc9ae4f4dd8278b48b565"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"customer_id\": 160,\n        \"name\": \"test101\",\n        \"phone\": \"+601877849118\",\n        \"points\": 49900,\n        \"stamps\": 0,\n        \"member_tier\": null\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send Reward Redeem OTP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "reward_id",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "e02fb081-cf3d-43d0-a34b-cca6f79e2881",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeem/send-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "rewards",
+                "redeem",
+                "send-otp"
+              ]
+            },
+            "description": "Generated from cURL: curl --request POST '{{base_url}}/shops/{{shop_slug}}/rewards/redeem/send-otp' --header 'Content-Type: application/json' --data-raw '{\n  \"reward_id\": \"{{reward_id}}\"\n}'"
+          },
+          "response": [
+            {
+              "name": "Send Reward Redeem OTP",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "reward_id",
+                      "value": "a0d55f8d-6452-47ec-8059-4fb747082503",
+                      "type": "text",
+                      "uuid": "e02fb081-cf3d-43d0-a34b-cca6f79e2881"
+                    }
+                  ],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeem/send-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "rewards",
+                    "redeem",
+                    "send-otp"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.2.30"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 13 Apr 2026 09:41:26 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "57"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X4f79dd10f0cb8fc169d459f18849343d"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"error\": {\n        \"code\": \"OTP_SEND_FAILED\",\n        \"message\": \"{\\\"status\\\":404,\\\"error\\\":\\\"Not Found\\\",\\\"response\\\":{\\\"message\\\":[\\\"The \\\\\\\"beauty\\\\\\\" instance does not exist\\\"]}}\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Redeem Reward",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "reward_id",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "0bea7744-a858-473b-b5b0-a4846aab0f17",
+                  "disabled": true
+                },
+                {
+                  "key": "otp",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "44e4f58e-d572-4f00-9473-a1e00e03446f",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "rewards",
+                "redeem"
+              ]
+            },
+            "description": "Generated from cURL: curl --request POST '{{base_url}}/shops/{{shop_slug}}/rewards/redeem' --header 'Content-Type: application/json' --data-raw '{\n  \"reward_id\": \"{{reward_id}}\",\n  \"otp\": \"{{otp}}\"\n}'"
+          },
+          "response": [
+            {
+              "name": "Redeem Reward",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "disabled": false
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "reward_id",
+                      "value": "a0d55f8d-6452-47ec-8059-4fb747082503",
+                      "type": "text",
+                      "uuid": "0bea7744-a858-473b-b5b0-a4846aab0f17"
+                    },
+                    {
+                      "key": "otp",
+                      "value": "993800",
+                      "type": "text",
+                      "uuid": "44e4f58e-d572-4f00-9473-a1e00e03446f"
+                    }
+                  ],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeem",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "rewards",
+                    "redeem"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.2.30"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 13 Apr 2026 09:41:35 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "56"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xd40f12c94557323e690795770a108bed"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"redemption_id\": \"a1886dca-1752-4fe8-a3bc-142f67832336\",\n        \"status\": \"completed\",\n        \"points_deducted\": null,\n        \"voucher_code\": \"VCH-260413-6D859A\",\n        \"voucher_use_url\": \"http://127.0.0.1:8000/reward-redeem/use?code=VCH-260413-6D859A\",\n        \"qr_code_image_base64\": \"iVBORw0KGgoAAAANSUhEUgAAAKUAAAClAQMAAAAH5a+ZAAAABlBMVEX///8AAABVwtN+AAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAZ1JREFUSIm9lkGugzAMRI26yJIj5CblYkitxMXgJhyBZRYI/5lJf1X99Z+yoOnLgjgejx2JZ4973PZyjUu2Cf9buGgLgLwiIteI2u5YGemUy86tjOm44TRj7mZa1vFU7Nm+QPManxHDnzM4KO8XX35WXDLC/rh1A5V2QJfX60NRBqqnTcdc8Xrs8fEYaG4H4hwkIITN604fLWvMtWx5VoSK18bT2KjKvQ1A2Mo9E0fy0XLFHAWfp4rmaqb8gWK0RnEopU6ayOFwPEhPCaf6KCod+uSXk3nF36hho0nZaJ0ytZWF76P0FQFeMppRdxgTjSmRwxih1Cse3bXDRwUSNY/9l1ybjcpXEPHCKmSPQFGGjSJ9KAT2A8wPz1rY1n001IJYitqnnzFsE0Wwv42H98uDGGlJmDMtVFuajaqPvjs6K2Sm4SzKsYf2lkpTYzMKmVqz0T4/0KbZHiqHiAwbVcS9FKVZroxUU2aiMxTJNTVJWKnm9d7w7uNZzRRKnVmPnFaUUhuVUgdUOsaxk86Wb/3+P5V2cutzH9Y0NRv9AYFeAsq61m9EAAAAAElFTkSuQmCC\"\n    },\n    \"message\": \"Reward redeemed successfully.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Redeemed Rewards History",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeemed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "rewards",
+                "redeemed"
+              ]
+            },
+            "description": "Generated from cURL: curl --request GET '{{base_url}}/shops/{{shop_slug}}/rewards/redeemed'"
+          },
+          "response": [
+            {
+              "name": "Get Redeemed Rewards History",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeemed",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "rewards",
+                    "redeemed"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.2.30"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 13 Apr 2026 09:41:41 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "55"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "X85272a3dd289cde9de5951c13ea23769"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"redeemed_rewards\": [\n            {\n                \"id\": \"a1886dca-2688-49db-bdf2-d6867a582bc6\",\n                \"reward_name\": \"Unknown Reward\",\n                \"reward_type\": \"cashback_voucher\",\n                \"status\": \"active\",\n                \"status_label\": \"Active\",\n                \"redeemed_at\": \"2026-04-13 17:41:35\"\n            },\n            {\n                \"id\": \"a1886c74-b994-4c05-ba5e-308d76d8a691\",\n                \"reward_name\": \"Unknown Reward\",\n                \"reward_type\": \"cashback_voucher\",\n                \"status\": \"used\",\n                \"status_label\": \"Used\",\n                \"redeemed_at\": \"2026-04-13 17:37:52\"\n            }\n        ]\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Redeemed Reward Detail",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeemed/{{redeemed_reward_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "shops",
+                "{{shop_slug}}",
+                "rewards",
+                "redeemed",
+                "{{redeemed_reward_id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl --request GET '{{base_url}}/shops/{{shop_slug}}/rewards/redeemed/{{redeemed_reward_id}}'"
+          },
+          "response": [
+            {
+              "name": "Get Redeemed Reward Detail",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": []
+                },
+                "url": {
+                  "raw": "{{base_url}}/shops/{{shop_slug}}/rewards/redeemed/{{redeemed_reward_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "shops",
+                    "{{shop_slug}}",
+                    "rewards",
+                    "redeemed",
+                    "{{redeemed_reward_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                },
+                {
+                  "key": "X-Powered-By",
+                  "value": "PHP/8.2.30"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "Date",
+                  "value": "Mon, 13 Apr 2026 09:41:51 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "60"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "54"
+                },
+                {
+                  "key": "phpdebugbar-id",
+                  "value": "Xdbbda42b76ac87cc1a22c89567998ca9"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": \"a1886dca-2688-49db-bdf2-d6867a582bc6\",\n        \"reward_name\": \"Unknown Reward\",\n        \"reward_type\": \"cashback_voucher\",\n        \"status\": \"active\",\n        \"status_label\": \"Active\",\n        \"redeemed_at\": \"2026-04-13 17:41:35\",\n        \"voucher_code\": \"VCH-260413-6D859A\",\n        \"qr_code_data\": \"http://127.0.0.1:8000/reward-redeem/use?code=VCH-260413-6D859A\",\n        \"qr_code_image_base64\": \"iVBORw0KGgoAAAANSUhEUgAAAKUAAAClAQMAAAAH5a+ZAAAABlBMVEX///8AAABVwtN+AAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAaNJREFUSIm9l8Gtg0AMRI047JESthNoDAkkGoNOtgSOHBD+M3YSpYDM30OAl4sZe2xjjtMus6XhZq3XhMtlKgrQt6vDvQE0G81MSCffmu/D1qw7l3aNA0PS0mdYrTzDXf+DFlLE0OONtZT6+gNVfbfFry/VBTRrZ4S++fNdUb+neaZzRpEim/Z9fk9RNqzP4bZynKzZc2FkKuqn1XAhgKGArHfT0QOCFmaTiaxmiEZHcVlruLAczGtH48sofeGhqnX0o2c/E1Gc2cKFxc8+YBaQhEYiSzxBZOaV2ZTR7pzTF6mvsY/KqLM0kc0bSsMXWUUyir6yRitrZWdnO1JfFY3aoSXgefgCgbiQvn3h0JcTCYEIKTq053idcg7dqa+Gdn5X3K81/i+vGETUomLCF8jmy/062vka5qip757dU0QjkRc7NDpMLH+b62icnEMj39gGJY12CQPSFx4pXauO5k7LsvEDnQ0xvHq1hsaWCWmdkyH0/eyeIpq+iC1z+sxCGQ1fUGTOv+39xgqa3yIcRnR/LmYyGrWDr4PY+5hNm98b9O/pH/FlHM6uSHtwAAAAAElFTkSuQmCC\"\n    },\n    \"message\": \"Success\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "const productKey = pm.variables.get(\"productKey\");\r",
+          "const secretKey  = pm.variables.get(\"secretKey\");\r",
+          "const timestamp  = Math.floor(Date.now() / 1000).toString();\r",
+          "\r",
+          "let queryParams = {};\r",
+          "let bodyParams  = {};\r",
+          "\r",
+          "// Query\r",
+          "pm.request.url.query.each(q => {\r",
+          "    if (q.disabled) return;\r",
+          "    queryParams[q.key] = q.value;\r",
+          "});\r",
+          "\r",
+          "// Body（支持三种模式 + 变量替换）\r",
+          "if (pm.request.body) {\r",
+          "    if (pm.request.body.mode === 'raw') {\r",
+          "        let rawBody = pm.variables.replaceIn(pm.request.body.raw || '');\r",
+          "        try {\r",
+          "            bodyParams = JSON.parse(rawBody || '{}');\r",
+          "        } catch {\r",
+          "            bodyParams = {};\r",
+          "        }\r",
+          "    }\r",
+          "    else if (pm.request.body.mode === 'urlencoded') {\r",
+          "        pm.request.body.urlencoded.each(p => bodyParams[p.key] = pm.variables.replaceIn(p.value));\r",
+          "    }\r",
+          "    else if (pm.request.body.mode === 'formdata') {\r",
+          "        bodyParams = {};\r",
+          "        pm.request.body.formdata.each(p => {\r",
+          "            if (p.disabled) return;\r",
+          "            let value = pm.variables.replaceIn(p.value);\r",
+          "            let keyParts = p.key.split(/\\[|\\]/).filter(k => k);\r",
+          "            let ref = bodyParams;\r",
+          "\r",
+          "            for (let i = 0; i < keyParts.length; i++) {\r",
+          "                let part = keyParts[i];\r",
+          "                let isLast = i === keyParts.length - 1;\r",
+          "\r",
+          "                if (isLast) {\r",
+          "                    if (/\\[\\]$/.test(p.key) || part === '') {\r",
+          "                        if (!Array.isArray(ref[part])) ref[part] = [];\r",
+          "                        ref[part].push(value);\r",
+          "                    } else {\r",
+          "                        ref[part] = value;\r",
+          "                    }\r",
+          "                } else {\r",
+          "                    if (!ref[part]) {\r",
+          "                        if (keyParts[i + 1] === '' || /\\[\\]$/.test(p.key)) {\r",
+          "                            ref[part] = [];\r",
+          "                        } else {\r",
+          "                            ref[part] = {};\r",
+          "                        }\r",
+          "                    }\r",
+          "                    ref = ref[part];\r",
+          "                }\r",
+          "            }\r",
+          "        });\r",
+          "    }\r",
+          "}\r",
+          "\r",
+          "// ===== 格式修正逻辑 =====\r",
+          "if (bodyParams.coupons && typeof bodyParams.coupons === 'object' && !Array.isArray(bodyParams.coupons)) {\r",
+          "    bodyParams.coupons = Object.values(bodyParams.coupons);\r",
+          "}\r",
+          "\r",
+          "if (bodyParams.products && typeof bodyParams.products === 'object' && !Array.isArray(bodyParams.products)) {\r",
+          "    bodyParams.products = Object.values(bodyParams.products);\r",
+          "}\r",
+          "\r",
+          "// Merge + Sort\r",
+          "let mergedParams = Object.assign({}, queryParams, bodyParams);\r",
+          "\r",
+          "// 🔥 关键修复：如果没有任何参数，body 应该是空字符串，而不是 \"{}\"\r",
+          "let body;\r",
+          "if (Object.keys(mergedParams).length === 0) {\r",
+          "    body = \"\";\r",
+          "} else {\r",
+          "    let sortedKeys   = Object.keys(mergedParams).sort();\r",
+          "    let sortedParams = {};\r",
+          "    sortedKeys.forEach(k => sortedParams[k] = mergedParams[k]);\r",
+          "    body = JSON.stringify(sortedParams);\r",
+          "}\r",
+          "\r",
+          "const signString = productKey + secretKey + timestamp + body;\r",
+          "const signature  = CryptoJS.MD5(signString).toString();\r",
+          "\r",
+          "\r",
+          "// Headers\r",
+          "pm.request.headers.upsert({ key: \"X-Product-Key\", value: productKey });\r",
+          "pm.request.headers.upsert({ key: \"X-Timestamp\",   value: timestamp });\r",
+          "pm.request.headers.upsert({ key: \"X-Signature\",   value: signature });\r",
+          "\r",
+          "// 🔥 可选：如果你想保留 X-Body 用于调试，可以保留；否则建议删除\r",
+          "// pm.request.headers.upsert({ key: \"X-Body\", value: body });"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/erptw_laravel11/public/api/v1"
+    },
+    {
+      "key": "shop_slug",
+      "value": "beauty"
+    },
+    {
+      "key": "productKey",
+      "value": ""
+    },
+    {
+      "key": "secretKey",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

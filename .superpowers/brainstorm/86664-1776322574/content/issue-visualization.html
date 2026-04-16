@@ -1,0 +1,64 @@
+<h2>Fixing "Featured Offers" Title Clipping</h2>
+<p class="subtitle">The titles are currently clipped when they exceed two lines or the card's fixed height.</p>
+
+<div class="options">
+  <div class="option" data-choice="auto-height" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Auto-Expanding Cards (Recommended)</h3>
+      <p>Remove the fixed height (h-32) and allow the card to grow naturally based on the title and description length.</p>
+      <div class="mockup" style="margin-top: 1rem;">
+        <div class="mockup-body" style="padding: 0;">
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 1rem; display: flex; overflow: hidden; min-height: 8rem;">
+            <div style="width: 7rem; background: #f1f5f9; background-image: url('https://images.unsplash.com/photo-1495147466023-e16194ddc4cb?w=200&h=200&fit=crop'); background-size: cover;"></div>
+            <div style="padding: 1rem; flex: 1;">
+              <h3 style="font-size: 1rem; font-weight: bold; color: #1e293b; line-height: 1.375;">New Launch: Mango Pomelo Sago With Extra Toppings and Cream</h3>
+              <p style="font-size: 0.75rem; color: #d97706; margin-top: 0.25rem;">Available Daily</p>
+              <p style="font-size: 13px; color: #64748b; margin-top: 0.25rem;">Introducing our latest creation! A refreshing bowl of Mango Pomelo Sago made with freshly pureed sweet mangoes...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="fixed-height-full-title" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Fixed Height (Taller)</h3>
+      <p>Increase the fixed height (e.g., h-40 or h-48) to accommodate more text while keeping all cards uniform.</p>
+      <div class="mockup" style="margin-top: 1rem;">
+        <div class="mockup-body" style="padding: 0;">
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 1rem; display: flex; overflow: hidden; height: 10rem;">
+             <div style="width: 7rem; background: #f1f5f9; background-image: url('https://images.unsplash.com/photo-1495147466023-e16194ddc4cb?w=200&h=200&fit=crop'); background-size: cover;"></div>
+            <div style="padding: 1rem; flex: 1;">
+              <h3 style="font-size: 1rem; font-weight: bold; color: #1e293b; line-height: 1.375;">New Launch: Mango Pomelo Sago With Extra Toppings and Cream</h3>
+              <p style="font-size: 0.75rem; color: #d97706; margin-top: 0.25rem;">Available Daily</p>
+              <p style="font-size: 13px; color: #64748b; margin-top: 0.25rem;">Introducing our latest creation! A refreshing bowl of Mango Pomelo Sago made with freshly pureed sweet mangoes...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Comparison</h3>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>Auto-Expanding (A)</h4>
+      <ul>
+        <li>Shows full content always</li>
+        <li>Better for varying text lengths</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>Fixed Taller (B)</h4>
+      <ul>
+        <li>Cards stay uniform in size</li>
+        <li>Might still clip extremely long text</li>
+      </ul>
+    </div>
+  </div>
+</div>
