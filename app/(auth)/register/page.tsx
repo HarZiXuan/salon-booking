@@ -30,7 +30,8 @@ const schema = yup.object({
         .string()
         .transform((curr, orig) => (orig === "" ? undefined : curr))
         .email("Invalid email")
-        .optional(),
+        .defined()
+        .default(undefined),
     password: yup
         .string()
         .min(6, "Password must be at least 6 characters")
