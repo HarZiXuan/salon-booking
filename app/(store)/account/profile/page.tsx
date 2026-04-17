@@ -1,10 +1,10 @@
 "use client";
 
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
-    const user = useUserStore((s) => s.user);
+    const { user } = useCurrentSession();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");

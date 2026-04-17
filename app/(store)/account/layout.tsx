@@ -2,23 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 
 export default function AccountLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { user } = useUserStore();
+    const { user, merchantSlug } = useCurrentSession();
     const pathname = usePathname();
 
     const sidebarItems = [
-        { name: "Profile", path: "/account/profile", icon: "ri-user-line" },
-        { name: "Appointments", path: "/account/appointments", icon: "ri-calendar-line" },
-        { name: "Membership", path: "/account/membership", icon: "ri-vip-crown-2-line" },
-        { name: "Rewards", path: "/account/wallet", icon: "ri-gift-line" },
-        { name: "Product orders", path: "/account/orders", icon: "ri-shopping-bag-line" },
-        { name: "Settings", path: "/account/settings", icon: "ri-settings-3-line" },
+        { name: "Profile", baseHref: "/account/profile", icon: "ri-user-line" },
+        { name: "Appointments", baseHref: "/account/appointments", icon: "ri-calendar-line" },
+        { name: "Membership", baseHref: "/account/membership", icon: "ri-vip-crown-2-line" },
+        { name: "Rewards", baseHref: "/account/wallet", icon: "ri-gift-line" },
+        { name: "Product orders", baseHref: "/account/orders", icon: "ri-shopping-bag-line" },
+        { name: "Settings", baseHref: "/account/settings", icon: "ri-settings-3-line" },
     ];
 
     if (!user) {
@@ -39,11 +39,12 @@ export default function AccountLayout({
                     </h2>
                     <nav className="space-y-1">
                         {sidebarItems.map((item) => {
-                            const isActive = pathname.startsWith(item.path);
+                            const isActive = pathname.startsWith(item.baseHref);
+                            const href = `${item.baseHref}${merchantSlug ? `?shop=${merchantSlug}` : ""}`;
                             return (
                                 <Link
                                     key={item.name}
-                                    href={item.path}
+                                    href={href}
                                     className={`flex items-center gap-4 px-4 py-3 rounded-lg text-sm font-semibold transition-colors ${isActive
                                         ? "bg-blue-50 text-black shadow-sm"
                                         : "text-gray-700 hover:bg-gray-50 hover:text-black"

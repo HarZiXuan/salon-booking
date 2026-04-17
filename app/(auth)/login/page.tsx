@@ -1,17 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/global-store/user";
 
 import { loginCustomer } from "@/app/actions/auth";
-
+import { getShopSlugFromMerchantUrl } from "@/lib/stores";
+import { fetchShopDetails } from "@/app/actions/shop";
+import { getSafeImageSrc } from "@/lib/image-url";
+import { normalizeShopToVenue } from "@/lib/normalize";
 const schema = yup.object({
     contact: yup.string().required("Email address or phone number is required"),
     password: yup.string().required("Password is required"),
@@ -19,15 +22,47 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
-export default function LoginPage() {
+function LoginPageInner() {
     const router = useRouter();
-    const setUser = useUserStore((state) => state.setUser);
+    const searchParams = useSearchParams();
+    const merchantSlug = searchParams.get("shop") ?? "";
+    const apiShopSlug = getShopSlugFromMerchantUrl(merchantSlug) ?? "";
+    const setSession = useUserStore((state) => state.setSession);
 
     const [apiError, setApiError] = useState("");
+    const [shopInfo, setShopInfo] = useState<{name: string, image: string} | null>(null);
+    const [isShopInit, setIsShopInit] = useState(false);
+
+    useEffect(() => {
+        if (!merchantSlug) {
+            router.replace("/");
+            return;
+        }
+
+        const loadShop = async () => {
+            if (apiShopSlug) {
+                const res = await fetchShopDetails(apiShopSlug);
+                if (res.success && res.data) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const d: any = res.data;
+                    const realData = d.data || d;
+                    const name = realData.name || "";
+                    const image = realData.logo || realData.image || "";
+                    setShopInfo({ name: String(name), image: String(image) });
+                }
+            }
+            setIsShopInit(true);
+        };
+        loadShop();
+    }, [merchantSlug, apiShopSlug, router]);
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
+
+    if (!isShopInit) {
+        return <div className="min-h-screen bg-white" />;
+    }
 
     const onSubmit = async (data: FormData) => {
         setApiError("");
@@ -47,20 +82,20 @@ export default function LoginPage() {
                 ? { contact: contactValue, email: contactValue, password: data.password }
                 : { contact: contactValue, password: data.password };
 
-            const res = await loginCustomer(payload);
+            const res = await loginCustomer(apiShopSlug, payload);
             if (res.success && res.data) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const d = res.data as any;
-                // Usually API returns token + user inside data
-                // Depending on what is available we save it. Let's assume generic token map
-                setUser({
-                    id: String(d.customer?.id || d.id || "c1"),
-                    name: d.customer?.name || d.name || "Customer",
-                    contact: data.contact,
-                    email: isEmail ? data.contact : (d.customer?.email || d.email),
-                    token: d.token || d.access_token,
-                    role: "customer"
-                });
+                if (apiShopSlug) {
+                    setSession(apiShopSlug, {
+                        id: String(d.customer?.id || d.id || "c1"),
+                        name: d.customer?.name || d.name || "Customer",
+                        contact: data.contact,
+                        email: isEmail ? data.contact : (d.customer?.email || d.email),
+                        token: d.token || d.access_token,
+                        role: "customer",
+                    });
+                }
                 router.back();
             } else {
                 setApiError("Authentication failed. " + (res.error || "Please check your credentials."));
@@ -81,9 +116,19 @@ export default function LoginPage() {
                 </div>
 
                 <div className="flex-1 px-6 flex flex-col justify-center items-center w-full max-w-[480px] mx-auto">
-                    <div className="mb-8 w-full">
+                    <div className="mb-8 w-full flex flex-col items-center">
+                        {shopInfo?.image && (
+                            <div className="w-[80px] h-[80px] rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm mb-4">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={getSafeImageSrc(shopInfo.image)}
+                                    alt={shopInfo.name || "Logo"}
+                                    className="w-full h-full object-contain p-2"
+                                />
+                            </div>
+                        )}
                         <h2 className="text-center text-[28px] font-bold tracking-tight text-black leading-tight">
-                            Zaloon for customers
+                            {shopInfo?.name ? `Welcome to ${shopInfo.name}` : "Customer Portal"}
                         </h2>
                         <p className="mt-3 text-center text-[15px] text-gray-500 font-medium leading-snug">
                             Create an account or log in to book and manage your appointments.
@@ -133,7 +178,7 @@ export default function LoginPage() {
                     </form>
 
                     <div className="mt-8 text-center flex flex-col gap-4 w-full">
-                        <Link href="/register" className="w-full h-[56px] rounded-full text-[17px] font-bold border border-gray-300 bg-white hover:bg-gray-50 text-black transition-all flex items-center justify-center shadow-sm">
+                        <Link href={merchantSlug ? `/register?shop=${merchantSlug}` : "/register"} className="w-full h-[56px] rounded-full text-[17px] font-bold border border-gray-300 bg-white hover:bg-gray-50 text-black transition-all flex items-center justify-center shadow-sm">
                             Create an account
                         </Link>
 
@@ -154,5 +199,13 @@ export default function LoginPage() {
                 />
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense>
+            <LoginPageInner />
+        </Suspense>
     );
 }

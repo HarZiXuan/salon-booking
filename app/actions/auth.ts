@@ -2,10 +2,11 @@
 
 import { apiFetch } from "@/lib/api";
 
-export async function loginCustomer(payload: { contact: string; password: string; email?: string }) {
+export async function loginCustomer(shopSlug: string, payload: { contact: string; password: string; email?: string }) {
     try {
         const response = await apiFetch<Record<string, unknown>>("/customers/login", {
             method: "POST",
+            shopSlug,
             data: payload
         });
 
@@ -23,10 +24,11 @@ export async function loginCustomer(payload: { contact: string; password: string
     }
 }
 
-export async function sendRegistrationOtp(contact: string) {
+export async function sendRegistrationOtp(shopSlug: string, contact: string) {
     try {
         const response = await apiFetch<Record<string, unknown>>("/customers/register/send-otp", {
             method: "POST",
+            shopSlug,
             data: { contact }
         });
 
@@ -44,10 +46,11 @@ export async function sendRegistrationOtp(contact: string) {
     }
 }
 
-export async function registerCustomer(payload: { contact: string; password: string; password_confirmation: string; otp: string; name?: string; email?: string; gender?: string; birthday?: string }) {
+export async function registerCustomer(shopSlug: string, payload: { contact: string; password: string; password_confirmation: string; otp: string; name?: string; email?: string; gender?: string; birthday?: string }) {
     try {
         const response = await apiFetch<Record<string, unknown>>("/customers/register", {
             method: "POST",
+            shopSlug,
             data: payload
         });
 
@@ -65,10 +68,11 @@ export async function registerCustomer(payload: { contact: string; password: str
     }
 }
 
-export async function fetchCustomerInfo(token: string) {
+export async function fetchCustomerInfo(shopSlug: string, token: string) {
     try {
         const response = await apiFetch<Record<string, unknown>>("/customers/me", {
             method: "GET",
+            shopSlug,
             token
         });
 
@@ -84,10 +88,11 @@ export async function fetchCustomerInfo(token: string) {
     }
 }
 
-export async function logoutCustomer(token: string) {
+export async function logoutCustomer(shopSlug: string, token: string) {
     try {
         const response = await apiFetch<Record<string, unknown>>("/customers/logout", {
             method: "POST",
+            shopSlug,
             token
         });
 

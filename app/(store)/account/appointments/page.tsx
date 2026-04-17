@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button/button";
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { getMyBookingRefs, type MyBookingRef } from "@/lib/my-bookings";
 import { fetchBookingDetails } from "@/app/actions/shop";
 
 type BookingDetail = Record<string, unknown> | null;
 
 export default function AppointmentsPage() {
-    const user = useUserStore((s) => s.user);
+    const { user } = useCurrentSession();
     const [refs, setRefs] = useState<MyBookingRef[]>([]);
     const [details, setDetails] = useState<Record<string, BookingDetail>>({});
     const [loading, setLoading] = useState(true);

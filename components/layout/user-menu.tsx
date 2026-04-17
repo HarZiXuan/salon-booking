@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { useUserStore } from "@/global-store/user";
 import { logoutCustomer } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
 
 export function UserMenu() {
-    const { user, logout } = useUserStore();
+    const { user, merchantSlug, logout } = useCurrentSession();
     const router = useRouter();
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
@@ -22,22 +23,23 @@ export function UserMenu() {
     if (!isMounted || !user) return null;
 
     const handleLogout = async () => {
-        if (user.token && user.role === "customer") {
+        if (user?.token && user.role === "customer") {
             try {
-                await logoutCustomer(user.token);
-            } catch (e) {
-                // Ignore API failure, still log them out locally
+                const shopSlugFromSession = shopSlug ?? "";
+                await logoutCustomer(shopSlugFromSession, user.token);
+            } catch {
+                // Ignore API failure, still log out locally
             }
         }
-        logout();
+        logout(); // clears only this merchant's session
         setIsOpen(false);
         router.push("/");
     };
 
     const mainMenuItems = [
-        { label: "Profile", href: "/account/profile", icon: "ri-user-line" },
-        { label: "Appointments", href: "/account/appointments", icon: "ri-calendar-line" },
-        { label: "Membership", href: "/account/membership", icon: "ri-vip-crown-2-line" },
+        { label: "Profile", baseHref: "/account/profile", icon: "ri-user-line" },
+        { label: "Appointments", baseHref: "/account/appointments", icon: "ri-calendar-line" },
+        { label: "Membership", baseHref: "/account/membership", icon: "ri-vip-crown-2-line" },
     ];
 
     return (
@@ -71,11 +73,12 @@ export function UserMenu() {
                     {/* Main Menu Items */}
                     <div className="flex flex-col gap-1 mt-1">
                         {mainMenuItems.map((item) => {
-                            const isActive = pathname === item.href;
+                            const isActive = pathname.startsWith(item.baseHref);
+                            const href = `${item.baseHref}${merchantSlug ? `?shop=${merchantSlug}` : ""}`;
                             return (
                                 <Link
                                     key={item.label}
-                                    href={item.href}
+                                    href={href}
                                     onClick={() => setIsOpen(false)}
                                     className={cn(
                                         "flex items-center gap-4 px-4 py-3 rounded-xl text-[16px] transition-colors focus:outline-none",

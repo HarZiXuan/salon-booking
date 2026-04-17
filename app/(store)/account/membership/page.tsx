@@ -17,7 +17,7 @@ interface MerchantLoyalty {
 }
 
 export default function MembershipPage() {
-    const { user } = useUserStore();
+    const { sessions } = useUserStore();
     const [merchants, setMerchants] = useState<MerchantLoyalty[]>([]);
     const [loading, setLoading] = useState(true);
     const [redeemModal, setRedeemModal] = useState<{
@@ -29,10 +29,6 @@ export default function MembershipPage() {
     const [activeMerchant, setActiveMerchant] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!user?.token) {
-            setLoading(false);
-            return;
-        }
         const merchantSlugs = getMerchantSlugs();
         if (merchantSlugs.length === 0) {
             setLoading(false);
@@ -44,7 +40,9 @@ export default function MembershipPage() {
             for (const merchantSlug of merchantSlugs) {
                 const shopSlug = getShopSlugFromMerchantUrl(merchantSlug);
                 if (!shopSlug) continue;
-                const balRes = await getPointBalance(shopSlug, user.token!);
+                const token = sessions[shopSlug]?.token;
+                if (!token) continue; // skip merchants the user isn't logged into
+                const balRes = await getPointBalance(shopSlug, token);
                 const points = balRes.success && balRes.data ? balRes.data.points : 0;
                 const merchantName = balRes.success && balRes.data?.name
                     ? balRes.data.name
@@ -57,12 +55,13 @@ export default function MembershipPage() {
             }
             setLoading(false);
         })();
-    }, [user?.token]);
+    }, [sessions]);
 
-    if (!user) {
+    const hasAnySession = Object.keys(sessions).length > 0;
+    if (!hasAnySession) {
         return (
             <div className="flex flex-col min-h-full p-8 animate-in fade-in duration-300">
-                <p className="text-gray-500">Please log in to view your memberships.</p>
+                <p className="text-gray-500">Please log in to a merchant to view your memberships.</p>
             </div>
         );
     }
@@ -138,7 +137,7 @@ export default function MembershipPage() {
                                                 <div className="flex justify-between items-end relative z-10 w-full">
                                                     <div>
                                                         <p className="text-[9px] font-bold text-[#8a6522] uppercase tracking-[0.1em] mb-1">Member</p>
-                                                        <p className="text-sm font-bold text-[#4a350f] tracking-wide uppercase">{user.name}</p>
+                                                        <p className="text-sm font-bold text-[#4a350f] tracking-wide uppercase">{sessions[m.shopSlug]?.name ?? "Member"}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -164,7 +163,7 @@ export default function MembershipPage() {
                                                 <div className="flex justify-between items-end relative z-10 w-full">
                                                     <div>
                                                         <p className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em] mb-1">Member</p>
-                                                        <p className="text-sm font-bold text-gray-800 tracking-wide uppercase">{user.name}</p>
+                                                        <p className="text-sm font-bold text-gray-800 tracking-wide uppercase">{sessions[m.shopSlug]?.name ?? "Member"}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -231,10 +230,11 @@ export default function MembershipPage() {
                     onClose={() => setRedeemModal(null)}
                     shopSlug={redeemModal.shopSlug}
                     merchantName={redeemModal.merchantName}
-                    token={user?.token}
+                    token={sessions[redeemModal.shopSlug]?.token}
                     onRedeemed={async () => {
-                        if (!user?.token) return;
-                        const balRes = await getPointBalance(redeemModal.shopSlug, user.token!);
+                        const token = sessions[redeemModal.shopSlug]?.token;
+                        if (!token) return;
+                        const balRes = await getPointBalance(redeemModal.shopSlug, token);
                         if (balRes.success && balRes.data) {
                             setMerchants((prev) =>
                                 prev.map((x) =>

@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/global-store/user";
 import { registerCustomer, sendRegistrationOtp } from "@/app/actions/auth";
-
+import { getShopSlugFromMerchantUrl } from "@/lib/stores";
+import { fetchShopDetails } from "@/app/actions/shop";
+import { getSafeImageSrc } from "@/lib/image-url";
+import { normalizeShopToVenue } from "@/lib/normalize";
 // ─── Country codes ────────────────────────────────────────────────────────────
 const COUNTRY_CODES = [
     { label: "🇲🇾 +60", value: "+60" },
@@ -72,15 +75,44 @@ function useOtpCooldown(seconds = 30) {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function RegisterPage() {
+function RegisterPageInner() {
     const router = useRouter();
-    const setUser = useUserStore((state) => state.setUser);
+    const searchParams = useSearchParams();
+    const merchantSlug = searchParams.get("shop") ?? "";
+    const apiShopSlug = getShopSlugFromMerchantUrl(merchantSlug) ?? "";
+    const setSession = useUserStore((state) => state.setSession);
 
     const [countryCode, setCountryCode] = useState("+60");
     const [otpSending, setOtpSending] = useState(false);
     const [otpStatus, setOtpStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
     const [apiError, setApiError] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
+
+    const [shopInfo, setShopInfo] = useState<{name: string, image: string} | null>(null);
+    const [isShopInit, setIsShopInit] = useState(false);
+
+    useEffect(() => {
+        if (!merchantSlug) {
+            router.replace("/");
+            return;
+        }
+
+        const loadShop = async () => {
+            if (apiShopSlug) {
+                const res = await fetchShopDetails(apiShopSlug);
+                if (res.success && res.data) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const d: any = res.data;
+                    const realData = d.data || d;
+                    const name = realData.name || "";
+                    const image = realData.logo || realData.image || "";
+                    setShopInfo({ name: String(name), image: String(image) });
+                }
+            }
+            setIsShopInit(true);
+        };
+        loadShop();
+    }, [merchantSlug, apiShopSlug, router]);
 
     const { countdown, start: startCountdown, isActive: isCoolingDown } = useOtpCooldown(30);
 
@@ -90,6 +122,10 @@ export default function RegisterPage() {
         getValues,
         formState: { errors, isSubmitting },
     } = useForm<FormData>({ resolver: yupResolver(schema) });
+
+    if (!isShopInit) {
+        return <div className="min-h-screen bg-gray-50" />;
+    }
 
     // ── Send OTP ──────────────────────────────────────────────────────────────
     const handleSendOtp = async () => {
@@ -103,7 +139,7 @@ export default function RegisterPage() {
         setOtpStatus(null);
 
         const formattedContact = `${countryCode}${rawContact.replace(/^0/, "")}`;
-        const res = await sendRegistrationOtp(formattedContact);
+        const res = await sendRegistrationOtp(apiShopSlug, formattedContact);
 
         setOtpSending(false);
 
@@ -121,7 +157,7 @@ export default function RegisterPage() {
         setApiError("");
         const formattedContact = `${countryCode}${data.contact.replace(/^0/, "")}`;
 
-        const res = await registerCustomer({
+        const res = await registerCustomer(apiShopSlug, {
             name: data.name,
             contact: formattedContact,
             ...(data.email ? { email: data.email } : {}),
@@ -136,17 +172,19 @@ export default function RegisterPage() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const d = res.data as any;
                 if (d.token || d.access_token) {
-                    setUser({
-                        id: String(d.customer?.id || d.id || ""),
-                        name: data.name,
-                        contact: formattedContact,
-                        email: data.email,
-                        token: d.token || d.access_token,
-                        role: "customer",
-                    });
+                    if (apiShopSlug) {
+                        setSession(apiShopSlug, {
+                            id: String(d.customer?.id || d.id || ""),
+                            name: data.name,
+                            contact: formattedContact,
+                            email: data.email as string | undefined,
+                            token: d.token || d.access_token,
+                            role: "customer",
+                        });
+                    }
                     router.back();
                 } else {
-                    router.push("/login");
+                    router.push(merchantSlug ? `/login?shop=${merchantSlug}` : "/login");
                 }
             }, 2000);
         } else {
@@ -181,13 +219,23 @@ export default function RegisterPage() {
 
             <div className="w-full max-w-md space-y-8">
                 {/* Header */}
-                <div>
-                    <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                        Create your account
+                <div className="flex flex-col items-center">
+                    {shopInfo?.image && (
+                        <div className="w-[80px] h-[80px] rounded-full border border-gray-200 overflow-hidden bg-white shrink-0 shadow-sm mb-2">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={getSafeImageSrc(shopInfo.image)}
+                                alt={shopInfo.name || "Logo"}
+                                className="w-full h-full object-contain p-2"
+                            />
+                        </div>
+                    )}
+                    <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-gray-900">
+                        {shopInfo?.name ? `Join ${shopInfo.name}` : "Create your account"}
                     </h2>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         Already have an account?{" "}
-                        <Link href="/login" className="font-medium text-primary hover:text-primary/90">
+                        <Link href={merchantSlug ? `/login?shop=${merchantSlug}` : "/login"} className="font-medium text-primary hover:text-primary/90">
                             Sign in
                         </Link>
                     </p>
@@ -346,5 +394,13 @@ export default function RegisterPage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function RegisterPage() {
+    return (
+        <Suspense>
+            <RegisterPageInner />
+        </Suspense>
     );
 }

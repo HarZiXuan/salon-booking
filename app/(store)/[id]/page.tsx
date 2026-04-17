@@ -14,7 +14,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getShopSlugFromMerchantUrl } from "@/lib/stores";
 import { getSafeImageSrc } from "@/lib/image-url";
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { RedeemModal } from "@/components/loyalty/redeem-modal";
 import { VoucherCard } from "@/components/loyalty/voucher-card";
 
@@ -36,7 +36,7 @@ export default function StorePage() {
     const [startX, setStartX] = useState(0);
     const [scrollLeft, setScrollLeft] = useState(0);
 
-    const { user } = useUserStore();
+    const { user } = useCurrentSession();
     const [loyaltyPoints, setLoyaltyPoints] = useState<number | null>(null);
     const [redeemModalOpen, setRedeemModalOpen] = useState(false);
 
@@ -376,7 +376,7 @@ export default function StorePage() {
                                     </Button>
                                 </>
                             ) : (
-                                <Link href="/login">
+                                <Link href={`/login?shop=${shopSlug}`}>
                                     <Button size="sm" variant="outline" className="w-full rounded-xl border border-[#b88c3a] text-[#4a350f] bg-white/20 hover:bg-white/40 hover:text-[#342407] font-semibold backdrop-blur-sm transition-all shadow-sm">
                                         Log in to earn points
                                     </Button>
@@ -661,7 +661,7 @@ export default function StorePage() {
                                         </Button>
                                     </>
                                 ) : (
-                                    <Link href="/login">
+                                    <Link href={`/login?shop=${shopSlug}`}>
                                         <Button size="sm" variant="outline" className="w-full rounded-xl border border-[#b88c3a] text-[#4a350f] bg-white/20 hover:bg-white/40 hover:text-[#342407] h-10 text-sm font-semibold backdrop-blur-sm transition-all shadow-sm">
                                             Log in to earn points
                                         </Button>

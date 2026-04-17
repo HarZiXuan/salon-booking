@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { getSafeImageSrc } from "@/lib/image-url";
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { addMyBookingRef } from "@/lib/my-bookings";
 
 // Steps
@@ -25,7 +25,7 @@ interface BookingWizardProps {
 }
 
 export function BookingWizard({ isOpen, onClose, initialServiceId, venue: venueData, services: servicesData, categories, shopSlug, merchantSlug }: BookingWizardProps) {
-    const user = useUserStore((state) => state.user);
+    const { user } = useCurrentSession();
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<string[]>(initialServiceId ? [initialServiceId] : []);
     const [activeCategory, setActiveCategory] = useState("all");

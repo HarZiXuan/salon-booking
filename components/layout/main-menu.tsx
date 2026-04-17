@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button/button";
 import * as Popover from "@radix-ui/react-popover";
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { logoutCustomer } from "@/app/actions/auth";
 
 export function MainMenu() {
-    const { user, logout } = useUserStore();
+    const { user, logout, shopSlug } = useCurrentSession();
     const [isOpen, setIsOpen] = useState(false);
     const [isLanguageOpen, setIsLanguageOpen] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState("English");
@@ -43,14 +43,14 @@ export function MainMenu() {
 
                     <div className="space-y-1">
                         {(!isMounted || !user) ? (
-                            <Link href="/login" onClick={() => setIsOpen(false)} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
+                            <Link href={shopSlug ? `/login?shop=${shopSlug}` : "/login"} onClick={() => setIsOpen(false)} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-blue-600 hover:bg-gray-50 rounded-lg transition-colors">
                                 Log in or sign up
                             </Link>
                         ) : (
                             <button onClick={async () => {
                                 if (user.token && user.role === "customer") {
                                     try {
-                                        await logoutCustomer(user.token);
+                                        await logoutCustomer(shopSlug ?? "", user.token);
                                     } catch (e) { }
                                 }
                                 logout();

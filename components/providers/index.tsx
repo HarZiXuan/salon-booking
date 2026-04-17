@@ -5,7 +5,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import "@/lib/i18n";
 import { useUserStore } from "@/global-store/user";
 import { fetchCustomerInfo } from "@/app/actions/auth";
-
+import { useCurrentSession } from "@/hooks/use-current-session";
 export default function Providers({ children }: { children: ReactNode }) {
     const [queryClient] = useState(
         () =>
@@ -18,25 +18,25 @@ export default function Providers({ children }: { children: ReactNode }) {
             })
     );
 
-    const { user, setUser, logout, isAuthenticated } = useUserStore();
+    const { user, shopSlug, logout } = useCurrentSession();
+    const setSession = useUserStore((state) => state.setSession);
 
     useEffect(() => {
-        if (isAuthenticated && user?.token && user.role === "customer") {
+        if (user && user.token && user.role === "customer") {
             const loadProfile = async () => {
-                const res = await fetchCustomerInfo(user.token!);
+                const res = await fetchCustomerInfo(shopSlug ?? "", user.token!);
                 if (res.success && res.data) {
                     const d = res.data as any;
-                    // Keep token, update other info
-                    setUser({
-                        ...user,
-                        id: String(d.id || user.id),
-                        name: d.name || user.name,
-                        contact: d.contact || user.contact,
-                        email: d.email || user.email,
-                    });
+                    if (shopSlug) {
+                        setSession(shopSlug, {
+                            ...user,
+                            id: String(d.id || user.id),
+                            name: d.name || user.name,
+                            contact: d.contact || user.contact,
+                            email: d.email || user.email,
+                        });
+                    }
                 } else if (!res.success) {
-                    // Token might be invalid, but we'll leave session active to not disrupt flow
-                    // or we could logout. Usually soft-fail is better unless strictly unauthorized
                     if (res.error?.toLowerCase().includes("unauthenticated")) {
                         logout();
                     }
@@ -46,7 +46,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         }
         // Run once on mount or when token changes
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.token, isAuthenticated]);
+    }, [user?.token, shopSlug]);
 
     return (
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

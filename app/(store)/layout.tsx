@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useUserStore } from "@/global-store/user";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { useCartStore } from "@/global-store/cart";
 import { Button } from "@/components/ui/button/button";
 import { CompactSearchBar } from "@/components/layout/compact-search-bar";
@@ -19,7 +19,7 @@ export default function StoreLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { user, logout } = useUserStore();
+    const { user, shopSlug } = useCurrentSession();
     const cartItems = useCartStore((state) => state.items);
     const router = useRouter();
     const pathname = usePathname();
@@ -29,7 +29,7 @@ export default function StoreLayout({
     const [isMounted, setIsMounted] = useState(false);
 
     const handleLogout = () => {
-        logout();
+        // Logout handled by UserMenu per-merchant
         router.refresh();
     };
 
@@ -88,7 +88,7 @@ export default function StoreLayout({
                     <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                         {(!isMounted || !user) ? (
                             <>
-                                <Link href="/login" className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
+                                <Link href={shopSlug ? `/login?shop=${shopSlug}` : "/login"} className="text-sm font-bold hover:text-gray-600 px-3 py-2 transition-colors">
                                     Log in
                                 </Link>
 

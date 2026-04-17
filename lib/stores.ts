@@ -70,7 +70,8 @@ function getMerchantToShopMap(): Record<string, string> {
 export function getShopSlugFromMerchantUrl(merchantSlug: string | undefined): string | null {
     if (!merchantSlug) return null;
     const map = getMerchantToShopMap();
-    return map[merchantSlug.trim().toLowerCase()] ?? null;
+    const cleanSlug = merchantSlug.trim().toLowerCase();
+    return map[cleanSlug] ?? cleanSlug;
 }
 
 /** List of merchant URL slugs (for routing). There is no default store. */
