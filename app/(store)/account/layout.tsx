@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCurrentSession } from "@/hooks/use-current-session";
+import { useUserStore } from "@/global-store/user";
 
 export default function AccountLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { user } = useCurrentSession();
+    const { user } = useUserStore();
     const pathname = usePathname();
 
     const sidebarItems = [

@@ -16,7 +16,7 @@ interface MerchantLoyalty {
 }
 
 export default function WalletPage() {
-  const { sessions } = useUserStore();
+  const { user } = useUserStore();
   const [merchants, setMerchants] = useState<MerchantLoyalty[]>([]);
   const [loading, setLoading] = useState(true);
   const [redeemModal, setRedeemModal] = useState<{
@@ -25,6 +25,10 @@ export default function WalletPage() {
   } | null>(null);
 
   useEffect(() => {
+    if (!user?.token) {
+      setLoading(false);
+      return;
+    }
     const merchantSlugs = getMerchantSlugs();
     if (merchantSlugs.length === 0) {
       setLoading(false);
@@ -36,9 +40,7 @@ export default function WalletPage() {
       for (const merchantSlug of merchantSlugs) {
         const shopSlug = getShopSlugFromMerchantUrl(merchantSlug);
         if (!shopSlug) continue;
-        const token = sessions[shopSlug]?.token;
-        if (!token) continue; // skip merchants the user isn't logged into
-        const balRes = await getPointBalance(shopSlug, token);
+        const balRes = await getPointBalance(shopSlug, user.token!);
         const points = balRes.success && balRes.data ? balRes.data.points : 0;
         const merchantName = balRes.success && balRes.data?.name
           ? balRes.data.name
@@ -48,13 +50,12 @@ export default function WalletPage() {
       setMerchants(results);
       setLoading(false);
     })();
-  }, [sessions]);
+  }, [user?.token]);
 
-  const hasAnySession = Object.keys(sessions).length > 0;
-  if (!hasAnySession) {
+  if (!user) {
     return (
       <div className="flex flex-col min-h-full p-8 animate-in fade-in duration-300">
-        <p className="text-gray-500">Please log in to a merchant to view your rewards.</p>
+        <p className="text-gray-500">Please log in to view your rewards.</p>
       </div>
     );
   }
@@ -137,11 +138,10 @@ export default function WalletPage() {
           onClose={() => setRedeemModal(null)}
           shopSlug={redeemModal.shopSlug}
           merchantName={redeemModal.merchantName}
-          token={redeemModal ? sessions[redeemModal.shopSlug]?.token : undefined}
+          token={user?.token}
           onRedeemed={async () => {
-            const token = redeemModal ? sessions[redeemModal.shopSlug]?.token : undefined;
-            if (!token || !redeemModal) return;
-            const balRes = await getPointBalance(redeemModal.shopSlug, token);
+            if (!user?.token) return;
+            const balRes = await getPointBalance(redeemModal.shopSlug, user.token!);
             if (balRes.success && balRes.data) {
               setMerchants((prev) =>
                 prev.map((x) =>

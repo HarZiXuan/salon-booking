@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useCurrentSession } from "@/hooks/use-current-session";
+import { useUserStore } from "@/global-store/user";
 import { useCartStore } from "@/global-store/cart";
 import { Button } from "@/components/ui/button/button";
 import { CompactSearchBar } from "@/components/layout/compact-search-bar";
@@ -19,7 +19,7 @@ export default function StoreLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { user } = useCurrentSession();
+    const { user, logout } = useUserStore();
     const cartItems = useCartStore((state) => state.items);
     const router = useRouter();
     const pathname = usePathname();
@@ -29,7 +29,7 @@ export default function StoreLayout({
     const [isMounted, setIsMounted] = useState(false);
 
     const handleLogout = () => {
-        // Logout handled by UserMenu per-merchant
+        logout();
         router.refresh();
     };
 

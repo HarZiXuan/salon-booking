@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/global-store/user";
@@ -72,11 +72,9 @@ function useOtpCooldown(seconds = 30) {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-function RegisterPageInner() {
+export default function RegisterPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const shopSlug = searchParams.get("shop") ?? "";
-    const setSession = useUserStore((state) => state.setSession);
+    const setUser = useUserStore((state) => state.setUser);
 
     const [countryCode, setCountryCode] = useState("+60");
     const [otpSending, setOtpSending] = useState(false);
@@ -138,16 +136,14 @@ function RegisterPageInner() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const d = res.data as any;
                 if (d.token || d.access_token) {
-                    if (shopSlug) {
-                        setSession(shopSlug, {
-                            id: String(d.customer?.id || d.id || ""),
-                            name: data.name,
-                            contact: formattedContact,
-                            email: data.email as string | undefined,
-                            token: d.token || d.access_token,
-                            role: "customer",
-                        });
-                    }
+                    setUser({
+                        id: String(d.customer?.id || d.id || ""),
+                        name: data.name,
+                        contact: formattedContact,
+                        email: data.email,
+                        token: d.token || d.access_token,
+                        role: "customer",
+                    });
                     router.back();
                 } else {
                     router.push("/login");
@@ -350,13 +346,5 @@ function RegisterPageInner() {
                 </form>
             </div>
         </div>
-    );
-}
-
-export default function RegisterPage() {
-    return (
-        <Suspense>
-            <RegisterPageInner />
-        </Suspense>
     );
 }

@@ -4,9 +4,7 @@ import { useUserStore } from "@/global-store/user";
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
-    const sessions = useUserStore((s) => s.sessions);
-    // Show info from whichever merchant session is active (first available)
-    const user = Object.values(sessions)[0] ?? null;
+    const user = useUserStore((s) => s.user);
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
