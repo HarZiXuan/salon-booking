@@ -10,7 +10,9 @@ import { fetchBookingDetails } from "@/app/actions/shop";
 type BookingDetail = Record<string, unknown> | null;
 
 export default function AppointmentsPage() {
-    const user = useUserStore((s) => s.user);
+    const sessions = useUserStore((s) => s.sessions);
+    // Use first available session to identify the user for local booking refs
+    const user = Object.values(sessions)[0] ?? null;
     const [refs, setRefs] = useState<MyBookingRef[]>([]);
     const [details, setDetails] = useState<Record<string, BookingDetail>>({});
     const [loading, setLoading] = useState(true);

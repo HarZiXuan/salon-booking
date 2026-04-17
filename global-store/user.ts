@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
+export interface User {
     id: string;
     name: string;
     email?: string;
@@ -11,19 +11,29 @@ interface User {
 }
 
 interface UserState {
-    user: User | null;
-    isAuthenticated: boolean;
-    setUser: (user: User) => void;
-    logout: () => void;
+    sessions: Record<string, User>; // key = shopSlug (e.g. "service")
+    setSession: (shopSlug: string, user: User) => void;
+    clearSession: (shopSlug: string) => void;
+    getSession: (shopSlug: string) => User | null;
+    clearAllSessions: () => void;
 }
 
 export const useUserStore = create<UserState>()(
     persist(
-        (set) => ({
-            user: null,
-            isAuthenticated: false,
-            setUser: (user) => set({ user, isAuthenticated: true }),
-            logout: () => set({ user: null, isAuthenticated: false }),
+        (set, get) => ({
+            sessions: {},
+            setSession: (shopSlug, user) =>
+                set((state) => ({
+                    sessions: { ...state.sessions, [shopSlug]: user },
+                })),
+            clearSession: (shopSlug) =>
+                set((state) => {
+                    const next = { ...state.sessions };
+                    delete next[shopSlug];
+                    return { sessions: next };
+                }),
+            getSession: (shopSlug) => get().sessions[shopSlug] ?? null,
+            clearAllSessions: () => set({ sessions: {} }),
         }),
         { name: "user-storage" }
     )

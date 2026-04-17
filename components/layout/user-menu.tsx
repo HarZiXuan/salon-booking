@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
+import { useCurrentSession } from "@/hooks/use-current-session";
 import { useUserStore } from "@/global-store/user";
 import { logoutCustomer } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
 
 export function UserMenu() {
-    const { user, logout } = useUserStore();
+    const { user, logout } = useCurrentSession();
     const router = useRouter();
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
@@ -22,14 +23,14 @@ export function UserMenu() {
     if (!isMounted || !user) return null;
 
     const handleLogout = async () => {
-        if (user.token && user.role === "customer") {
+        if (user?.token && user.role === "customer") {
             try {
                 await logoutCustomer(user.token);
-            } catch (e) {
-                // Ignore API failure, still log them out locally
+            } catch {
+                // Ignore API failure, still log out locally
             }
         }
-        logout();
+        logout(); // clears only this merchant's session
         setIsOpen(false);
         router.push("/");
     };

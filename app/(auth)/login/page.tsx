@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/global-store/user";
@@ -19,9 +19,11 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
-export default function LoginPage() {
+function LoginPageInner() {
     const router = useRouter();
-    const setUser = useUserStore((state) => state.setUser);
+    const searchParams = useSearchParams();
+    const shopSlug = searchParams.get("shop") ?? "";
+    const setSession = useUserStore((state) => state.setSession);
 
     const [apiError, setApiError] = useState("");
 
@@ -51,16 +53,16 @@ export default function LoginPage() {
             if (res.success && res.data) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const d = res.data as any;
-                // Usually API returns token + user inside data
-                // Depending on what is available we save it. Let's assume generic token map
-                setUser({
-                    id: String(d.customer?.id || d.id || "c1"),
-                    name: d.customer?.name || d.name || "Customer",
-                    contact: data.contact,
-                    email: isEmail ? data.contact : (d.customer?.email || d.email),
-                    token: d.token || d.access_token,
-                    role: "customer"
-                });
+                if (shopSlug) {
+                    setSession(shopSlug, {
+                        id: String(d.customer?.id || d.id || "c1"),
+                        name: d.customer?.name || d.name || "Customer",
+                        contact: data.contact,
+                        email: isEmail ? data.contact : (d.customer?.email || d.email),
+                        token: d.token || d.access_token,
+                        role: "customer",
+                    });
+                }
                 router.back();
             } else {
                 setApiError("Authentication failed. " + (res.error || "Please check your credentials."));
@@ -154,5 +156,13 @@ export default function LoginPage() {
                 />
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense>
+            <LoginPageInner />
+        </Suspense>
     );
 }
