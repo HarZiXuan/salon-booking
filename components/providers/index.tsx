@@ -1,11 +1,12 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, Suspense, type ReactNode } from "react";
 import "@/lib/i18n";
 import { useUserStore } from "@/global-store/user";
 import { fetchCustomerInfo } from "@/app/actions/auth";
 import { useCurrentSession } from "@/hooks/use-current-session";
+
 export default function Providers({ children }: { children: ReactNode }) {
     const [queryClient] = useState(
         () =>
@@ -18,6 +19,16 @@ export default function Providers({ children }: { children: ReactNode }) {
             })
     );
 
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Suspense>
+                <SessionSync>{children}</SessionSync>
+            </Suspense>
+        </QueryClientProvider>
+    );
+}
+
+function SessionSync({ children }: { children: ReactNode }) {
     const { user, shopSlug, logout } = useCurrentSession();
     const setSession = useUserStore((state) => state.setSession);
 
@@ -48,7 +59,5 @@ export default function Providers({ children }: { children: ReactNode }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.token, shopSlug]);
 
-    return (
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <>{children}</>;
 }
