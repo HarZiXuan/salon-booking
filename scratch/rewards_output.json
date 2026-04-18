@@ -1,0 +1,209 @@
+Logging in...
+[POST] http://54.169.239.246:8888/api/v1/shops/service/customers/login - Status: 200
+Login successful!
+
+Fetching rewards for 'service' (kapas)...
+[GET] http://54.169.239.246:8888/api/v1/shops/service/rewards - Status: 200
+{
+  "success": true,
+  "data": {
+    "campaigns": [
+      {
+        "reward": {
+          "id": "a0d56929-1b70-459f-966d-4d3f4d7c0c69",
+          "image": null,
+          "campaign_id": null,
+          "reward_type": "cashback_voucher",
+          "is_active": true,
+          "sort_order": 0,
+          "value_type": "percentage",
+          "value_amount": "50.00",
+          "max_discount": null,
+          "min_member_tier_id": null,
+          "daily_limit": null,
+          "monthly_limit": null,
+          "min_spend_amount": null,
+          "is_stackable": false,
+          "start_at": null,
+          "end_at": null,
+          "validity_days": null,
+          "workspace_id": 9,
+          "created_by": 13,
+          "created_at": "2026-01-14T01:55:27.000000Z",
+          "updated_at": "2026-01-16T03:13:14.000000Z",
+          "costs": [
+            {
+              "id": "a0d8df48-3fa9-4766-a83e-6f4df812c28a",
+              "reward_id": "a0d56929-1b70-459f-966d-4d3f4d7c0c69",
+              "cost_type": "point",
+              "cost_value": "150.00",
+              "cost_unit": null,
+              "created_at": "2026-01-16T03:13:14.000000Z",
+              "updated_at": "2026-01-16T03:13:14.000000Z"
+            }
+          ],
+          "tiers": [],
+          "skus": [],
+          "campaign": null
+        },
+        "is_eligible": false,
+        "reasons": [
+          "Insufficient points (required 150, balance 0)"
+        ]
+      },
+      {
+        "reward": {
+          "id": "a0d8ddfa-ee12-4791-9ee8-a1349df51f67",
+          "image": null,
+          "campaign_id": null,
+          "reward_type": "free_item",
+          "is_active": true,
+          "sort_order": 0,
+          "value_type": "amount",
+          "value_amount": null,
+          "max_discount": null,
+          "min_member_tier_id": null,
+          "daily_limit": null,
+          "monthly_limit": null,
+          "min_spend_amount": null,
+          "is_stackable": true,
+          "start_at": null,
+          "end_at": null,
+          "validity_days": null,
+          "workspace_id": 9,
+          "created_by": 13,
+          "created_at": "2026-01-16T03:09:35.000000Z",
+          "updated_at": "2026-01-16T03:09:35.000000Z",
+          "costs": [
+            {
+              "id": "a0d8ddfa-eee2-435b-b3d4-f44cd5c20b96",
+              "reward_id": "a0d8ddfa-ee12-4791-9ee8-a1349df51f67",
+              "cost_type": "point",
+              "cost_value": "50.00",
+              "cost_unit": null,
+              "created_at": "2026-01-16T03:09:35.000000Z",
+              "updated_at": "2026-01-16T03:09:35.000000Z"
+            }
+          ],
+          "tiers": [],
+          "skus": [
+            {
+              "id": "a0d8ddfa-ef67-4d24-a7a0-afe9cc6d5f24",
+              "reward_id": "a0d8ddfa-ee12-4791-9ee8-a1349df51f67",
+              "sku": "SKU-GN0G158",
+              "quantity": 1,
+              "created_at": "2026-01-16T03:09:35.000000Z",
+              "updated_at": "2026-01-16T03:09:35.000000Z"
+            }
+          ],
+          "campaign": null
+        },
+        "is_eligible": false,
+        "reasons": [
+          "Insufficient points (required 50, balance 0)"
+        ]
+      },
+      {
+        "reward": {
+          "id": "a0d8de22-ad8a-46b7-8f7c-669ab48dc6eb",
+          "image": null,
+          "campaign_id": null,
+          "reward_type": "cashback_voucher",
+          "is_active": true,
+          "sort_order": 0,
+          "value_type": "percentage",
+          "value_amount": "99.00",
+          "max_discount": null,
+          "min_member_tier_id": null,
+          "daily_limit": null,
+          "monthly_limit": null,
+          "min_spend_amount": "99999.00",
+          "is_stackable": true,
+          "start_at": null,
+          "end_at": null,
+          "validity_days": null,
+          "workspace_id": 9,
+          "created_by": 13,
+          "created_at": "2026-01-16T03:10:01.000000Z",
+          "updated_at": "2026-01-16T03:10:01.000000Z",
+          "costs": [
+            {
+              "id": "a0d8de22-aebe-4adc-9267-60bf07f13461",
+              "reward_id": "a0d8de22-ad8a-46b7-8f7c-669ab48dc6eb",
+              "cost_type": "point",
+              "cost_value": "60000.00",
+              "cost_unit": null,
+              "created_at": "2026-01-16T03:10:01.000000Z",
+              "updated_at": "2026-01-16T03:10:01.000000Z"
+            }
+          ],
+          "tiers": [],
+          "skus": [],
+          "campaign": null
+        },
+        "is_eligible": false,
+        "reasons": [
+          "Insufficient spend amount (required $99,999.0)",
+          "Insufficient points (required 60,000, balance 0)"
+        ]
+      },
+      {
+        "reward": {
+          "id": "a192f879-b8a1-4f92-a7f6-e64ecca53dbd",
+          "image": "uploads/rewards/1776526060_Anushka-Spa-Salon-hair-salon-BI2A6709.jpg",
+          "campaign_id": "a192f2f3-bbdc-4d33-b6ff-bbee26a30a43",
+          "reward_type": "cashback_voucher",
+          "is_active": true,
+          "sort_order": 0,
+          "value_type": "amount",
+          "value_amount": null,
+          "max_discount": null,
+          "min_member_tier_id": null,
+          "daily_limit": null,
+          "monthly_limit": null,
+          "min_spend_amount": null,
+          "is_stackable": true,
+          "start_at": null,
+          "end_at": null,
+          "validity_days": null,
+          "workspace_id": 9,
+          "created_by": 13,
+          "created_at": "2026-04-18T15:27:40.000000Z",
+          "updated_at": "2026-04-18T15:27:40.000000Z",
+          "costs": [
+            {
+              "id": "a192f879-b95b-4374-8be4-f7faadea5f75",
+              "reward_id": "a192f879-b8a1-4f92-a7f6-e64ecca53dbd",
+              "cost_type": "point",
+              "cost_value": "66.00",
+              "cost_unit": null,
+              "created_at": "2026-04-18T15:27:40.000000Z",
+              "updated_at": "2026-04-18T15:27:40.000000Z"
+            }
+          ],
+          "tiers": [],
+          "skus": [],
+          "campaign": {
+            "id": "a192f2f3-bbdc-4d33-b6ff-bbee26a30a43",
+            "name": "18APRIL",
+            "campaign_type": "point",
+            "birthday_period_mode": "on_day",
+            "birthday_days_before": 0,
+            "birthday_days_after": 0,
+            "description": null,
+            "is_active": true,
+            "workspace_id": 9,
+            "created_by": 13,
+            "created_at": "2026-04-18T15:12:13.000000Z",
+            "updated_at": "2026-04-18T15:12:13.000000Z"
+          }
+        },
+        "is_eligible": false,
+        "reasons": [
+          "Insufficient points (required 66, balance 0)"
+        ]
+      }
+    ]
+  },
+  "message": "Success"
+}

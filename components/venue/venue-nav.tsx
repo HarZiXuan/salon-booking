@@ -17,6 +17,7 @@ interface VenueNavProps {
 
 const defaultTabs = [
     { id: "services", label: "Services" },
+    { id: "rewards", label: "Rewards" },
     { id: "team", label: "Team" },
     // { id: "reviews", label: "Reviews" },
     { id: "about", label: "About" },

@@ -8,6 +8,8 @@ import { getPointBalance } from "@/app/actions/loyalty";
 import { RedeemModal } from "@/components/loyalty/redeem-modal";
 import { Button } from "@/components/ui/button/button";
 import { cn } from "@/lib/utils";
+import { RewardList } from "@/components/loyalty/reward-list";
+import { RewardCampaignEntry } from "@/app/actions/loyalty";
 
 interface MerchantLoyalty {
     merchantSlug: string;
@@ -23,6 +25,7 @@ export default function MembershipPage() {
     const [redeemModal, setRedeemModal] = useState<{
         shopSlug: string;
         merchantName: string;
+        preselectedReward?: RewardCampaignEntry;
     } | null>(null);
 
     // active merchant card to show details
@@ -51,7 +54,16 @@ export default function MembershipPage() {
             }
             setMerchants(results);
             if (results.length > 0) {
-                setActiveMerchant(results[0].merchantSlug);
+                const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+                const shopQuery = params.get("shop");
+                const queryShop = shopQuery ? getShopSlugFromMerchantUrl(shopQuery) : null;
+                const match = queryShop ? results.find(m => m.shopSlug === queryShop) : null;
+                
+                if (match) {
+                    setActiveMerchant(match.merchantSlug);
+                } else {
+                    setActiveMerchant(results[0].merchantSlug);
+                }
             }
             setLoading(false);
         })();
@@ -197,20 +209,26 @@ export default function MembershipPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h3 className="text-lg font-bold text-gray-900">Redemption History</h3>
-                                        <Button
-                                            size="sm"
-                                            onClick={() =>
-                                                setRedeemModal({
+                                    <div className="mb-10">
+                                        <div className="flex items-center justify-between mb-5">
+                                            <h3 className="text-[20px] font-bold text-[#1a2538] tracking-tight">Available Rewards</h3>
+                                            <span className="font-bold text-gray-500">{activeData.points} pts</span>
+                                        </div>
+                                        <div className="bg-gray-50/50 p-2 sm:p-4 rounded-xl border">
+                                            <RewardList 
+                                                shopSlug={activeData.shopSlug} 
+                                                token={sessions[activeData.shopSlug]?.token} 
+                                                onSelectReward={(reward) => setRedeemModal({
                                                     shopSlug: activeData.shopSlug,
                                                     merchantName: activeData.merchantName,
-                                                })
-                                            }
-                                            className="rounded-full"
-                                        >
-                                            <i className="ri-ticket-2-line mr-2"></i> Redeem Points
-                                        </Button>
+                                                    preselectedReward: reward
+                                                })}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-between items-center mb-4 border-t pt-8">
+                                        <h3 className="text-lg font-bold text-gray-900">Redemption History</h3>
                                     </div>
 
                                     <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed">
@@ -231,6 +249,7 @@ export default function MembershipPage() {
                     shopSlug={redeemModal.shopSlug}
                     merchantName={redeemModal.merchantName}
                     token={sessions[redeemModal.shopSlug]?.token}
+                    preselectedReward={redeemModal.preselectedReward}
                     onRedeemed={async () => {
                         const token = sessions[redeemModal.shopSlug]?.token;
                         if (!token) return;

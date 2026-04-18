@@ -19,6 +19,7 @@ interface RedeemModalProps {
     merchantName?: string;
     token?: string | null;
     onRedeemed?: () => void;
+    preselectedReward?: RewardCampaignEntry | null;
 }
 
 function costLabel(entry: RewardCampaignEntry) {
@@ -59,7 +60,7 @@ function useCountdown(seconds = 30) {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export function RedeemModal({ isOpen, onClose, shopSlug, merchantName, token, onRedeemed }: RedeemModalProps) {
+export function RedeemModal({ isOpen, onClose, shopSlug, merchantName, token, onRedeemed, preselectedReward }: RedeemModalProps) {
     const [points, setPoints] = useState(0);
     const [catalog, setCatalog] = useState<RewardCampaignEntry[]>([]);
     const [loading, setLoading] = useState(true);
@@ -78,7 +79,7 @@ export function RedeemModal({ isOpen, onClose, shopSlug, merchantName, token, on
     // Load on open
     useEffect(() => {
         if (!isOpen || !shopSlug) return;
-        setSelected(null);
+        setSelected(preselectedReward || null);
         setResult(null);
         setError("");
         setOtp("");

@@ -16,8 +16,6 @@ export default function AccountLayout({
         { name: "Profile", baseHref: "/account/profile", icon: "ri-user-line" },
         { name: "Appointments", baseHref: "/account/appointments", icon: "ri-calendar-line" },
         { name: "Membership", baseHref: "/account/membership", icon: "ri-vip-crown-2-line" },
-        { name: "Rewards", baseHref: "/account/wallet", icon: "ri-gift-line" },
-        { name: "Product orders", baseHref: "/account/orders", icon: "ri-shopping-bag-line" },
         { name: "Settings", baseHref: "/account/settings", icon: "ri-settings-3-line" },
     ];
 
@@ -38,6 +36,13 @@ export default function AccountLayout({
                         {user.name}
                     </h2>
                     <nav className="space-y-1">
+                        <Link
+                            href={merchantSlug ? `/${merchantSlug}` : "/"}
+                            className="flex items-center gap-4 px-4 py-2.5 mb-4 rounded-lg text-sm font-bold text-gray-700 bg-white border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:border-gray-300 hover:bg-gray-50 hover:text-black transition-all"
+                        >
+                            <i className="ri-store-2-line text-lg text-gray-500"></i>
+                            Back to Store
+                        </Link>
                         {sidebarItems.map((item) => {
                             const isActive = pathname.startsWith(item.baseHref);
                             const href = `${item.baseHref}${merchantSlug ? `?shop=${merchantSlug}` : ""}`;
@@ -60,7 +65,16 @@ export default function AccountLayout({
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 bg-gray-50/30">
+            <div className="flex-1 bg-gray-50/30 flex flex-col">
+                {/* Mobile Sticky Header */}
+                <div className="md:hidden sticky top-[80px] z-40 bg-white border-b border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+                    <div className="flex items-center px-2 py-2">
+                        <Link href={merchantSlug ? `/${merchantSlug}` : "/"} className="flex items-center gap-1 text-gray-600 hover:text-black font-medium transition-colors px-2 py-1.5 rounded-lg active:bg-gray-100">
+                            <i className="ri-arrow-left-s-line text-xl leading-none"></i>
+                            <span className="text-[14px]">Back</span>
+                        </Link>
+                    </div>
+                </div>
                 {children}
             </div>
         </div>

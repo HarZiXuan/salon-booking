@@ -17,7 +17,8 @@ import { getSafeImageSrc } from "@/lib/image-url";
 import { useCurrentSession } from "@/hooks/use-current-session";
 import { RedeemModal } from "@/components/loyalty/redeem-modal";
 import { VoucherCard } from "@/components/loyalty/voucher-card";
-
+import { RewardList } from "@/components/loyalty/reward-list";
+import { RewardCampaignEntry } from "@/app/actions/loyalty";
 
 export default function StorePage() {
     const params = useParams();
@@ -39,6 +40,7 @@ export default function StorePage() {
     const { user } = useCurrentSession();
     const [loyaltyPoints, setLoyaltyPoints] = useState<number | null>(null);
     const [redeemModalOpen, setRedeemModalOpen] = useState(false);
+    const [preselectedReward, setPreselectedReward] = useState<RewardCampaignEntry | null>(null);
 
     // Update active index on scroll
     const handleScroll = () => {
@@ -371,7 +373,7 @@ export default function StorePage() {
                         <div className="px-4 pb-4 flex flex-col gap-2 relative z-10">
                             {user ? (
                                 <>
-                                    <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => setRedeemModalOpen(true)}>
+                                    <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => document.getElementById('rewards')?.scrollIntoView({ behavior: 'smooth' })}>
                                         <i className="ri-coupon-fill mr-1.5 text-lg" /> Claim voucher
                                     </Button>
                                 </>
@@ -559,6 +561,22 @@ export default function StorePage() {
                             </div>
                         </div>
                     </section>
+                    {shopSlug && (
+                        <section id="rewards" className="scroll-mt-32">
+                            <div className="flex items-center justify-between mb-5">
+                                <h2 className="text-[22px] font-bold text-[#1a2538] tracking-tight">Available Rewards</h2>
+                                <span className="font-bold text-gray-500">{loyaltyPoints !== null ? `${loyaltyPoints} pts` : ''}</span>
+                            </div>
+                            <RewardList 
+                                shopSlug={shopSlug} 
+                                token={user?.token} 
+                                onSelectReward={(reward) => {
+                                    setPreselectedReward(reward);
+                                    setRedeemModalOpen(true);
+                                }}
+                            />
+                        </section>
+                    )}
                     <section id="team" className="scroll-mt-32">
                         <TeamList specialists={teamMembers} />
                     </section>
@@ -656,7 +674,7 @@ export default function StorePage() {
                             <div className="px-5 pb-5 flex flex-col gap-2 relative z-10">
                                 {user ? (
                                     <>
-                                        <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] h-10 text-sm font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => setRedeemModalOpen(true)}>
+                                        <Button size="sm" className="w-full rounded-xl bg-gradient-to-b from-[#4a350f] to-[#342407] text-[#fae7b9] hover:from-[#342407] hover:to-[#221603] h-10 text-sm font-semibold border border-[#342407] tracking-wide shadow-md" onClick={() => document.getElementById('rewards')?.scrollIntoView({ behavior: 'smooth' })}>
                                             <i className="ri-coupon-fill mr-1.5 text-lg" /> Claim voucher
                                         </Button>
                                     </>
@@ -698,10 +716,14 @@ export default function StorePage() {
             {shopSlug && (
                 <RedeemModal
                     isOpen={redeemModalOpen}
-                    onClose={() => setRedeemModalOpen(false)}
+                    onClose={() => {
+                        setRedeemModalOpen(false);
+                        setTimeout(() => setPreselectedReward(null), 300); // clear after animation
+                    }}
                     shopSlug={shopSlug ?? undefined}
                     merchantName={String(venue?.name || "")}
                     token={user?.token}
+                    preselectedReward={preselectedReward}
                     onRedeemed={async () => {
                         if (!user?.token) return;
                         const balRes = await getPointBalance(shopSlug, user.token!);
