@@ -10,7 +10,7 @@ import { logoutCustomer } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
 
 export function UserMenu() {
-    const { user, merchantSlug, logout } = useCurrentSession();
+    const { user, merchantSlug, shopSlug, logout } = useCurrentSession();
     const router = useRouter();
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
