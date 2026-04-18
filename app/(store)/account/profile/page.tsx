@@ -1,9 +1,17 @@
 "use client";
 
 import { useCurrentSession } from "@/hooks/use-current-session";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 export default function ProfilePage() {
+    return (
+        <Suspense>
+            <ProfileContent />
+        </Suspense>
+    );
+}
+
+function ProfileContent() {
     const { user } = useCurrentSession();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");

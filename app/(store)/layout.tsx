@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useCurrentSession } from "@/hooks/use-current-session";
 import { useCartStore } from "@/global-store/cart";
 import { Button } from "@/components/ui/button/button";
@@ -15,6 +15,18 @@ import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
 import { normalizeShopToVenue } from "@/lib/normalize";
 
 export default function StoreLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <Suspense fallback={<div className="flex h-screen items-center justify-center"><div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin" /></div>}>
+            <StoreLayoutContent>{children}</StoreLayoutContent>
+        </Suspense>
+    );
+}
+
+function StoreLayoutContent({
     children,
 }: {
     children: React.ReactNode;

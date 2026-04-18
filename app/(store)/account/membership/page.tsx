@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useUserStore } from "@/global-store/user";
 import { getMerchantSlugs, getShopSlugFromMerchantUrl } from "@/lib/stores";
@@ -19,6 +19,14 @@ interface MerchantLoyalty {
 }
 
 export default function MembershipPage() {
+    return (
+        <Suspense>
+            <MembershipContent />
+        </Suspense>
+    );
+}
+
+function MembershipContent() {
     const { sessions } = useUserStore();
     const [merchants, setMerchants] = useState<MerchantLoyalty[]>([]);
     const [loading, setLoading] = useState(true);

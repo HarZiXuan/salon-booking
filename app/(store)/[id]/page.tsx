@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button/button";
 import { VenueNav } from "@/components/venue/venue-nav";
 import { TeamList } from "@/components/venue/team-list";
 // import { ReviewList } from "@/components/venue/review-list";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { BookingWizard } from "@/components/venue/booking/wizard";
 import { fetchShopDetails, fetchServices, fetchCategories, fetchAllSpecialists } from "@/app/actions/shop";
 import { getPointBalance } from "@/app/actions/loyalty";
@@ -21,6 +21,14 @@ import { RewardList } from "@/components/loyalty/reward-list";
 import { RewardCampaignEntry } from "@/app/actions/loyalty";
 
 export default function StorePage() {
+    return (
+        <Suspense>
+            <StorePageContent />
+        </Suspense>
+    );
+}
+
+function StorePageContent() {
     const params = useParams();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);

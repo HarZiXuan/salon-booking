@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Button } from "@/components/ui/button/button";
 import { useCurrentSession } from "@/hooks/use-current-session";
 import { getMyBookingRefs, type MyBookingRef } from "@/lib/my-bookings";
@@ -10,6 +10,14 @@ import { fetchBookingDetails } from "@/app/actions/shop";
 type BookingDetail = Record<string, unknown> | null;
 
 export default function AppointmentsPage() {
+    return (
+        <Suspense>
+            <AppointmentsContent />
+        </Suspense>
+    );
+}
+
+function AppointmentsContent() {
     const { user } = useCurrentSession();
     const [refs, setRefs] = useState<MyBookingRef[]>([]);
     const [details, setDetails] = useState<Record<string, BookingDetail>>({});
